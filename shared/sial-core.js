@@ -127,8 +127,12 @@ const SIALCore = (() => {
   }
 
   function isLocalPrototypePath() {
-    const path = window.location.pathname.toLowerCase();
-    return path.includes("/sial-") || path.includes("\\sial-");
+    const pathSegments = window.location.pathname
+      .toLowerCase()
+      .split(/[\\/]+/)
+      .map((segment) => decodeURIComponent(segment));
+    const localFolders = navigationRegistry.gestion.modules.map((module) => module.localFolder);
+    return pathSegments.some((segment) => localFolders.includes(segment));
   }
 
   function resolveNavigationHref(targetModule, href, activeModuleId) {
