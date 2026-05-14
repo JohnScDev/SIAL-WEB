@@ -589,6 +589,12 @@ tbody tr:hover { background: var(--color-nav-hover); }
 .muted { color: var(--color-text-2); }
 .row-actions { display: flex; align-items: center; gap: 8px; }
 .row-actions .icon-btn { width: 36px; height: 36px; }
+.row-actions .icon-btn[data-state-action="inactive"] { color: var(--color-error-main); }
+.row-actions .icon-btn[data-state-action="active"] { color: var(--color-success-main); }
+tbody tr.state-updated {
+  background: color-mix(in srgb, var(--color-info-bg) 68%, transparent);
+  transition: background-color .22s ease;
+}
 
 .status, .chip, .tag {
   min-height: 28px;
@@ -741,6 +747,83 @@ tbody tr:hover { background: var(--color-nav-hover); }
   background: var(--color-empty-bg);
 }
 .audit-item { border-left: 3px solid var(--color-primary-500); }
+
+.confirm-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 58;
+  background: var(--color-backdrop);
+}
+.confirm-backdrop[hidden] {
+  display: none;
+}
+.confirm-dialog {
+  position: fixed;
+  z-index: 59;
+  top: 50%;
+  left: 50%;
+  width: min(480px, calc(100vw - 32px));
+  max-height: calc(100vh - 32px);
+  display: grid;
+  overflow: auto;
+  transform: translate(-50%, -50%);
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-surface);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-overlay);
+}
+.confirm-dialog[hidden] {
+  display: none;
+}
+.confirm-dialog-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 20px 20px 14px;
+  border-bottom: 1px solid var(--color-border-subtle);
+}
+.confirm-dialog-head h2 {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 600;
+}
+.confirm-dialog-head p {
+  margin: 6px 0 0;
+  color: var(--color-text-2);
+  font-size: 13px;
+  line-height: 1.55;
+}
+.confirm-dialog-body {
+  display: grid;
+  gap: 14px;
+  padding: 20px;
+}
+.confirm-summary {
+  display: grid;
+  gap: 4px;
+  padding: 14px;
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-control);
+  background: var(--color-soft-surface);
+}
+.confirm-summary span {
+  color: var(--color-text-3);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+}
+.confirm-summary strong {
+  color: var(--color-text);
+  font-weight: 600;
+  line-height: 1.45;
+}
+.confirm-dialog-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  padding: 0 20px 20px;
+}
 
 .catalog-section { scroll-margin-top: 84px; margin-bottom: 20px; }
 .section-heading { display: flex; align-items: flex-end; justify-content: space-between; gap: 24px; margin-bottom: 16px; }

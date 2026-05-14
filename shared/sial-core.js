@@ -223,6 +223,7 @@ const SIALCore = (() => {
     if (!group || !nav) {
       initThemeToggle();
       initSidebarToggle();
+      initStateActionConfirm();
       return;
     }
 
@@ -284,6 +285,7 @@ const SIALCore = (() => {
 
     initThemeToggle();
     initSidebarToggle();
+    initStateActionConfirm();
   }
 
   function initThemeToggle() {
@@ -434,6 +436,10 @@ const SIALCore = (() => {
       page = 1;
       filterRows();
     });
+    document.addEventListener("sial:table-state-change", () => {
+      page = 1;
+      filterRows();
+    });
     filterRows();
   }
 
@@ -475,6 +481,199 @@ const SIALCore = (() => {
     document.addEventListener("keydown", (event) => {
       if (event.key === "Escape") close();
     });
+  }
+
+  function initStateActionConfirm(config = {}) {
+    const selector = config.selector || 'tbody button[aria-label^="Inactivar"], tbody button[aria-label^="Activar"]';
+    const buttons = qsa(selector).filter((button) => button.dataset.stateConfirmReady !== "true");
+    if (!buttons.length) return;
+
+    const inactiveIcon = '<svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m18 6-12 12"></path><path d="m6 6 12 12"></path></svg>';
+    const activeIcon = '<svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6 9 17l-5-5"></path></svg>';
+    let pending = null;
+    let lastTrigger = null;
+
+    let backdrop = qs("[data-state-confirm-backdrop]");
+    let dialog = qs("[data-state-confirm-dialog]");
+    if (!backdrop || !dialog) {
+      backdrop = document.createElement("div");
+      backdrop.className = "confirm-backdrop";
+      backdrop.dataset.stateConfirmBackdrop = "true";
+      backdrop.hidden = true;
+      dialog = document.createElement("section");
+      dialog.className = "confirm-dialog";
+      dialog.dataset.stateConfirmDialog = "true";
+      dialog.hidden = true;
+      dialog.setAttribute("role", "dialog");
+      dialog.setAttribute("aria-modal", "true");
+      dialog.setAttribute("aria-labelledby", "stateConfirmTitle");
+      dialog.setAttribute("aria-describedby", "stateConfirmDescription");
+      dialog.innerHTML = `
+        <div class="confirm-dialog-head">
+          <div>
+            <h2 id="stateConfirmTitle">Confirmar accion</h2>
+            <p id="stateConfirmDescription">Esta accion modifica la disponibilidad del registro y conserva auditoria.</p>
+          </div>
+          <button class="icon-btn" type="button" data-state-confirm-close aria-label="Cerrar confirmacion">
+            <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m18 6-12 12"></path><path d="m6 6 12 12"></path></svg>
+          </button>
+        </div>
+        <div class="confirm-dialog-body">
+          <div class="confirm-summary">
+            <span>Registro</span>
+            <strong data-state-confirm-record>-</strong>
+          </div>
+          <div class="notice notice-warning" data-state-confirm-notice>
+            <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M12 8v5"></path><path d="M12 16h.01"></path></svg>
+            <span data-state-confirm-message>-</span>
+          </div>
+          <div class="notice notice-info">
+            <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 19V5"></path><path d="M4 19h16"></path><path d="M8 15l3-4 3 2 5-7"></path></svg>
+            <span>La accion quedara registrada con usuario, fecha y hora dentro de la auditoria visual del prototipo.</span>
+          </div>
+        </div>
+        <div class="confirm-dialog-actions">
+          <button class="btn btn-secondary" type="button" data-state-confirm-cancel>Cancelar</button>
+          <button class="btn btn-danger" type="button" data-state-confirm-accept>Inactivar registro</button>
+        </div>
+      `;
+      document.body.append(backdrop, dialog);
+    }
+
+    const title = qs("#stateConfirmTitle", dialog);
+    const description = qs("#stateConfirmDescription", dialog);
+    const record = qs("[data-state-confirm-record]", dialog);
+    const message = qs("[data-state-confirm-message]", dialog);
+    const notice = qs("[data-state-confirm-notice]", dialog);
+    const accept = qs("[data-state-confirm-accept]", dialog);
+
+    function getButtonAction(button) {
+      const label = button.getAttribute("aria-label") || "";
+      if (/^Inactivar\b/i.test(label)) return "inactive";
+      if (/^Activar\b/i.test(label)) return "active";
+      return button.dataset.stateAction === "active" ? "active" : "inactive";
+    }
+
+    function getEntityLabel(button) {
+      const label = button.getAttribute("aria-label") || "registro";
+      return label.replace(/^(Inactivar|Activar)\s+/i, "").trim() || "registro";
+    }
+
+    function syncButton(button, action, entityLabel) {
+      const nextAction = action === "active" ? "inactive" : "active";
+      const nextLabel = nextAction === "active" ? "Activar" : "Inactivar";
+      button.dataset.stateAction = nextAction;
+      button.setAttribute("aria-label", `${nextLabel} ${entityLabel}`);
+      button.setAttribute("title", `${nextLabel} ${entityLabel}`);
+      button.innerHTML = nextAction === "active" ? activeIcon : inactiveIcon;
+    }
+
+    function closeDialog() {
+      pending = null;
+      backdrop.hidden = true;
+      dialog.hidden = true;
+      lastTrigger?.focus();
+    }
+
+    function openDialog(button) {
+      const row = button.closest("tr");
+      if (!row) return;
+      const action = getButtonAction(button);
+      const entityLabel = getEntityLabel(button);
+      const recordLabel = [row.dataset.code, row.dataset.name].filter(Boolean).join(" - ") || row.cells[0]?.textContent?.trim() || "Registro seleccionado";
+      pending = { action, button, entityLabel, row };
+      lastTrigger = button;
+
+      const isActivation = action === "active";
+      title.textContent = isActivation ? "Confirmar activacion" : "Confirmar inactivacion";
+      description.textContent = isActivation ? "El registro volvera a quedar disponible segun las reglas del modulo." : "El registro no se elimina; solo cambia su disponibilidad operativa.";
+      record.textContent = recordLabel;
+      message.textContent = isActivation
+        ? "El registro quedara activo y podra usarse nuevamente en nuevas operaciones si cumple las reglas funcionales."
+        : "El registro quedara inactivo y no estara disponible para nuevas operaciones. Podra reactivarse si el usuario cuenta con permisos.";
+      notice.classList.toggle("notice-warning", !isActivation);
+      notice.classList.toggle("notice-success", isActivation);
+      accept.textContent = isActivation ? "Activar registro" : "Inactivar registro";
+      accept.classList.toggle("btn-primary", isActivation);
+      accept.classList.toggle("btn-danger", !isActivation);
+      backdrop.hidden = false;
+      dialog.hidden = false;
+      accept.focus();
+    }
+
+    function updateVisibleAudit(row, auditAction, timestamp, button) {
+      const actionCell = button.closest("td");
+      if (!actionCell) return;
+      const cells = Array.from(row.children);
+      const auditCell = cells[cells.indexOf(actionCell) - 1];
+      if (!auditCell?.classList.contains("muted")) return;
+      auditCell.innerHTML = `${escapeHtml(auditAction)} - prototipo.ui<br />${escapeHtml(timestamp)}`;
+    }
+
+    function applyStateAction() {
+      if (!pending) return;
+      const { action, button, entityLabel, row } = pending;
+      const isActivation = action === "active";
+      const nextStatus = isActivation ? "active" : "inactive";
+      const nextState = isActivation ? "Activo" : "Inactivo";
+      const auditAction = isActivation ? "Activar" : "Inactivar";
+      const timestamp = new Date().toLocaleString("es-CO", {
+        day: "2-digit",
+        month: "2-digit",
+        year: "numeric",
+        hour: "2-digit",
+        minute: "2-digit"
+      });
+
+      row.dataset.status = nextStatus;
+      row.dataset.state = nextState;
+      row.dataset.audit = `${auditAction}|prototipo.ui - ${timestamp}${row.dataset.audit ? `;${row.dataset.audit}` : ""}`;
+
+      const status = qs(".status", row);
+      if (status) {
+        status.classList.remove("status-active", "status-warning", "status-inactive");
+        status.classList.add(isActivation ? "status-active" : "status-inactive");
+        status.textContent = nextState;
+      }
+
+      updateVisibleAudit(row, auditAction, timestamp, button);
+      syncButton(button, action, entityLabel);
+      row.classList.add("state-updated");
+      setTimeout(() => row.classList.remove("state-updated"), 1400);
+      document.dispatchEvent(new CustomEvent("sial:table-state-change", { detail: { row, status: nextStatus } }));
+      closeDialog();
+    }
+
+    buttons.forEach((button) => {
+      button.dataset.stateConfirmReady = "true";
+      button.dataset.stateAction = getButtonAction(button);
+      button.setAttribute("title", button.getAttribute("aria-label") || "Cambiar estado");
+      button.addEventListener("click", (event) => {
+        event.preventDefault();
+        event.stopPropagation();
+        openDialog(button);
+      });
+    });
+
+    qsa("[data-state-confirm-close], [data-state-confirm-cancel]", dialog).forEach((button) => {
+      if (button.dataset.stateConfirmCloseReady === "true") return;
+      button.dataset.stateConfirmCloseReady = "true";
+      button.addEventListener("click", closeDialog);
+    });
+    if (backdrop.dataset.stateConfirmCloseReady !== "true") {
+      backdrop.dataset.stateConfirmCloseReady = "true";
+      backdrop.addEventListener("click", closeDialog);
+    }
+    if (accept.dataset.stateConfirmAcceptReady !== "true") {
+      accept.dataset.stateConfirmAcceptReady = "true";
+      accept.addEventListener("click", applyStateAction);
+    }
+    if (document.documentElement.dataset.stateConfirmEscapeReady !== "true") {
+      document.documentElement.dataset.stateConfirmEscapeReady = "true";
+      document.addEventListener("keydown", (event) => {
+        if (event.key === "Escape" && !dialog.hidden) closeDialog();
+      });
+    }
   }
 
   function initEmbeddedForm(config = {}) {
@@ -597,6 +796,7 @@ const SIALCore = (() => {
     setFieldState,
     initTableFilters,
     initDrawer,
+    initStateActionConfirm,
     initEmbeddedForm,
     initReleaseChangelog
   };

@@ -5,7 +5,7 @@ Libreria compartida para las propuestas HTML del entorno SIAL.
 ## Archivos
 
 - `sial-core.css`: tokens, dark mode, layout, shell, cards, botones, formularios, tablas, drawers, estados y patrones comunes.
-- `sial-core.js`: utilidades reutilizables para tema, filtros, drawers, formularios embebidos, estados de campo y changelog.
+- `sial-core.js`: utilidades reutilizables para tema, filtros, drawers, formularios embebidos, estados de campo, confirmacion de acciones de estado y changelog.
 - `componentes.html`: inventario visual para QA de tokens, componentes, indicadores, estados y modo oscuro.
 
 ## Regla de uso
@@ -30,11 +30,18 @@ La base actual concentra:
 - Componentes de autenticacion: stepper OTP, campo de contrasena con accion embebida y acceso a novedades.
 - Tablas, toolbar, paginacion 10/30/50, empty state, badges, chips y estados.
 - Drawers, backdrop, detalle, auditoria y contenedores relacionales.
+- Confirmacion centralizada para activar o inactivar registros desde tablas mediante `SIALCore.initStateActionConfirm`, sin eliminacion fisica y con actualizacion visual de auditoria.
 - Patrones de transfer, roles, licencias, metricas, indicadores ejecutivos, KPIs, medidores de proyeccion, capacidad, riesgo, visualizaciones analiticas, timeline y calendario.
 - Patrones de changelog externo, changelog interno y administracion de publicaciones.
 - Topbar publico sin menu para vistas externas que conservan marca y modo claro/oscuro.
 - Renderizado reutilizable de changelog mediante `SIALCore.initReleaseChangelog`.
 - Renderizado reutilizable de menu mediante `SIALCore.initNavigation({ area, module, view })`.
+
+## Acciones de estado
+
+Las acciones de tabla para activar o inactivar deben usar botones `icon-btn` con `aria-label` iniciado en `Activar` o `Inactivar`.
+
+`SIALCore.initNavigation` inicializa automaticamente la confirmacion. El flujo muestra el registro afectado, aclara que no hay eliminacion fisica, registra auditoria visual de prototipo y actualiza `data-status`, badge, icono y filtros.
 
 No se deben duplicar definiciones de estos componentes en los CSS locales.
 
