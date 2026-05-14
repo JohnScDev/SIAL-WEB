@@ -53,7 +53,7 @@
     <div class="drawer-head"><div><h3>Detalle contenedor</h3><p>Consulta lateral de tipo, estado y auditoria.</p></div><button class="icon-btn" id="closeDetail" aria-label="Cerrar detalle"><svg class="icon" viewBox="0 0 24 24"><path d="m18 6-12 12"></path><path d="m6 6 12 12"></path></svg></button></div>
     <div class="drawer-body"><div class="detail-group"><span class="detail-label">Numero</span><div class="detail-value" data-detail-target="code">-</div></div><div class="detail-group"><span class="detail-label">Tipo</span><div class="detail-value" data-detail-target="type">-</div></div><div class="detail-group"><span class="detail-label">Uso operativo</span><div class="detail-value" data-detail-target="use">-</div></div><div class="detail-group"><span class="detail-label">Estado</span><div class="detail-value" data-detail-target="state">-</div></div><div class="detail-group"><span class="detail-label">Auditoria</span><div class="stack" id="detailAudit"></div></div></div>
   </aside>
-  <script src="../shared/sial-core.js"></script>
+  <script src="../shared/sial-core.js?v=20260514-routes2"></script>
   <script src="sial-puerto.js"></script>
   <script>SIAL.applyShell("contenedores"); SIAL.initDrawer(); SIAL.initEmbeddedForm({ newTitle: "Nuevo contenedor", editTitle: "Editar contenedor" }); SIAL.initContainerForm(); SIAL.initTableFilters({ rowSelector: "tbody tr", search: "#containerSearch", status: "#containerStatus", context: "#containerContext", empty: "#containerEmpty", count: "#containerCount" });</script>
 </body>
