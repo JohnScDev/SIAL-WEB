@@ -1,0 +1,1384 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SIAL | Libreria UI</title>
+  <script>
+    (function () {
+      const savedTheme = localStorage.getItem("sial-theme");
+      const systemDark = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
+      document.documentElement.dataset.theme = savedTheme || (systemDark ? "dark" : "light");
+    })();
+  </script>
+  <link rel="stylesheet" href="sial-core.css" />
+</head>
+<body data-view-family="gestion">
+  <div class="app-shell">
+    <aside class="sidebar" aria-label="Navegacion de libreria UI">
+      <a class="brand" href="../index.html" aria-label="Volver al catalogo SIAL"><span class="brand-badge">S</span><span>SIAL</span></a>
+      <p class="menu-caption">Libreria UI</p>
+      <nav class="stack" aria-label="Secciones de componentes">
+        <a class="nav-link active" href="#fundamentos">
+          <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v18"></path><path d="M3 12h18"></path></svg>
+          <span>Fundamentos</span>
+        </a>
+        <a class="nav-link" href="#acciones">
+          <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"></path><path d="m13 6 6 6-6 6"></path></svg>
+          <span>Acciones</span>
+        </a>
+        <a class="nav-link" href="#layout">
+          <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"></rect><path d="M8 4v16"></path><path d="M3 9h18"></path></svg>
+          <span>Layout</span>
+        </a>
+        <a class="nav-link" href="#autenticacion-componentes">
+          <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"></rect><path d="M8 11V8a4 4 0 0 1 8 0v3"></path><path d="M12 15v2"></path></svg>
+          <span>Autenticacion</span>
+        </a>
+        <a class="nav-link" href="#formularios">
+          <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="4" width="16" height="16" rx="2"></rect><path d="M8 8h8"></path><path d="M8 12h8"></path><path d="M8 16h5"></path></svg>
+          <span>Formularios</span>
+        </a>
+        <a class="nav-link" href="#datos">
+          <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16"></path><path d="M4 12h16"></path><path d="M4 18h16"></path></svg>
+          <span>Datos</span>
+        </a>
+        <a class="nav-link" href="#relaciones">
+          <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 7h10"></path><path d="M7 17h10"></path><circle cx="5" cy="7" r="2"></circle><circle cx="19" cy="17" r="2"></circle></svg>
+          <span>Relaciones</span>
+        </a>
+        <a class="nav-link" href="#estados">
+          <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v18"></path><path d="M5 8h14"></path><path d="M5 16h14"></path></svg>
+          <span>Estados</span>
+        </a>
+        <a class="nav-link" href="#indicadores">
+          <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 19V5"></path><path d="M4 19h16"></path><path d="M8 15l3-4 3 2 5-7"></path></svg>
+          <span>Indicadores</span>
+        </a>
+        <a class="nav-link" href="#operacion">
+          <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 19V5"></path><path d="M4 19h16"></path><path d="M8 15l3-4 3 2 5-7"></path></svg>
+          <span>Operacion</span>
+        </a>
+        <a class="nav-link" href="#changelog-componentes">
+          <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="3" width="16" height="18" rx="2"></rect><path d="M8 8h8"></path><path d="M8 12h8"></path><path d="M8 16h5"></path></svg>
+          <span>Changelog</span>
+        </a>
+      </nav>
+    </aside>
+
+    <header class="header">
+      <div class="header-left">
+        <a class="btn btn-secondary" href="../index.html">Volver al catalogo</a>
+      </div>
+      <div class="header-right">
+        <button class="icon-btn theme-toggle" type="button" data-theme-toggle aria-label="Cambiar a modo oscuro" aria-pressed="false" title="Cambiar a modo oscuro">
+          <svg class="icon theme-icon theme-icon-moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12.8A8.5 8.5 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"></path></svg>
+          <svg class="icon theme-icon theme-icon-sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2"></path><path d="M12 20v2"></path><path d="m4.93 4.93 1.41 1.41"></path><path d="m17.66 17.66 1.41 1.41"></path><path d="M2 12h2"></path><path d="M20 12h2"></path><path d="m6.34 17.66-1.41 1.41"></path><path d="m19.07 4.93-1.41 1.41"></path></svg>
+        </button>
+        <button class="icon-btn" type="button" aria-label="Notificaciones">
+          <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M15 17h5l-1.4-1.4A2 2 0 0 1 18 14.2V11a6 6 0 1 0-12 0v3.2a2 2 0 0 1-.6 1.4L4 17h5"></path><path d="M10 17a2 2 0 0 0 4 0"></path></svg>
+        </button>
+        <span class="avatar">QA</span>
+      </div>
+    </header>
+
+    <main class="main">
+      <section class="page">
+        <p class="page-eyebrow">SIAL / Catalogo / Libreria UI</p>
+        <div class="page-header">
+          <div>
+            <h1 class="page-title">Libreria visual de componentes SIAL</h1>
+            <p class="page-subtitle">Referencia navegable para validar consistencia entre modulos, estados, accesibilidad basica y compatibilidad con modo claro y oscuro.</p>
+          </div>
+          <div class="card-actions">
+            <button class="btn btn-primary" type="button" data-theme-toggle>Probar tema</button>
+          </div>
+        </div>
+
+        <section class="notice notice-warning" role="note">
+          <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M12 8v5"></path><path d="M12 16h.01"></path></svg>
+          <span>Esta pagina documenta la propuesta visual. Las reglas normativas siguen estando en los documentos base SIAL y Dark Mode.</span>
+        </section>
+
+        <section class="stats" id="fundamentos" aria-label="Resumen de libreria">
+          <article class="stat">
+            <label>Tokens</label>
+            <strong>Centralizados</strong>
+            <span>Colores, superficies, bordes, foco y estados por tema.</span>
+          </article>
+          <article class="stat">
+            <label>Modo oscuro</label>
+            <strong>Funcional</strong>
+            <span>`data-theme` y persistencia por `localStorage`.</span>
+          </article>
+          <article class="stat">
+            <label>Componentes</label>
+            <strong>Reusables</strong>
+            <span>Shell, cards, formularios, tablas, alertas y drawers.</span>
+          </article>
+          <article class="stat">
+            <label>Alcance</label>
+            <strong>Web</strong>
+            <span>Base para las propuestas HTML actuales.</span>
+          </article>
+        </section>
+
+        <section class="card" aria-labelledby="tokensTitle">
+          <div class="card-header">
+            <div>
+              <h2 class="card-title" id="tokensTitle">Tokens y estados visuales</h2>
+              <p class="card-subtitle">Muestras semanticas para revisar contraste, bordes y fondos en ambos temas.</p>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="specimen-grid">
+              <div class="token-swatch primary"><span>Primario</span><strong>Acciones principales</strong></div>
+              <div class="token-swatch success"><span>Exito</span><strong>Activo / correcto</strong></div>
+              <div class="token-swatch warning"><span>Advertencia</span><strong>Atencion operativa</strong></div>
+              <div class="token-swatch error"><span>Error</span><strong>Bloqueo / validacion</strong></div>
+            </div>
+          </div>
+        </section>
+
+        <section class="card" id="layout" aria-labelledby="layoutTitle">
+          <div class="card-header">
+            <div>
+              <h2 class="card-title" id="layoutTitle">Layout, navegacion y superficie</h2>
+              <p class="card-subtitle">Base visual que debe conservarse entre catalogo, gestion, registro, relacion y analitica.</p>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="specimen-grid layout-specimen">
+              <article class="component-preview">
+                <span class="preview-kicker">Shell</span>
+                <div class="shell-mini" aria-hidden="true">
+                  <span></span>
+                  <span></span>
+                  <span></span>
+                </div>
+                <strong>Sidebar + header + area principal</strong>
+                <p>El menu permanece a la izquierda en web, puede contraerse a iconos de modulo y permite plegar las vistas internas del modulo activo.</p>
+              </article>
+              <article class="component-preview">
+                <span class="preview-kicker">Header</span>
+                <div class="component-row compact-row">
+                  <button class="icon-btn" type="button" aria-label="Menu ejemplo"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"></path></svg></button>
+                  <button class="icon-btn theme-toggle" type="button" data-theme-toggle aria-label="Cambiar a modo oscuro" aria-pressed="false"><svg class="icon theme-icon theme-icon-moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12.8A8.5 8.5 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"></path></svg><svg class="icon theme-icon theme-icon-sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2M12 20v2M2 12h2M20 12h2"></path></svg></button>
+                  <span class="avatar">QA</span>
+                </div>
+                <strong>Acciones persistentes</strong>
+                <p>El boton de tema se ubica antes de notificaciones y mantiene foco visible.</p>
+              </article>
+              <article class="component-preview">
+                <span class="preview-kicker">Cards</span>
+                <div class="metric-box">
+                  <label>Estado</label>
+                  <strong>Propuesta</strong>
+                </div>
+                <strong>Superficie semantica</strong>
+                <p>Cards y stats usan borde, sombra y fondo tokenizado para ambos temas.</p>
+              </article>
+              <article class="component-preview">
+                <span class="preview-kicker">Microcopy</span>
+                <p class="field-note">Texto de ayuda breve, accionable y asociado al campo o bloque que explica.</p>
+                <strong>Soporte de decision</strong>
+                <p>Evita instrucciones decorativas y mantiene mensajes operativos.</p>
+              </article>
+            </div>
+          </div>
+        </section>
+
+        <section class="card" id="autenticacion-componentes" aria-labelledby="authComponentsTitle">
+          <div class="card-header">
+            <div>
+              <h2 class="card-title" id="authComponentsTitle">Autenticacion y acceso publico</h2>
+              <p class="card-subtitle">Componentes usados por login, recuperacion de contrasena y accesos externos sin menu de aplicacion.</p>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="specimen-grid">
+              <article class="component-preview">
+                <span class="preview-kicker">Logo publico</span>
+                <div class="public-changelog-topbar">
+                  <div class="brand public-changelog-brand" aria-label="SIAL"><span class="brand-badge">S</span><span>SIAL</span></div>
+                  <button class="icon-btn theme-toggle" type="button" data-theme-toggle aria-label="Cambiar a modo oscuro" aria-pressed="false" title="Cambiar a modo oscuro">
+                    <svg class="icon theme-icon theme-icon-moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12.8A8.5 8.5 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"></path></svg>
+                    <svg class="icon theme-icon theme-icon-sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2M12 20v2M2 12h2M20 12h2"></path></svg>
+                  </button>
+                </div>
+                <strong>Topbar sin menu</strong>
+                <p>Para vistas externas: conserva marca y tema, sin avatar, permisos ni navegacion interna.</p>
+              </article>
+
+              <article class="component-preview">
+                <span class="preview-kicker">Login</span>
+                <div class="auth-preview-panel">
+                  <a class="changelog-access" href="#changelog-componentes" aria-label="Consultar novedades del sistema" title="Consultar novedades del sistema"><span aria-hidden="true">!</span></a>
+                  <strong>Ingreso al sistema</strong>
+                  <p>El acceso a novedades se ubica como accion secundaria y no compite con el formulario.</p>
+                </div>
+              </article>
+
+              <article class="component-preview">
+                <span class="preview-kicker">Recuperacion</span>
+                <div class="auth-steps" aria-label="Progreso de recuperacion">
+                  <span class="auth-step is-current"><span>1</span>Usuario</span>
+                  <span class="auth-step"><span>2</span>Codigo</span>
+                  <span class="auth-step"><span>3</span>Clave</span>
+                </div>
+                <strong>Stepper OTP</strong>
+                <p>Usado en recuperar contrasena, verificacion de codigo y nueva clave.</p>
+              </article>
+
+              <article class="component-preview">
+                <span class="preview-kicker">Campo seguro</span>
+                <div class="field">
+                  <label class="label" for="libraryPassword">Contrasena</label>
+                  <div class="password-field">
+                    <input class="input" id="libraryPassword" type="password" placeholder="Clave de acceso" />
+                    <button type="button" class="icon-action" aria-label="Mostrar contrasena">
+                      <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6S2 12 2 12Z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                    </button>
+                  </div>
+                </div>
+                <strong>Accion embebida</strong>
+                <p>Boton icon-only dentro del input para mostrar u ocultar contenido sensible.</p>
+              </article>
+            </div>
+          </div>
+        </section>
+
+        <section class="card" id="acciones" aria-labelledby="actionsTitle">
+          <div class="card-header">
+            <div>
+              <h2 class="card-title" id="actionsTitle">Botones y alertas</h2>
+              <p class="card-subtitle">Estados usados en acciones de gestion, confirmacion y retroalimentacion.</p>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="component-row">
+              <button class="btn btn-primary" type="button">Guardar cambios</button>
+              <button class="btn btn-secondary" type="button">Limpiar formulario</button>
+              <button class="btn btn-ghost" type="button">Cancelar</button>
+              <button class="btn btn-danger" type="button">Desactivar</button>
+              <button class="btn btn-primary" type="button" disabled>Guardando</button>
+              <button class="icon-btn" type="button" aria-label="Editar registro">
+                <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20h9"></path><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"></path></svg>
+              </button>
+            </div>
+            <div class="specimen-stack">
+              <div class="notice notice-info"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M12 8v5"></path><path d="M12 16h.01"></path></svg><span>Informacion contextual para decisiones de gestion.</span></div>
+              <div class="notice notice-success"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6 9 17l-5-5"></path></svg><span>Registro guardado con trazabilidad de auditoria.</span></div>
+              <div class="notice notice-warning"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M12 8v5"></path><path d="M12 16h.01"></path></svg><span>Valida los campos obligatorios antes de continuar.</span></div>
+              <div class="notice notice-error"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="m15 9-6 6"></path><path d="m9 9 6 6"></path></svg><span>No fue posible completar la accion solicitada.</span></div>
+            </div>
+          </div>
+        </section>
+
+        <section class="card form-card" id="formularios" aria-labelledby="formsTitle">
+          <div class="form-heading">
+            <h2 id="formsTitle">Formulario base</h2>
+            <p>Patron aplicable a maestras medianas y grandes con etiquetas, ayudas, validaciones, campos obligatorios y acciones completas.</p>
+          </div>
+          <div class="form-body">
+            <div class="form-grid">
+              <div class="field">
+                <label class="label" for="sampleCode">Codigo <span class="required">*</span></label>
+                <input class="input" id="sampleCode" value="FIN-AC01" />
+                <p class="field-note">Se conserva en mayusculas sostenidas cuando aplica.</p>
+              </div>
+              <div class="field">
+                <label class="label" for="sampleStatus">Estado <span class="required">*</span></label>
+                <select class="select" id="sampleStatus">
+                  <option>Activo</option>
+                  <option>Inactivo</option>
+                </select>
+              </div>
+              <div class="field">
+                <label class="label" for="sampleReadonly">Creado por</label>
+                <input class="input" id="sampleReadonly" value="admin.sial" readonly />
+                <p class="field-note">Campo de trazabilidad no editable.</p>
+              </div>
+              <div class="field">
+                <label class="label" for="sampleDate">Fecha modificacion</label>
+                <input class="input" id="sampleDate" type="date" value="2026-05-02" />
+              </div>
+              <div class="field">
+                <label class="label" for="sampleError">Correo electronico</label>
+                <input class="input is-error" id="sampleError" value="correo-invalido" aria-invalid="true" />
+                <p class="field-note error">Ingresa un correo electronico valido.</p>
+              </div>
+              <div class="field span-3">
+                <label class="label" for="sampleNotes">Observacion</label>
+                <textarea class="textarea" id="sampleNotes" rows="3">Cambio controlado para propuesta UI/UX.</textarea>
+                <p class="field-note success">Campo opcional con estado de ayuda visible.</p>
+              </div>
+            </div>
+            <div class="form-actions">
+              <button class="btn btn-ghost" type="button">Cancelar</button>
+              <button class="btn btn-secondary" type="button">Limpiar formulario</button>
+              <button class="btn btn-primary" type="button">Guardar registro</button>
+            </div>
+          </div>
+        </section>
+
+        <section class="card form-card" aria-labelledby="embeddedFormTitle">
+          <div class="form-heading">
+            <h2 id="embeddedFormTitle">Formulario corto embebido</h2>
+            <p>Patron para maestras cortas de 3 a 5 campos: la gestion conserva prioridad y el registro vive dentro de la misma card.</p>
+          </div>
+          <div class="form-body">
+            <div class="inline-form-panel">
+              <div class="form-heading">
+                <h3 class="card-title">Nueva clase de referencia</h3>
+                <p>Los nombres se guardan en mayusculas sostenidas y la combinacion nombre + tamano no debe repetirse.</p>
+              </div>
+              <div class="form-body">
+                <div class="form-grid">
+                  <div class="field">
+                    <label class="label" for="shortName">Nombre clase <span class="required">*</span></label>
+                    <input class="input" id="shortName" placeholder="Ej. PREMIUM" />
+                  </div>
+                  <div class="field">
+                    <label class="label" for="shortSize">Tamano fruta <span class="required">*</span></label>
+                    <select class="select" id="shortSize"><option>Corta</option><option>Larga</option></select>
+                  </div>
+                  <div class="field">
+                    <label class="label" for="shortState">Estado <span class="required">*</span></label>
+                    <select class="select" id="shortState"><option>Activo</option><option>Inactivo</option></select>
+                  </div>
+                </div>
+                <div class="form-actions">
+                  <button class="btn btn-ghost" type="button">Cancelar</button>
+                  <button class="btn btn-secondary" type="button">Limpiar formulario</button>
+                  <button class="btn btn-primary" type="button">Guardar clase</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="card" id="datos" aria-labelledby="dataTitle">
+          <div class="card-header">
+            <div>
+              <h2 class="card-title" id="dataTitle">Tabla, estados y drawer</h2>
+              <p class="card-subtitle">Referencia para gestion, visualizacion lateral y trazabilidad.</p>
+            </div>
+            <div class="card-actions">
+              <span class="tag tag-success">3 registros visibles</span>
+              <button class="btn btn-primary" type="button">Registrar</button>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="toolbar compact">
+              <input class="input" type="search" placeholder="Buscar registro" aria-label="Buscar registro" />
+              <select class="select" aria-label="Filtrar estado"><option>Todos</option><option>Activos</option><option>Inactivos</option></select>
+              <button class="btn btn-secondary" type="button">Filtrar</button>
+              <button class="btn btn-ghost" type="button">Limpiar</button>
+            </div>
+            <div class="table-wrap">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Codigo</th>
+                    <th>Nombre</th>
+                    <th>Estado</th>
+                    <th>Auditoria</th>
+                    <th>Acciones</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr data-code="FIN-AC01" data-name="FINCA LA ESPERANZA" data-status="Activo" data-owner="AgroCeiba" data-audit="Editar|admin.fincas - 02/05/2026 08:15;Crear|jsalguero - 25/04/2026 10:40">
+                    <td>FIN-AC01</td>
+                    <td>FINCA LA ESPERANZA</td>
+                    <td><span class="status status-active">Activo</span></td>
+                    <td>Editar - admin.fincas<br />02/05/2026 08:15</td>
+                    <td>
+                      <button class="icon-btn" type="button" data-open-detail aria-label="Ver registro"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z"></path><circle cx="12" cy="12" r="3"></circle></svg></button>
+                      <button class="icon-btn" type="button" aria-label="Editar registro"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20h9"></path><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"></path></svg></button>
+                    </td>
+                  </tr>
+                  <tr data-code="FIN-BP07" data-name="FINCA LOS ALMENDROS" data-status="Inactivo" data-owner="Banapalma" data-audit="Desactivar|auditor.master - 01/05/2026 14:40;Editar|admin.fincas - 30/04/2026 11:20">
+                    <td>FIN-BP07</td>
+                    <td>FINCA LOS ALMENDROS</td>
+                    <td><span class="status status-inactive">Inactivo</span></td>
+                    <td>Desactivar - auditor.master<br />01/05/2026 14:40</td>
+                    <td>
+                      <button class="icon-btn" type="button" data-open-detail aria-label="Ver registro"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z"></path><circle cx="12" cy="12" r="3"></circle></svg></button>
+                      <button class="icon-btn" type="button" aria-label="Activar registro"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6 9 17l-5-5"></path></svg></button>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="table-pagination" aria-label="Paginacion de ejemplo">
+              <div class="pagination-summary">Mostrando 1-2 de 2 registros</div>
+              <label class="pagination-size">
+                <span>Registros por pagina</span>
+                <select class="select" aria-label="Registros por pagina">
+                  <option selected>10</option>
+                  <option>30</option>
+                  <option>50</option>
+                </select>
+              </label>
+              <div class="pagination-pages" aria-label="Cambiar pagina">
+                <button class="pagination-btn" type="button" disabled>Anterior</button>
+                <button class="pagination-btn active" type="button" aria-current="page">1</button>
+                <button class="pagination-btn" type="button" disabled>Siguiente</button>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="card" id="relaciones" aria-labelledby="relationsTitle">
+          <div class="card-header">
+            <div>
+              <h2 class="card-title" id="relationsTitle">Relaciones, transfer y asignaciones</h2>
+              <p class="card-subtitle">Patron usado para roles por empresa, licencias por conductor y relaciones con llave compuesta.</p>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="transfer-layout">
+              <div class="transfer-panel">
+                <h3 class="role-box-title">Disponibles</h3>
+                <div class="transfer-list">
+                  <label class="role-option"><input type="checkbox" /><span><strong>Supervisor campo</strong><span>Gestion operativa regional.</span></span></label>
+                  <label class="role-option"><input type="checkbox" /><span><strong>Gestor documental</strong><span>Control de soportes.</span></span></label>
+                  <label class="role-option"><input type="checkbox" /><span><strong>Consulta auditoria</strong><span>Revision de trazabilidad.</span></span></label>
+                </div>
+              </div>
+              <div class="transfer-actions">
+                <button class="btn btn-secondary" type="button">Agregar</button>
+                <button class="btn btn-secondary" type="button">Quitar</button>
+              </div>
+              <div class="transfer-panel">
+                <h3 class="role-box-title">Incluidos</h3>
+                <div class="transfer-list">
+                  <label class="role-option"><input type="checkbox" /><span><strong>Administrador general</strong><span>Acceso administrativo completo.</span></span></label>
+                  <label class="role-option"><input type="checkbox" /><span><strong>Planeacion agricola</strong><span>Gestion de semanas y cintas.</span></span></label>
+                </div>
+              </div>
+            </div>
+            <div class="assignment-summary">
+              <div class="assignment-list">
+                <article class="assignment-item">
+                  <div>
+                    <strong>Empresa: SIAL Central</strong>
+                    <p class="field-note">Roles incluidos: Administrador general, Planeacion agricola.</p>
+                  </div>
+                  <div class="assignment-actions">
+                    <button class="btn btn-secondary" type="button">Editar relacion</button>
+                    <button class="btn btn-danger" type="button">Inactivar</button>
+                  </div>
+                </article>
+              </div>
+            </div>
+            <div class="relation-wide library-relation-showcase">
+              <article class="relation-item">
+                <strong>Relacion con llave compuesta</strong>
+                <p class="field-note">Ejemplo: codigo conductor + codigo licencia. No se elimina; se inactiva o actualiza con auditoria.</p>
+              </article>
+              <div class="license-grid library-license-grid">
+                <label class="license-option compact-license-option">
+                  <input type="checkbox" checked />
+                  <span><strong>C2</strong><span>Camiones rigidos de servicio publico.</span></span>
+                  <div class="field">
+                    <label class="label" for="licenseDateA">Vencimiento</label>
+                    <input class="input" id="licenseDateA" type="date" value="2027-09-12" />
+                  </div>
+                </label>
+                <label class="license-option compact-license-option">
+                  <input type="checkbox" />
+                  <span><strong>C3</strong><span>Vehiculos articulados y tractocamiones.</span></span>
+                  <div class="field">
+                    <label class="label" for="licenseDateB">Vencimiento</label>
+                    <input class="input" id="licenseDateB" type="date" />
+                  </div>
+                </label>
+              </div>
+              <div class="role-box library-role-box">
+                <p class="role-box-title">Roles disponibles para empresa</p>
+                <div class="role-grid library-role-grid">
+                  <label class="role-option"><input type="checkbox" checked /><span><strong>Administrador general</strong><span>Gestion completa de tablas maestras.</span></span></label>
+                  <label class="role-option"><input type="checkbox" /><span><strong>Consulta auditoria</strong><span>Lectura de trazabilidad y cambios.</span></span></label>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="card" id="estados" aria-labelledby="statesTitle">
+          <div class="card-header">
+            <div>
+              <h2 class="card-title" id="statesTitle">Estados funcionales</h2>
+              <p class="card-subtitle">Cada vista de gestion debe contemplar carga, vacio, error, sin permisos y validacion.</p>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="state-grid">
+              <article class="state-panel">
+                <span class="tag">Loading</span>
+                <div class="skeleton-line"></div>
+                <div class="skeleton-line short"></div>
+                <p class="field-note">Se usa mientras se cargan registros o filtros dependientes.</p>
+              </article>
+              <article class="state-panel">
+                <span class="tag tag-warning">Vacio</span>
+                <div class="empty-state show">No hay registros que coincidan con los filtros aplicados.</div>
+              </article>
+              <article class="state-panel">
+                <span class="tag tag-success">Sin permisos</span>
+                <div class="permission-box">
+                  <strong>Acceso restringido</strong>
+                  <p class="field-note">Solo usuarios administrativos pueden gestionar esta tabla maestra.</p>
+                </div>
+              </article>
+              <article class="state-panel">
+                <span class="tag tag-warning">Error</span>
+                <div class="notice notice-error"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="m15 9-6 6"></path><path d="m9 9 6 6"></path></svg><span>No se pudo consultar la informacion. Intenta nuevamente.</span></div>
+              </article>
+            </div>
+          </div>
+        </section>
+
+        <section class="card" id="indicadores" aria-labelledby="indicatorsTitle">
+          <div class="card-header">
+            <div>
+              <h2 class="card-title" id="indicatorsTitle">Indicadores, KPIs y medidores</h2>
+              <p class="card-subtitle">Componentes analiticos reutilizables para monitoreo operativo, gestion y calidad de datos. Esta seccion no representa un tablero final.</p>
+            </div>
+            <div class="card-actions">
+              <span class="tag">Componentes base</span>
+              <span class="tag tag-warning">Datos simulados</span>
+              <a class="btn btn-secondary" href="../Indicadores/index.html">Abrir vista funcional</a>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="indicator-showcase">
+              <div class="indicator-grid">
+                <article class="indicator-card">
+                  <div class="indicator-head">
+                    <span>Disponibilidad</span>
+                    <span class="status status-active">Activo</span>
+                  </div>
+                  <strong class="indicator-value">84</strong>
+                  <p>Vehiculos disponibles para asignacion operativa.</p>
+                  <div class="indicator-foot">
+                    <span class="indicator-delta is-positive">+6%</span>
+                    <span>vs. semana anterior</span>
+                  </div>
+                </article>
+                <article class="indicator-card">
+                  <div class="indicator-head">
+                    <span>Riesgo documental</span>
+                    <span class="tag tag-warning">7 dias</span>
+                  </div>
+                  <strong class="indicator-value">14</strong>
+                  <p>SOAT, tecnomecanica o licencia proximos a vencer.</p>
+                  <div class="indicator-foot">
+                    <span class="indicator-delta is-warning">Atencion</span>
+                    <span>requiere revision</span>
+                  </div>
+                </article>
+                <article class="indicator-card">
+                  <div class="indicator-head">
+                    <span>Bloqueos</span>
+                    <span class="status status-inactive">No asignable</span>
+                  </div>
+                  <strong class="indicator-value">6</strong>
+                  <p>Registros inactivos o sin condiciones minimas.</p>
+                  <div class="indicator-foot">
+                    <span class="indicator-delta is-negative">-2</span>
+                    <span>bloqueos resueltos</span>
+                  </div>
+                </article>
+                <article class="indicator-card">
+                  <div class="indicator-head">
+                    <span>Calendario</span>
+                    <span class="tag tag-success">Completo</span>
+                  </div>
+                  <strong class="indicator-value">52/52</strong>
+                  <p>Semanas generadas con secuencia de cintas valida.</p>
+                  <div class="indicator-foot">
+                    <span class="indicator-delta is-positive">100%</span>
+                    <span>cobertura anual</span>
+                  </div>
+                </article>
+              </div>
+
+              <div class="indicator-layout strong-indicators">
+                <article class="indicator-hero-card">
+                  <div class="indicator-head">
+                    <span>Indicador ejecutivo</span>
+                    <span class="tag tag-success">Proyectado</span>
+                  </div>
+                  <div class="indicator-hero-content">
+                    <div>
+                      <strong class="indicator-hero-value">91.4%</strong>
+                      <p>Cumplimiento operativo proyectado al cierre de la semana.</p>
+                    </div>
+                    <div class="hero-metric-grid" aria-label="Detalle del indicador ejecutivo">
+                      <div class="metric-box">
+                        <label>Meta</label>
+                        <strong>95%</strong>
+                      </div>
+                      <div class="metric-box">
+                        <label>Actual</label>
+                        <strong>88%</strong>
+                      </div>
+                      <div class="metric-box">
+                        <label>Brecha</label>
+                        <strong>-3.6%</strong>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="projection-track" aria-label="Avance proyectado 91.4% con meta de 95%">
+                    <span class="projection-fill" style="width: 91.4%"></span>
+                    <span class="projection-marker" style="left: 95%">Meta</span>
+                  </div>
+                  <div class="indicator-foot">
+                    <span class="indicator-delta is-warning">Riesgo medio</span>
+                    <span>requiere recuperar 3.6 puntos antes del cierre.</span>
+                  </div>
+                </article>
+
+                <article class="indicator-panel projection-panel">
+                  <div class="panel-heading">
+                    <div>
+                      <h3 class="card-title">Medidores de proyeccion</h3>
+                      <p class="card-subtitle">Gauges para lectura ejecutiva de cumplimiento, riesgo y capacidad.</p>
+                    </div>
+                  </div>
+                  <div class="projection-gauge-grid">
+                    <div class="projection-gauge" style="--gauge-value: 76%; --gauge-color: var(--color-primary-500);" role="img" aria-label="Proyeccion de despachos 76%">
+                      <span><strong>76%</strong><small>Despachos</small></span>
+                    </div>
+                    <div class="projection-gauge" style="--gauge-value: 62%; --gauge-color: var(--color-warning-main);" role="img" aria-label="Riesgo documental 62%">
+                      <span><strong>62%</strong><small>Riesgo doc.</small></span>
+                    </div>
+                    <div class="projection-gauge" style="--gauge-value: 89%; --gauge-color: var(--color-success-main);" role="img" aria-label="Capacidad disponible 89%">
+                      <span><strong>89%</strong><small>Capacidad</small></span>
+                    </div>
+                  </div>
+                </article>
+              </div>
+
+              <div class="indicator-layout">
+                <article class="indicator-panel">
+                  <div class="panel-heading">
+                    <div>
+                      <h3 class="card-title">Proyeccion contra meta</h3>
+                      <p class="card-subtitle">Comparativo entre meta, avance real y proyeccion con lectura de brecha.</p>
+                    </div>
+                    <span class="tag">Semana 18</span>
+                  </div>
+                  <div class="target-comparison" aria-label="Comparativo de meta, avance y proyeccion">
+                    <div class="target-row">
+                      <span>Meta semanal</span>
+                      <div class="target-track"><span class="target-bar target" style="width: 95%"></span></div>
+                      <strong>95%</strong>
+                    </div>
+                    <div class="target-row">
+                      <span>Avance actual</span>
+                      <div class="target-track"><span class="target-bar current" style="width: 68%"></span></div>
+                      <strong>68%</strong>
+                    </div>
+                    <div class="target-row">
+                      <span>Proyeccion cierre</span>
+                      <div class="target-track"><span class="target-bar projected" style="width: 91%"></span></div>
+                      <strong>91%</strong>
+                    </div>
+                  </div>
+                  <div class="notice notice-warning compact-notice" role="note">
+                    <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M12 8v5"></path><path d="M12 16h.01"></path></svg>
+                    <span>La proyeccion no debe ocultar la brecha frente a la meta definida.</span>
+                  </div>
+                </article>
+
+                <article class="indicator-panel">
+                  <div class="panel-heading">
+                    <div>
+                      <h3 class="card-title">Capacidad y saturacion</h3>
+                      <p class="card-subtitle">Medidor para anticipar sobrecarga operativa por recurso o modulo.</p>
+                    </div>
+                    <span class="status status-active">Operable</span>
+                  </div>
+                  <div class="capacity-meter" aria-label="Capacidad usada 78%">
+                    <div class="capacity-scale">
+                      <span>Baja</span>
+                      <span>Media</span>
+                      <span>Alta</span>
+                      <span>Critica</span>
+                    </div>
+                    <div class="capacity-track">
+                      <span class="capacity-fill" style="width: 78%"></span>
+                      <span class="capacity-pointer" style="left: 78%">78%</span>
+                    </div>
+                  </div>
+                  <div class="capacity-summary">
+                    <div><strong>128</strong><span>operaciones programadas</span></div>
+                    <div><strong>31</strong><span>recursos por confirmar</span></div>
+                    <div><strong>9</strong><span>alertas de saturacion</span></div>
+                  </div>
+                </article>
+              </div>
+
+              <article class="indicator-panel">
+                <div class="panel-heading">
+                  <div>
+                    <h3 class="card-title">Matriz de riesgo operativo</h3>
+                    <p class="card-subtitle">Cruce compacto entre probabilidad e impacto para priorizar gestion.</p>
+                  </div>
+                  <span class="tag tag-warning">Priorizacion</span>
+                </div>
+                <div class="risk-matrix" role="table" aria-label="Matriz de riesgo operativo">
+                  <div class="risk-matrix-head" role="row">
+                    <span></span>
+                    <strong role="columnheader">Bajo</strong>
+                    <strong role="columnheader">Medio</strong>
+                    <strong role="columnheader">Alto</strong>
+                  </div>
+                  <div class="risk-matrix-row" role="row">
+                    <strong role="rowheader">Impacto alto</strong>
+                    <span class="risk-cell warning">2</span>
+                    <span class="risk-cell danger">5</span>
+                    <span class="risk-cell danger">8</span>
+                  </div>
+                  <div class="risk-matrix-row" role="row">
+                    <strong role="rowheader">Impacto medio</strong>
+                    <span class="risk-cell ok">1</span>
+                    <span class="risk-cell warning">4</span>
+                    <span class="risk-cell danger">6</span>
+                  </div>
+                  <div class="risk-matrix-row" role="row">
+                    <strong role="rowheader">Impacto bajo</strong>
+                    <span class="risk-cell ok">0</span>
+                    <span class="risk-cell ok">1</span>
+                    <span class="risk-cell warning">3</span>
+                  </div>
+                </div>
+              </article>
+
+              <article class="indicator-panel">
+                <div class="panel-heading">
+                  <div>
+                    <h3 class="card-title">Visualizaciones analiticas operativas</h3>
+                    <p class="card-subtitle">Maquetas inspiradas en seguimiento por fecha, hora, tiempos y comportamiento comparativo.</p>
+                  </div>
+                  <span class="tag">Series operativas</span>
+                </div>
+                <div class="chart-card-grid">
+                  <article class="chart-card">
+                    <div class="chart-head">
+                      <strong>Operaciones por fecha</strong>
+                      <span>Noviembre</span>
+                    </div>
+                    <svg class="analytics-svg" viewBox="0 0 320 150" role="img" aria-label="Linea de operaciones por fecha con pico al cierre">
+                      <line class="chart-grid-line" x1="20" y1="120" x2="300" y2="120"></line>
+                      <line class="chart-grid-line" x1="20" y1="80" x2="300" y2="80"></line>
+                      <line class="chart-grid-line" x1="20" y1="40" x2="300" y2="40"></line>
+                      <polygon class="chart-area-fill" points="20,112 58,96 96,64 134,72 172,105 210,82 248,72 286,94 300,28 300,120 20,120"></polygon>
+                      <polyline class="chart-line-primary" points="20,112 58,96 96,64 134,72 172,105 210,82 248,72 286,94 300,28"></polyline>
+                      <g class="chart-point-labels">
+                        <text x="18" y="108">7</text><text x="92" y="58">64</text><text x="166" y="100">34</text><text x="242" y="66">72</text><text x="292" y="22">110</text>
+                      </g>
+                    </svg>
+                  </article>
+
+                  <article class="chart-card">
+                    <div class="chart-head">
+                      <strong>Espera por hora</strong>
+                      <span>Minutos</span>
+                    </div>
+                    <div class="column-chart" aria-label="Tiempo de espera por hora">
+                      <span style="--h: 22%"><strong>5</strong><em>8</em></span>
+                      <span style="--h: 52%"><strong>18</strong><em>9</em></span>
+                      <span style="--h: 76%"><strong>25</strong><em>10</em></span>
+                      <span style="--h: 62%"><strong>20</strong><em>11</em></span>
+                      <span style="--h: 28%"><strong>8</strong><em>12</em></span>
+                      <span style="--h: 35%"><strong>10</strong><em>15</em></span>
+                      <span style="--h: 44%"><strong>14</strong><em>16</em></span>
+                      <span style="--h: 12%"><strong>3</strong><em>17</em></span>
+                    </div>
+                  </article>
+
+                  <article class="chart-card">
+                    <div class="chart-head">
+                      <strong>Atencion por hora</strong>
+                      <span>Asignadas / pendientes</span>
+                    </div>
+                    <div class="stacked-hour-chart" aria-label="Operaciones asignadas y pendientes por hora">
+                      <span style="--answered: 42%; --pending: 8%"><strong>68</strong><em>8</em></span>
+                      <span style="--answered: 52%; --pending: 14%"><strong>105</strong><em>9</em></span>
+                      <span style="--answered: 50%; --pending: 16%"><strong>84</strong><em>10</em></span>
+                      <span style="--answered: 56%; --pending: 18%"><strong>93</strong><em>11</em></span>
+                      <span style="--answered: 34%; --pending: 10%"><strong>47</strong><em>12</em></span>
+                      <span style="--answered: 28%; --pending: 9%"><strong>34</strong><em>13</em></span>
+                      <span style="--answered: 26%; --pending: 8%"><strong>35</strong><em>14</em></span>
+                      <span style="--answered: 22%; --pending: 6%"><strong>28</strong><em>17</em></span>
+                    </div>
+                    <div class="chart-legend">
+                      <span><i class="legend-primary"></i>Atendidas</span>
+                      <span><i class="legend-warning"></i>Pendientes</span>
+                    </div>
+                  </article>
+
+                  <article class="chart-card">
+                    <div class="chart-head">
+                      <strong>Retencion por hora</strong>
+                      <span>Minutos</span>
+                    </div>
+                    <div class="column-chart sparse" aria-label="Tiempo de retencion por hora">
+                      <span style="--h: 0%"><strong>0</strong><em>6</em></span>
+                      <span style="--h: 0%"><strong>0</strong><em>7</em></span>
+                      <span style="--h: 18%"><strong>3</strong><em>10</em></span>
+                      <span style="--h: 6%"><strong>1</strong><em>14</em></span>
+                      <span style="--h: 82%"><strong>16</strong><em>15</em></span>
+                      <span style="--h: 12%"><strong>2</strong><em>16</em></span>
+                      <span style="--h: 0%"><strong>0</strong><em>17</em></span>
+                      <span style="--h: 0%"><strong>0</strong><em>22</em></span>
+                    </div>
+                  </article>
+                </div>
+              </article>
+
+              <article class="indicator-panel">
+                <div class="panel-heading">
+                  <div>
+                    <h3 class="card-title">Galeria de graficas reutilizables</h3>
+                    <p class="card-subtitle">Patrones para futuras vistas analiticas: area, donut, barras comparativas, radial y lineas multiples.</p>
+                  </div>
+                </div>
+                <div class="visual-gallery-grid">
+                  <article class="mini-visual-card">
+                    <span class="preview-kicker">Area</span>
+                    <svg class="analytics-svg compact" viewBox="0 0 180 120" role="img" aria-label="Grafica de area con eventos marcados">
+                      <line class="chart-grid-line" x1="18" y1="94" x2="164" y2="94"></line>
+                      <polygon class="chart-area-fill" points="18,76 42,58 66,88 92,50 118,72 144,44 164,64 164,94 18,94"></polygon>
+                      <polyline class="chart-line-primary" points="18,76 42,58 66,88 92,50 118,72 144,44 164,64"></polyline>
+                      <circle class="chart-dot-warning" cx="92" cy="50" r="4"></circle>
+                      <circle class="chart-dot-primary" cx="144" cy="44" r="4"></circle>
+                    </svg>
+                    <strong>Comportamiento con hitos</strong>
+                  </article>
+
+                  <article class="mini-visual-card">
+                    <span class="preview-kicker">Donut</span>
+                    <div class="donut-visual" role="img" aria-label="Distribucion 64%, 24%, 12%">
+                      <span><strong>64%</strong><small>Activo</small></span>
+                    </div>
+                    <strong>Distribucion proporcional</strong>
+                  </article>
+
+                  <article class="mini-visual-card">
+                    <span class="preview-kicker">Comparativo</span>
+                    <div class="split-bars" aria-label="Comparativo de cumplimiento por linea">
+                      <span style="--a: 73%; --b: 27%"><strong>73%</strong></span>
+                      <span style="--a: 64%; --b: 36%"><strong>64%</strong></span>
+                      <span style="--a: 52%; --b: 48%"><strong>52%</strong></span>
+                    </div>
+                    <strong>Barras segmentadas</strong>
+                  </article>
+
+                  <article class="mini-visual-card">
+                    <span class="preview-kicker">Radial</span>
+                    <div class="radial-score" role="img" aria-label="Avance radial 56%">
+                      <span><strong>56%</strong><small>Avance</small></span>
+                    </div>
+                    <strong>Medidor radial</strong>
+                  </article>
+
+                  <article class="mini-visual-card">
+                    <span class="preview-kicker">Lineas</span>
+                    <svg class="analytics-svg compact" viewBox="0 0 180 120" role="img" aria-label="Comparacion de dos series">
+                      <line class="chart-grid-line" x1="18" y1="94" x2="164" y2="94"></line>
+                      <polyline class="chart-line-primary" points="18,86 42,52 66,72 92,38 118,86 144,58 164,70"></polyline>
+                      <polyline class="chart-line-warning" points="18,64 42,84 66,36 92,78 118,48 144,82 164,42"></polyline>
+                      <circle class="chart-dot-primary" cx="164" cy="70" r="4"></circle>
+                      <circle class="chart-dot-warning" cx="164" cy="42" r="4"></circle>
+                    </svg>
+                    <strong>Comparacion entre series</strong>
+                  </article>
+
+                  <article class="mini-visual-card">
+                    <span class="preview-kicker">Columnas</span>
+                    <div class="paired-bars" aria-label="Columnas comparativas por periodo">
+                      <span style="--a: 56%; --b: 72%"></span>
+                      <span style="--a: 78%; --b: 58%"></span>
+                      <span style="--a: 44%; --b: 82%"></span>
+                      <span style="--a: 68%; --b: 64%"></span>
+                    </div>
+                    <strong>Comparativo por periodo</strong>
+                  </article>
+                </div>
+              </article>
+
+              <div class="indicator-layout">
+                <article class="indicator-panel">
+                  <div class="panel-heading">
+                    <div>
+                      <h3 class="card-title">Medidores de cumplimiento</h3>
+                      <p class="card-subtitle">Barras compactas para reglas, cobertura y calidad operativa.</p>
+                    </div>
+                  </div>
+                  <div class="indicator-meter-list">
+                    <div class="indicator-meter-row">
+                      <span>Semanas generadas</span>
+                      <div class="indicator-meter" aria-label="Semanas generadas 100%">
+                        <span style="width: 100%"></span>
+                      </div>
+                      <strong>100%</strong>
+                    </div>
+                    <div class="indicator-meter-row">
+                      <span>Vehiculos documentados</span>
+                      <div class="indicator-meter warning" aria-label="Vehiculos documentados 84%">
+                        <span style="width: 84%"></span>
+                      </div>
+                      <strong>84%</strong>
+                    </div>
+                    <div class="indicator-meter-row">
+                      <span>Usuarios con empresa activa</span>
+                      <div class="indicator-meter success" aria-label="Usuarios con empresa activa 92%">
+                        <span style="width: 92%"></span>
+                      </div>
+                      <strong>92%</strong>
+                    </div>
+                    <div class="indicator-meter-row">
+                      <span>Datos con observacion QA</span>
+                      <div class="indicator-meter danger" aria-label="Datos con observacion QA 11%">
+                        <span style="width: 11%"></span>
+                      </div>
+                      <strong>11%</strong>
+                    </div>
+                  </div>
+                </article>
+
+                <article class="indicator-panel">
+                  <div class="panel-heading">
+                    <div>
+                      <h3 class="card-title">Distribucion por estado</h3>
+                      <p class="card-subtitle">Lectura rapida para etapas, estados o categorias.</p>
+                    </div>
+                  </div>
+                  <div class="distribution-list">
+                    <div class="distribution-item">
+                      <span>Disponible</span>
+                      <div class="bar success"><span style="width: 46%"></span></div>
+                      <strong>46%</strong>
+                    </div>
+                    <div class="distribution-item">
+                      <span>En inspeccion</span>
+                      <div class="bar warning"><span style="width: 18%"></span></div>
+                      <strong>18%</strong>
+                    </div>
+                    <div class="distribution-item">
+                      <span>En transito</span>
+                      <div class="bar"><span style="width: 28%"></span></div>
+                      <strong>28%</strong>
+                    </div>
+                    <div class="distribution-item">
+                      <span>Bloqueado</span>
+                      <div class="bar danger"><span style="width: 8%"></span></div>
+                      <strong>8%</strong>
+                    </div>
+                  </div>
+                </article>
+              </div>
+
+              <div class="indicator-layout three-columns">
+                <article class="indicator-panel">
+                  <div class="panel-heading">
+                    <div>
+                      <h3 class="card-title">Tendencia compacta</h3>
+                      <p class="card-subtitle">Serie visual para comparar periodos sin saturar la gestion.</p>
+                    </div>
+                    <span class="tag">6 meses</span>
+                  </div>
+                  <div class="mini-bars" aria-label="Tendencia de registros activos">
+                    <span style="height: 42%"></span>
+                    <span style="height: 54%"></span>
+                    <span style="height: 48%"></span>
+                    <span style="height: 63%"></span>
+                    <span style="height: 70%"></span>
+                    <span style="height: 82%"></span>
+                  </div>
+                  <p class="field-note">Usar para volumen, cumplimiento o actividad auditada por periodo.</p>
+                </article>
+
+                <article class="indicator-panel">
+                  <div class="panel-heading">
+                    <div>
+                      <h3 class="card-title">Ranking operativo</h3>
+                      <p class="card-subtitle">Top de entidades por volumen o alertas.</p>
+                    </div>
+                  </div>
+                  <ol class="ranking-list">
+                    <li><span>AgroCeiba</span><strong>128</strong></li>
+                    <li><span>Banapalma</span><strong>96</strong></li>
+                    <li><span>Puerto Norte</span><strong>74</strong></li>
+                  </ol>
+                </article>
+
+                <article class="indicator-panel">
+                  <div class="panel-heading">
+                    <div>
+                      <h3 class="card-title">Alertas priorizadas</h3>
+                      <p class="card-subtitle">Eventos que requieren gestion, no decoracion visual.</p>
+                    </div>
+                  </div>
+                  <div class="alert-feed">
+                    <div class="alert-feed-item warning"><strong>Documento proximo a vencer</strong><span>14 registros dentro de 7 dias.</span></div>
+                    <div class="alert-feed-item error"><strong>Asignacion bloqueada</strong><span>3 conductores sin licencia activa.</span></div>
+                    <div class="alert-feed-item ok"><strong>Regla cumplida</strong><span>Secuencia de cintas sin saltos.</span></div>
+                  </div>
+                </article>
+              </div>
+
+              <article class="indicator-panel">
+                <div class="panel-heading">
+                  <div>
+                    <h3 class="card-title">Tabla analitica compacta</h3>
+                    <p class="card-subtitle">Resumen por modulo para monitoreo, con foco en accion y trazabilidad.</p>
+                  </div>
+                  <span class="tag">Ultima actualizacion: 12/05/2026 08:30</span>
+                </div>
+                <div class="table-wrap">
+                  <table class="data-table library-mini-table">
+                    <thead>
+                      <tr>
+                        <th>Modulo</th>
+                        <th>Indicador</th>
+                        <th>Valor</th>
+                        <th>Estado</th>
+                        <th>Accion sugerida</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td>Transporte</td>
+                        <td>Documentos por vencer</td>
+                        <td>14</td>
+                        <td><span class="tag tag-warning">Revision</span></td>
+                        <td>Validar vigencias antes de asignar.</td>
+                      </tr>
+                      <tr>
+                        <td>Planeacion</td>
+                        <td>Semanas generadas</td>
+                        <td>52/52</td>
+                        <td><span class="tag tag-success">Correcto</span></td>
+                        <td>Continuar monitoreo de secuencia.</td>
+                      </tr>
+                      <tr>
+                        <td>Puerto</td>
+                        <td>Contenedores bloqueados</td>
+                        <td>6</td>
+                        <td><span class="status status-inactive">Bloqueo</span></td>
+                        <td>Revisar etapa y disponibilidad.</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </article>
+
+              <div class="notice notice-info" role="note">
+                <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M12 8v5"></path><path d="M12 16h.01"></path></svg>
+                <span>Estos componentes deben alimentarse desde datos auditables. El indicador no reemplaza la tabla de gestion ni las reglas de permisos del modulo.</span>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="card" id="operacion" aria-labelledby="operationTitle">
+          <div class="card-header">
+            <div>
+              <h2 class="card-title" id="operationTitle">Patrones operativos y analiticos</h2>
+              <p class="card-subtitle">Componentes usados en monitoreo, validacion y control operativo.</p>
+            </div>
+          </div>
+          <div class="card-body operation-showcase">
+            <div class="kpi-band">
+              <article class="stat">
+                <label>Activos</label>
+                <strong>82%</strong>
+                <span>Registros disponibles para operacion.</span>
+              </article>
+              <article class="stat">
+                <label>Pendientes QA</label>
+                <strong>18%</strong>
+                <span>Validaciones documentales o de negocio.</span>
+              </article>
+              <article class="stat">
+                <label>Bloqueos</label>
+                <strong>6%</strong>
+                <span>Registros no asignables por regla activa.</span>
+              </article>
+            </div>
+
+            <div class="analytics-grid operation-block">
+              <div class="metric-list">
+                <div class="metric-row">
+                  <span class="metric-label">Registros activos</span>
+                  <span class="bar"><span style="width: 82%"></span></span>
+                  <span class="metric-value">82%</span>
+                </div>
+                <div class="metric-row">
+                  <span class="metric-label">Pendientes QA</span>
+                  <span class="bar warning"><span style="width: 18%"></span></span>
+                  <span class="metric-value">18%</span>
+                </div>
+                <div class="metric-row">
+                  <span class="metric-label">Bloqueos</span>
+                  <span class="bar danger"><span style="width: 6%"></span></span>
+                  <span class="metric-value">6%</span>
+                </div>
+                <div class="timeline-item warning">
+                  <strong>Alerta</strong>
+                  <span>Documento proximo a vencer</span>
+                  <span class="tag tag-warning">7 dias</span>
+                </div>
+              </div>
+              <div class="validation-list">
+                <div class="validation-item ok"><strong>Regla cumplida</strong><span>La secuencia activa no presenta saltos.</span></div>
+                <div class="validation-item warning"><strong>Revision requerida</strong><span>Existe una semana con nota operativa.</span></div>
+                <div class="validation-item error"><strong>Bloqueo funcional</strong><span>Un registro inactivo no debe ser asignable.</span></div>
+              </div>
+            </div>
+
+            <div class="control-grid operation-block">
+              <article class="component-preview">
+                <div>
+                  <div>
+                    <h3 class="card-title">Secuencia de cintas</h3>
+                    <p class="card-subtitle">Patron compacto para reglas de calendario.</p>
+                  </div>
+                </div>
+                <div class="ribbon-flow">
+                  <span class="ribbon-step">1 BL</span>
+                  <span class="ribbon-step">2 AZ</span>
+                  <span class="ribbon-step">3 RO</span>
+                  <span class="ribbon-step">4 CA</span>
+                  <span class="ribbon-step">5 NE</span>
+                  <span class="ribbon-step">6 NA</span>
+                  <span class="ribbon-step">7 VE</span>
+                  <span class="ribbon-step">8 AM</span>
+                </div>
+              </article>
+              <article class="component-preview">
+                <div>
+                  <div>
+                    <h3 class="card-title">Filtros operativos</h3>
+                    <p class="card-subtitle">Toolbar para vistas analiticas o de monitoreo.</p>
+                  </div>
+                </div>
+                <div class="monitor-toolbar library-monitor-toolbar">
+                  <div class="field">
+                    <label class="label" for="monitorYear">Ano</label>
+                    <select class="select" id="monitorYear" aria-label="Ano"><option>2026</option></select>
+                  </div>
+                  <div class="field">
+                    <label class="label" for="monitorSearch">Busqueda</label>
+                    <input class="input" id="monitorSearch" type="search" placeholder="Buscar periodo o cinta" aria-label="Buscar periodo o cinta" />
+                  </div>
+                  <div class="field">
+                    <label class="label" for="monitorRibbon">Cinta</label>
+                    <select class="select" id="monitorRibbon" aria-label="Cinta"><option>Todas las cintas</option></select>
+                  </div>
+                  <div class="field">
+                    <label class="label" for="monitorStatus">Estado</label>
+                    <select class="select" id="monitorStatus" aria-label="Estado"><option>Todos los estados</option></select>
+                  </div>
+                  <button class="btn btn-primary" type="button">Consultar</button>
+                </div>
+              </article>
+            </div>
+
+            <div class="operation-block">
+              <div class="section-heading compact-heading">
+                <div>
+                  <p class="section-kicker">Calendario</p>
+                  <h3>Semanas y meses de referencia</h3>
+                  <p>La tira de cintas y el calendario se separan para evitar competencia visual con las metricas.</p>
+                </div>
+              </div>
+              <div class="calendar-strip" aria-label="Muestra de semanas">
+                <span class="week-cell ribbon-white">1</span>
+                <span class="week-cell ribbon-blue">2</span>
+                <span class="week-cell ribbon-red">3</span>
+                <span class="week-cell ribbon-brown">4</span>
+                <span class="week-cell ribbon-black">5</span>
+                <span class="week-cell ribbon-orange">6</span>
+                <span class="week-cell ribbon-green">7</span>
+                <span class="week-cell ribbon-yellow">8</span>
+              </div>
+              <div class="calendar-board library-calendar-board" aria-label="Muestra de calendario mensual">
+                <section class="month-card">
+                  <h3 class="month-title">Enero</h3>
+                  <table class="month-table">
+                    <thead><tr><th>Sem</th><th>L</th><th>M</th><th>M</th><th>J</th><th>V</th><th>S</th><th>D</th></tr></thead>
+                    <tbody>
+                      <tr><td class="week-label bl"><button class="calendar-week-button" type="button">1</button></td><td class="day-muted">29</td><td class="day-muted">30</td><td class="day-muted">31</td><td>1</td><td>2</td><td>3</td><td class="day-sunday">4</td></tr>
+                      <tr><td class="week-label az"><button class="calendar-week-button" type="button">2</button></td><td>5</td><td>6</td><td>7</td><td>8</td><td>9</td><td>10</td><td class="day-sunday">11</td></tr>
+                    </tbody>
+                  </table>
+                </section>
+                <section class="month-card">
+                  <h3 class="month-title">Febrero</h3>
+                  <table class="month-table">
+                    <thead><tr><th>Sem</th><th>L</th><th>M</th><th>M</th><th>J</th><th>V</th><th>S</th><th>D</th></tr></thead>
+                    <tbody>
+                      <tr><td class="week-label na"><button class="calendar-week-button" type="button">6</button></td><td>2</td><td>3</td><td>4</td><td>5</td><td>6</td><td>7</td><td class="day-sunday">8</td></tr>
+                      <tr><td class="week-label ve"><button class="calendar-week-button" type="button">7</button></td><td>9</td><td>10</td><td>11</td><td>12</td><td>13</td><td>14</td><td class="day-sunday">15</td></tr>
+                    </tbody>
+                  </table>
+                </section>
+                <section class="month-card">
+                  <h3 class="month-title">Marzo</h3>
+                  <table class="month-table">
+                    <thead><tr><th>Sem</th><th>L</th><th>M</th><th>M</th><th>J</th><th>V</th><th>S</th><th>D</th></tr></thead>
+                    <tbody>
+                      <tr><td class="week-label az"><button class="calendar-week-button" type="button">10</button></td><td>2</td><td>3</td><td>4</td><td>5</td><td>6</td><td>7</td><td class="day-sunday">8</td></tr>
+                      <tr><td class="week-label ro"><button class="calendar-week-button" type="button">11</button></td><td>9</td><td>10</td><td>11</td><td>12</td><td>13</td><td>14</td><td class="day-sunday">15</td></tr>
+                    </tbody>
+                  </table>
+                </section>
+              </div>
+            </div>
+            <div class="note-line"><strong>Nota operativa:</strong> los componentes analiticos no reemplazan la gestion; complementan monitoreo, validacion y trazabilidad.</div>
+          </div>
+        </section>
+
+        <section class="card" id="changelog-componentes" aria-labelledby="changelogComponentsTitle">
+          <div class="card-header">
+            <div>
+              <h2 class="card-title" id="changelogComponentsTitle">Changelog externo, interno y administracion</h2>
+              <p class="card-subtitle">Patron reutilizable para comunicar versiones con la misma estructura visual; cambia el enfoque del contenido segun audiencia.</p>
+            </div>
+          </div>
+          <div class="card-body">
+            <article class="release-card">
+              <div class="release-date">
+                <span>05/05/2026</span>
+                <strong>v0.9.0</strong>
+                <small>equipo.qa</small>
+              </div>
+              <div class="release-content">
+                <div class="release-head">
+                  <div>
+                    <p class="section-kicker">Catalogo</p>
+                    <h2>Libreria UI y modo oscuro extendido</h2>
+                  </div>
+                  <span class="tag tag-success">Mejora</span>
+                </div>
+                <p>Entrada publica enfocada en cambios visibles y beneficio para usuarios finales.</p>
+                <ul>
+                  <li>Base visual reutilizable para nuevas vistas.</li>
+                  <li>Modo oscuro compartido desde tokens centrales.</li>
+                </ul>
+              </div>
+            </article>
+            <div class="library-admin-grid">
+              <div class="table-wrap">
+                <table class="library-mini-table" aria-label="Muestra administrativa de changelog">
+                  <thead>
+                    <tr>
+                      <th>Version</th>
+                      <th>Audiencia</th>
+                      <th>Estado</th>
+                      <th>Acciones</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td><strong>v0.9.0</strong></td>
+                      <td>Ambos</td>
+                      <td><span class="status status-active">Publicado</span></td>
+                      <td>
+                        <div class="row-actions">
+                          <button class="icon-btn" type="button" aria-label="Editar version"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20h9"></path><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"></path></svg></button>
+                          <button class="icon-btn" type="button" aria-label="Remover version"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></svg></button>
+                        </div>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <div class="inline-form-panel">
+                <div class="form-heading">
+                  <h3 class="card-title">Entrada de changelog</h3>
+                  <p>Formulario administrativo para crear o editar publicaciones.</p>
+                </div>
+                <div class="form-body">
+                  <div class="form-grid">
+                    <div class="field">
+                      <label class="label" for="releaseVersion">Version</label>
+                      <input class="input" id="releaseVersion" value="v0.9.0" />
+                    </div>
+                    <div class="field">
+                      <label class="label" for="releaseAudience">Audiencia</label>
+                      <select class="select" id="releaseAudience"><option>Externo</option><option>Interno</option><option>Ambos</option></select>
+                    </div>
+                    <div class="field span-3">
+                      <label class="label" for="releaseSummary">Resumen</label>
+                      <textarea class="textarea" id="releaseSummary" rows="2">Mejora funcional publicada por version.</textarea>
+                    </div>
+                  </div>
+                  <div class="form-actions">
+                    <button class="btn btn-ghost" type="button">Cancelar</button>
+                    <button class="btn btn-secondary" type="button">Limpiar formulario</button>
+                    <button class="btn btn-primary" type="button">Guardar entrada</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="notice notice-info" role="note">
+              <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M12 8v5"></path><path d="M12 16h.01"></path></svg>
+              <span>El changelog externo e interno usan la misma composicion. La administracion reutiliza tabla, formulario embebido, acciones Cancelar/Limpiar/Guardar y auditoria visual.</span>
+            </div>
+          </div>
+        </section>
+      </section>
+    </main>
+  </div>
+
+  <div class="drawer-backdrop" id="detailBackdrop"></div>
+  <aside class="drawer" id="detailDrawer" aria-label="Detalle de registro" aria-hidden="true">
+    <div class="drawer-head">
+      <div>
+        <h3>Detalle del registro</h3>
+        <p>Visualizacion lateral derecha sin cubrir el menu principal.</p>
+      </div>
+      <button class="icon-btn" type="button" id="closeDetail" aria-label="Cerrar detalle">
+        <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></svg>
+      </button>
+    </div>
+    <div class="drawer-body">
+      <div class="detail-group">
+        <span class="detail-label">Codigo</span>
+        <div class="detail-value" data-detail-target="code">-</div>
+      </div>
+      <div class="detail-group">
+        <span class="detail-label">Nombre</span>
+        <div class="detail-value" data-detail-target="name">-</div>
+      </div>
+      <div class="detail-group">
+        <span class="detail-label">Estado</span>
+        <div class="detail-value" data-detail-target="status">-</div>
+      </div>
+      <div class="detail-group">
+        <span class="detail-label">Responsable</span>
+        <div class="detail-value" data-detail-target="owner">-</div>
+      </div>
+      <div class="detail-group">
+        <span class="detail-label">Auditoria</span>
+        <div class="stack" id="detailAudit"></div>
+      </div>
+    </div>
+  </aside>
+
+  <script src="sial-core.js"></script>
+  <script>
+    window.SIALCore?.initThemeToggle?.();
+    window.SIALCore?.initDrawer?.();
+  </script>
+</body>
+</html>

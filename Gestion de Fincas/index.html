@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SIAL | Gestion de fincas</title>
+  <script>
+    (function () {
+      const savedTheme = localStorage.getItem("sial-theme");
+      const systemDark = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
+      document.documentElement.dataset.theme = savedTheme || (systemDark ? "dark" : "light");
+    })();
+  </script>  <link rel="stylesheet" href="sial-fincas.css" />
+</head>
+<body data-view-family="gestion">
+  <div class="app-shell">
+    <aside class="sidebar" aria-label="Navegacion principal">
+      <div class="brand"><span class="brand-badge">S</span><span>SIAL</span></div>
+      <p class="menu-caption">Fincas</p>
+      <nav data-nav></nav>
+    </aside>
+    <header class="header">
+      <div class="header-left"><button class="icon-btn" aria-label="Abrir menu"><svg class="icon" viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button><label class="search"><svg class="icon" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-3.5-3.5"></path></svg><input aria-label="Busqueda principal" placeholder="Buscar..." /></label></div>
+      <div class="header-right"><button class="icon-btn theme-toggle" type="button" data-theme-toggle aria-label="Cambiar a modo oscuro" aria-pressed="false" title="Cambiar a modo oscuro"><svg class="icon theme-icon theme-icon-moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12.8A8.5 8.5 0 1 1 11.2 3a6.8 6.8 0 0 0 9.8 9.8Z"></path></svg><svg class="icon theme-icon theme-icon-sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2"></path><path d="M12 20v2"></path><path d="m4.93 4.93 1.41 1.41"></path><path d="m17.66 17.66 1.41 1.41"></path><path d="M2 12h2"></path><path d="M20 12h2"></path><path d="m6.34 17.66-1.41 1.41"></path><path d="m19.07 4.93-1.41 1.41"></path></svg></button><button class="icon-btn" aria-label="Notificaciones"><svg class="icon" viewBox="0 0 24 24"><path d="M15 17h5l-1.4-1.4A2 2 0 0 1 18 14.2V11a6 6 0 1 0-12 0v3.2a2 2 0 0 1-.6 1.4L4 17h5"></path><path d="M10 17a2 2 0 0 0 4 0"></path></svg></button><span class="avatar">QA</span></div>
+    </header>
+    <main class="main">
+      <section class="page">
+        <p class="page-eyebrow">HU / Fincas</p>
+        <div class="page-header">
+          <div>
+            <h1 class="page-title">Gestion de fincas, grupos, sectores y referencias</h1>
+            <p class="page-subtitle">Propuesta HTML funcional alineada al documento base. La gestion prioriza consulta, auditoria y acciones; el registro se adapta al tamano y complejidad de cada maestra.</p>
+          </div>
+          <a class="btn btn-primary" href="gestion-fincas.html">Abrir gestion</a>
+        </div>
+        <div class="stats">
+          <article class="stat"><label>Fincas</label><strong>Maestra</strong><span>Codigo definido por usuario, productor, grupo, sector y estado.</span></article>
+          <article class="stat"><label>Grupos y sectores</label><strong>Catalogos</strong><span>Codigos autoincrementales, nombres unicos en mayusculas.</span></article>
+          <article class="stat"><label>Referencias</label><strong>Versiones</strong><span>Clave compuesta por codigo referencia + version.</span></article>
+          <article class="stat"><label>Clases</label><strong>Fruta</strong><span>Nombre clase + tamano fruta no se pueden repetir.</span></article>
+        </div>
+        <article class="card">
+          <div class="card-header"><div><h2 class="card-title">Vistas generadas</h2><p class="card-subtitle">Navegacion local para revisar cada formulario y listado.</p></div></div>
+          <div class="card-body stack">
+            <a class="nav-link active" href="gestion-fincas.html">Gestion de fincas</a>
+            <a class="nav-link" href="registro-finca.html">Registro de finca</a>
+            <a class="nav-link" href="gestion-grupos.html">Gestion de grupos</a>
+            <a class="nav-link" href="gestion-sectores.html">Gestion de sectores</a>
+            <a class="nav-link" href="gestion-referencias.html">Gestion de referencias</a>
+            <a class="nav-link" href="registro-referencia.html">Registro de referencia</a>
+            <a class="nav-link" href="gestion-clases-referencia.html">Gestion de clases de referencia</a>
+          </div>
+        </article>
+      </section>
+    </main>
+  </div>
+  <script src="../shared/sial-core.js"></script>
+  <script src="sial-fincas.js"></script>
+  <script>SIAL.applyShell("");</script>
+</body>
+</html>

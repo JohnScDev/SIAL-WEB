@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SIAL | Registro de vehiculo</title>
+  <script>
+    (function () {
+      const savedTheme = localStorage.getItem("sial-theme");
+      const systemDark = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
+      document.documentElement.dataset.theme = savedTheme || (systemDark ? "dark" : "light");
+    })();
+  </script>  <link rel="stylesheet" href="sial-conductores.css" />
+</head>
+<body data-view-family="registro-extenso">
+  <div class="app-shell">
+    <aside class="sidebar" aria-label="Navegacion principal"><div class="brand"><span class="brand-badge">S</span><span>SIAL</span></div><p class="menu-caption">Transporte</p><nav data-nav></nav></aside>
+    <header class="header"><div class="header-left"><button class="icon-btn" aria-label="Abrir menu"><svg class="icon" viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button><label class="search"><svg class="icon" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-3.5-3.5"></path></svg><input aria-label="Busqueda principal" placeholder="Buscar..." /></label></div><div class="header-right"><button class="icon-btn theme-toggle" type="button" data-theme-toggle aria-label="Cambiar a modo oscuro" aria-pressed="false" title="Cambiar a modo oscuro"><svg class="icon theme-icon theme-icon-moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12.8A8.5 8.5 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"></path></svg><svg class="icon theme-icon theme-icon-sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2"></path><path d="M12 20v2"></path><path d="m4.93 4.93 1.41 1.41"></path><path d="m17.66 17.66 1.41 1.41"></path><path d="M2 12h2"></path><path d="M20 12h2"></path><path d="m6.34 17.66-1.41 1.41"></path><path d="m19.07 4.93-1.41 1.41"></path></svg></button><button class="icon-btn" aria-label="Notificaciones"><svg class="icon" viewBox="0 0 24 24"><path d="M15 17h5l-1.4-1.4A2 2 0 0 1 18 14.2V11a6 6 0 1 0-12 0v3.2a2 2 0 0 1-.6 1.4L4 17h5"></path><path d="M10 17a2 2 0 0 0 4 0"></path></svg></button><span class="avatar">QA</span></div></header>
+    <main class="main">
+      <section class="page">
+        <p class="page-eyebrow">Transporte / Vehiculos / Registro</p>
+        <div class="page-header"><div><h1 class="page-title">Registro de vehiculo</h1><p class="page-subtitle">Formulario administrativo extenso para crear o editar vehiculos, documentos SOAT, tecnomecanica, empresas y disponibilidad.</p></div><a class="btn btn-secondary" href="gestion-vehiculos.html">Volver a gestion</a></div>
+        <div class="notice notice-info"><svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"></circle><path d="M12 8v5"></path><path d="M12 16h.01"></path></svg><span>La placa debe ser unica, alfanumerica y en mayusculas. Las empresas inactivas no deben estar disponibles para seleccion.</span></div>
+        <div class="notice notice-success is-hidden" id="formOk">Vehiculo listo para guardar.</div>
+        <article class="card form-card">
+          <div class="form-heading"><h2>Formulario de vehiculo</h2><p>Campos obligatorios, fechas coherentes, estado administrativo y trazabilidad completa.</p></div>
+          <div class="form-body">
+            <form id="vehicleForm" novalidate>
+              <section class="section"><h3 class="section-title">Identificacion y asignacion</h3><div class="grid">
+                <div class="field span-3"><label class="label" for="plate">Placa <span class="required">*</span></label><input class="input" id="plate" placeholder="TRK-421" aria-describedby="plateNote" /><div class="field-note" id="plateNote">Unica, alfanumerica y en mayusculas.</div></div>
+                <div class="field span-3"><label class="label" for="vehicleType">Tipo de vehiculo <span class="required">*</span></label><select class="select" id="vehicleType" aria-describedby="vehicleTypeNote"><option value="">Selecciona tipo</option><option>TRACTOMULA</option><option>CAMION</option><option>CAMION RIGIDO</option></select><div class="field-note" id="vehicleTypeNote">Llave foranea a tipo de vehiculo activo.</div></div>
+                <div class="field span-3"><label class="label" for="carrierCompany">Empresa transportadora <span class="required">*</span></label><select class="select" id="carrierCompany" aria-describedby="carrierCompanyNote"><option value="">Selecciona empresa</option><option>TRANSLOGISTICA SAS</option><option>OPERADOR CARIBE SAS</option></select><div class="field-note" id="carrierCompanyNote">Solo empresas activas.</div></div>
+                <div class="field span-3"><label class="label" for="ownFleet">Flota propia <span class="required">*</span></label><select class="select" id="ownFleet" aria-describedby="ownFleetNote"><option value="">Selecciona</option><option value="true">Si</option><option value="false">No</option></select><div class="field-note" id="ownFleetNote">Obligatorio true/false.</div></div>
+                <div class="field span-6"><label class="label" for="palletCapacity">Capacidad de pallets</label><input class="input" id="palletCapacity" type="number" placeholder="28" /><div class="field-note">Opcional. Entero para planeacion de carga.</div></div>
+                <div class="field span-6"><label class="label" for="unavailableReason">Motivo de no disponibilidad</label><input class="input" id="unavailableReason" placeholder="Mantenimiento preventivo" /><div class="field-note">Opcional. Texto abierto para bloqueos operativos.</div></div>
+              </div></section>
+              <section class="section"><h3 class="section-title">SOAT</h3><div class="grid">
+                <div class="field span-3"><label class="label" for="soatNumber">Numero SOAT <span class="required">*</span></label><input class="input" id="soatNumber" placeholder="SOAT-8821" aria-describedby="soatNumberNote" /><div class="field-note" id="soatNumberNote">Obligatorio.</div></div>
+                <div class="field span-3"><label class="label" for="soatIssuedAt">Fecha expedicion <span class="required">*</span></label><input class="input" id="soatIssuedAt" type="datetime-local" aria-describedby="soatIssuedAtNote" /><div class="field-note" id="soatIssuedAtNote">Fecha/hora obligatoria.</div></div>
+                <div class="field span-3"><label class="label" for="soatStartAt">Vigencia desde <span class="required">*</span></label><input class="input" id="soatStartAt" type="datetime-local" aria-describedby="soatStartAtNote" /><div class="field-note" id="soatStartAtNote">No puede ser mayor que vigencia hasta.</div></div>
+                <div class="field span-3"><label class="label" for="soatEndAt">Vigencia hasta <span class="required">*</span></label><input class="input" id="soatEndAt" type="datetime-local" aria-describedby="soatEndAtNote" /><div class="field-note" id="soatEndAtNote">Fecha/hora obligatoria.</div></div>
+                <div class="field span-12"><label class="label" for="insuranceCompany">Empresa aseguradora <span class="required">*</span></label><select class="select" id="insuranceCompany" aria-describedby="insuranceCompanyNote"><option value="">Selecciona aseguradora</option><option>SEGUROS BOLIVAR</option><option>SURA</option></select><div class="field-note" id="insuranceCompanyNote">Debe ser empresa activa de tipo aseguradora.</div></div>
+              </div></section>
+              <section class="section"><h3 class="section-title">Tecnomecanica</h3><div class="grid">
+                <div class="field span-3"><label class="label" for="techNumber">Numero tecnomecanica <span class="required">*</span></label><input class="input" id="techNumber" placeholder="TM-9910" aria-describedby="techNumberNote" /><div class="field-note" id="techNumberNote">Obligatorio.</div></div>
+                <div class="field span-3"><label class="label" for="certifierCompany">Empresa certificadora <span class="required">*</span></label><select class="select" id="certifierCompany" aria-describedby="certifierCompanyNote"><option value="">Selecciona certificadora</option><option>CDA NORTE</option><option>CDA LOGISTICO</option></select><div class="field-note" id="certifierCompanyNote">Empresa activa de tipo CDA.</div></div>
+                <div class="field span-3"><label class="label" for="techIssuedAt">Fecha expedicion <span class="required">*</span></label><input class="input" id="techIssuedAt" type="datetime-local" aria-describedby="techIssuedAtNote" /><div class="field-note" id="techIssuedAtNote">No puede ser mayor que el vencimiento.</div></div>
+                <div class="field span-3"><label class="label" for="techEndAt">Fecha vencimiento <span class="required">*</span></label><input class="input" id="techEndAt" type="datetime-local" aria-describedby="techEndAtNote" /><div class="field-note" id="techEndAtNote">Fecha/hora obligatoria.</div></div>
+              </div></section>
+              <section class="section"><h3 class="section-title">Trazabilidad</h3><div class="grid">
+                <div class="field span-3"><label class="label">Fecha creacion</label><input class="input" value="Autogenerada" readonly /></div>
+                <div class="field span-3"><label class="label">Creado por</label><input class="input" value="Usuario actual" readonly /></div>
+                <div class="field span-3"><label class="label">Fecha modificacion</label><input class="input" value="Autogenerada al editar" readonly /></div>
+                <div class="field span-3"><label class="label">Modificado por</label><input class="input" value="Usuario actual" readonly /></div>
+              </div></section>
+              <div class="form-actions"><a class="btn btn-secondary" href="gestion-vehiculos.html">Cancelar</a><button class="btn btn-secondary" type="reset">Limpiar formulario</button><button class="btn btn-primary" type="submit">Guardar vehiculo</button></div>
+            </form>
+          </div>
+        </article>
+      </section>
+    </main>
+  </div>
+  <script src="../shared/sial-core.js"></script>
+  <script src="sial-conductores.js"></script>
+  <script>SIAL.applyShell("vehiculos"); SIAL.initVehicleForm();</script>
+</body>
+</html>

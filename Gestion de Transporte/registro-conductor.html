@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SIAL | Registro de conductor</title>
+  <script>
+    (function () {
+      const savedTheme = localStorage.getItem("sial-theme");
+      const systemDark = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
+      document.documentElement.dataset.theme = savedTheme || (systemDark ? "dark" : "light");
+    })();
+  </script>  <link rel="stylesheet" href="sial-conductores.css" />
+</head>
+<body data-view-family="registro-extenso">
+  <div class="app-shell">
+    <aside class="sidebar" aria-label="Navegacion principal"><div class="brand"><span class="brand-badge">S</span><span>SIAL</span></div><p class="menu-caption">Transporte</p><nav data-nav></nav></aside>
+    <header class="header"><div class="header-left"><button class="icon-btn" aria-label="Abrir menu"><svg class="icon" viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button><label class="search"><svg class="icon" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-3.5-3.5"></path></svg><input aria-label="Busqueda principal" placeholder="Buscar..." /></label></div><div class="header-right"><button class="icon-btn theme-toggle" type="button" data-theme-toggle aria-label="Cambiar a modo oscuro" aria-pressed="false" title="Cambiar a modo oscuro"><svg class="icon theme-icon theme-icon-moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12.8A8.5 8.5 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"></path></svg><svg class="icon theme-icon theme-icon-sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2"></path><path d="M12 20v2"></path><path d="m4.93 4.93 1.41 1.41"></path><path d="m17.66 17.66 1.41 1.41"></path><path d="M2 12h2"></path><path d="M20 12h2"></path><path d="m6.34 17.66-1.41 1.41"></path><path d="m19.07 4.93-1.41 1.41"></path></svg></button><button class="icon-btn" aria-label="Notificaciones"><svg class="icon" viewBox="0 0 24 24"><path d="M15 17h5l-1.4-1.4A2 2 0 0 1 18 14.2V11a6 6 0 1 0-12 0v3.2a2 2 0 0 1-.6 1.4L4 17h5"></path><path d="M10 17a2 2 0 0 0 4 0"></path></svg></button><span class="avatar">QA</span></div></header>
+    <main class="main">
+      <section class="page">
+        <p class="page-eyebrow">Transporte / Conductores / Registro</p>
+        <div class="page-header"><div><h1 class="page-title">Registro de conductor</h1><p class="page-subtitle">Formulario administrativo extenso con secciones, validacion inline, estado inicial activo y asignacion obligatoria de al menos una categoria de licencia activa.</p></div><a class="btn btn-secondary" href="gestion-conductores.html">Volver a gestion</a></div>
+        <div class="notice notice-info"><svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"></circle><path d="M12 8v5"></path><path d="M12 16h.01"></path></svg><span>El codigo conductor es autogenerado. Los nombres y apellidos se normalizan en mayusculas sostenidas antes de guardar.</span></div>
+        <div class="notice notice-warning"><svg class="icon" viewBox="0 0 24 24"><path d="M12 9v4"></path><path d="M12 17h.01"></path><path d="m10.3 3.8-7 12.2A2 2 0 0 0 5 19h14a2 2 0 0 0 1.7-3L13.7 3.8a2 2 0 0 0-3.4 0Z"></path></svg><span>La categoria inactiva no aparece como asignable. La relacion conductor + licencia queda registrada con fecha de vencimiento.</span></div>
+        <div class="notice notice-success is-hidden" id="formOk"><svg class="icon" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"></path></svg><span><strong>Conductor listo para guardar.</strong> Las validaciones obligatorias fueron superadas en la propuesta.</span></div>
+
+        <article class="card form-card">
+          <div class="form-heading"><h2>Formulario de gestion</h2><p>Respeta labels persistentes, helper text, foco visible, errores inline y acciones claras. En produccion debe conectarse al API y a permisos administrativos.</p></div>
+          <div class="form-body">
+            <form id="driverForm" novalidate>
+              <section class="section">
+                <h3 class="section-title">Datos base del conductor</h3>
+                <div class="grid">
+                  <div class="field span-3"><label class="label" for="driverCode">Codigo conductor</label><input class="input" id="driverCode" value="Autogenerado al guardar" readonly /><div class="field-note">Llave primaria generada por el sistema.</div></div>
+                  <div class="field span-3"><label class="label">Estado inicial</label><span class="status status-active">Activo</span><div class="field-note">Todo conductor nuevo inicia activo.</div></div>
+                  <div class="field span-6"><label class="label" for="company">Empresa <span class="required">*</span></label><select class="select" id="company" aria-describedby="companyNote"><option value="">Selecciona una empresa</option><option>SIAL Central</option><option>Banapalma</option><option>AgroCeiba</option></select><div class="field-note" id="companyNote">Llave foranea a empresas.</div></div>
+                  <div class="field span-6"><label class="label" for="firstName">Nombres <span class="required">*</span></label><input class="input" id="firstName" placeholder="CARLOS ANDRES" aria-describedby="firstNameNote" /><div class="field-note" id="firstNameNote">Se guarda en mayusculas sostenidas.</div></div>
+                  <div class="field span-6"><label class="label" for="lastName">Apellidos <span class="required">*</span></label><input class="input" id="lastName" placeholder="MEJIA PEREZ" aria-describedby="lastNameNote" /><div class="field-note" id="lastNameNote">Se guarda en mayusculas sostenidas.</div></div>
+                  <div class="field span-4"><label class="label" for="idType">Tipo identificacion <span class="required">*</span></label><select class="select" id="idType" aria-describedby="idTypeNote"><option value="">Selecciona un tipo</option><option value="CC">Cedula de ciudadania</option><option value="CE">Cedula de extranjeria</option><option value="TI">Tarjeta de identidad</option></select><div class="field-note" id="idTypeNote">Hace parte de la llave unica con numero identificacion.</div></div>
+                  <div class="field span-4"><label class="label" for="idNumber">Numero identificacion <span class="required">*</span></label><input class="input" id="idNumber" inputmode="numeric" placeholder="1032456789" aria-describedby="idNumberNote" /><div class="field-note" id="idNumberNote">Tipo + numero debe ser unico.</div></div>
+                  <div class="field span-4"><label class="label" for="phone">Numero celular <span class="required">*</span></label><input class="input" id="phone" inputmode="numeric" placeholder="3001234567" aria-describedby="phoneNote" /><div class="field-note" id="phoneNote">Debe ser unico.</div></div>
+                  <div class="field span-6"><label class="label" for="email">Correo electronico</label><input class="input" id="email" type="email" placeholder="nombre@empresa.com" aria-describedby="emailNote" /><div class="field-note" id="emailNote">Opcional. Si se diligencia, debe tener formato valido.</div></div>
+                  <div class="field span-6"><label class="label" for="licenseNumber">Numero licencia <span class="required">*</span></label><input class="input" id="licenseNumber" placeholder="Numero de licencia" aria-describedby="licenseNumberNote" /><div class="field-note" id="licenseNumberNote">Dato obligatorio de control documental.</div></div>
+                </div>
+              </section>
+              <section class="section">
+                <h3 class="section-title">Cobertura ARL</h3>
+                <div class="grid">
+                  <div class="field span-4"><label class="label" for="arlCompany">Empresa ARL <span class="required">*</span></label><select class="select" id="arlCompany" aria-describedby="arlCompanyNote"><option value="">Selecciona una ARL</option><option>SURA</option><option>COLMENA</option><option>SEGUROS BOLIVAR</option></select><div class="field-note" id="arlCompanyNote">Llave foranea a empresas.</div></div>
+                  <div class="field span-4"><label class="label" for="arlStart">Fecha inicio ARL <span class="required">*</span></label><input class="input" id="arlStart" type="date" aria-describedby="arlStartNote" /><div class="field-note" id="arlStartNote">Inicio de vigencia obligatoria.</div></div>
+                  <div class="field span-4"><label class="label" for="arlEnd">Fecha fin ARL <span class="required">*</span></label><input class="input" id="arlEnd" type="date" aria-describedby="arlEndNote" /><div class="field-note" id="arlEndNote">No puede ser anterior al inicio.</div></div>
+                </div>
+              </section>
+              <section class="section">
+                <h3 class="section-title">Categorias de licencia activas</h3>
+                <div class="license-grid">
+                  <label class="license-option"><input type="checkbox" name="licenseCategory" value="C2" checked /><span><strong>C2</strong><span>Camiones rigidos de servicio publico.</span></span><span class="field"><span class="label" for="expC2">Vencimiento</span><input class="input" id="expC2" type="date" value="2026-09-12" /></span></label>
+                  <label class="license-option"><input type="checkbox" name="licenseCategory" value="C3" /><span><strong>C3</strong><span>Vehiculos articulados y tractocamiones.</span></span><span class="field"><span class="label" for="expC3">Vencimiento</span><input class="input" id="expC3" type="date" /></span></label>
+                  <label class="license-option"><input type="checkbox" name="licenseCategory" value="B1" /><span><strong>B1</strong><span>Vehiculos livianos administrativos.</span></span><span class="field"><span class="label" for="expB1">Vencimiento</span><input class="input" id="expB1" type="date" /></span></label>
+                </div>
+                <div class="field-note" id="licenseAssignmentNote">Debe existir al menos una categoria activa.</div>
+              </section>
+              <div class="form-actions"><a class="btn btn-secondary" href="gestion-conductores.html">Cancelar</a><button class="btn btn-secondary" type="reset">Limpiar formulario</button><button class="btn btn-primary" type="submit"><svg class="icon" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"></path></svg><span>Guardar conductor</span></button></div>
+            </form>
+          </div>
+        </article>
+      </section>
+    </main>
+  </div>
+  <script src="../shared/sial-core.js"></script>
+  <script src="sial-conductores.js"></script>
+  <script>SIAL.applyShell("gestion"); SIAL.initDriverForm();</script>
+</body>
+</html>

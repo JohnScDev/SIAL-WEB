@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SIAL | Administracion de changelog</title>
+  <script>
+    (function () {
+      const savedTheme = localStorage.getItem("sial-theme");
+      const systemDark = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
+      document.documentElement.dataset.theme = savedTheme || (systemDark ? "dark" : "light");
+    })();
+  </script>
+  <link rel="stylesheet" href="sial-changelog.css" />
+</head>
+<body data-view-family="gestion">
+  <div class="app-shell changelog-shell">
+    <aside class="sidebar" aria-label="Navegacion del changelog">
+      <a class="brand" href="../index.html" aria-label="Volver al catalogo SIAL"><span class="brand-badge">S</span><span>SIAL</span></a>
+      <p class="menu-caption">Changelog</p>
+      <nav class="stack" aria-label="Versiones">
+        <a class="nav-link" href="index.html">
+          <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16"></path><path d="M4 12h16"></path><path d="M4 18h10"></path></svg>
+          <span>Externo</span>
+        </a>
+        <a class="nav-link" href="changelog-interno.html">
+          <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M12 8v4l3 2"></path></svg>
+          <span>Interno TI</span>
+        </a>
+        <a class="nav-link active" href="administracion-changelog.html">
+          <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20h9"></path><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"></path></svg>
+          <span>Administracion</span>
+        </a>
+      </nav>
+    </aside>
+
+    <header class="header">
+      <div class="header-left">
+        <a class="btn btn-secondary" href="../index.html">Volver al catalogo</a>
+        <a class="btn btn-ghost" href="index.html">Ver externo</a>
+        <a class="btn btn-ghost" href="changelog-interno.html">Ver interno</a>
+      </div>
+      <div class="header-right">
+        <button class="icon-btn theme-toggle" type="button" data-theme-toggle aria-label="Cambiar a modo oscuro" aria-pressed="false" title="Cambiar a modo oscuro">
+          <svg class="icon theme-icon theme-icon-moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12.8A8.5 8.5 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"></path></svg>
+          <svg class="icon theme-icon theme-icon-sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2"></path><path d="M12 20v2"></path><path d="M2 12h2"></path><path d="M20 12h2"></path></svg>
+        </button>
+        <span class="avatar">AD</span>
+      </div>
+    </header>
+
+    <main class="main">
+      <section class="page" id="administracion">
+        <p class="page-eyebrow">SIAL / Administracion</p>
+        <div class="page-header">
+          <div>
+            <h1 class="page-title">Administracion del changelog</h1>
+            <p class="page-subtitle">Gestion interna para crear, editar, publicar o remover entradas del changelog externo e interno con trazabilidad de cambios.</p>
+          </div>
+        </div>
+
+        <section class="notice notice-info" role="note">
+          <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M12 8v5"></path><path d="M12 16h.01"></path></svg>
+          <span>Remover una entrada la despublica de las vistas de consulta y conserva auditoria. La eliminacion fisica no se propone desde interfaz.</span>
+        </section>
+
+        <section class="card" aria-labelledby="adminTableTitle">
+          <div class="card-header">
+            <div>
+              <h2 class="card-title" id="adminTableTitle">Entradas registradas</h2>
+              <p class="card-subtitle">Consulta por version, audiencia, modulo, estado y responsable.</p>
+            </div>
+            <div class="card-actions">
+              <span class="chip" id="adminCount">0 entradas visibles</span>
+              <button class="btn btn-primary" type="button" id="newRelease">Nueva entrada</button>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="toolbar admin-toolbar" aria-label="Filtros de administracion">
+              <input class="input" id="adminSearch" type="search" placeholder="Buscar version, titulo o modulo" aria-label="Buscar entradas" />
+              <select class="select" id="adminAudience" aria-label="Filtrar por audiencia">
+                <option value="all">Todas las audiencias</option>
+                <option value="externo">Externo</option>
+                <option value="interno">Interno</option>
+                <option value="ambos">Ambos</option>
+              </select>
+              <select class="select" id="adminStatus" aria-label="Filtrar por estado">
+                <option value="all">Todos los estados</option>
+                <option value="publicado">Publicado</option>
+                <option value="borrador">Borrador</option>
+                <option value="removido">Removido</option>
+              </select>
+            </div>
+
+            <div class="table-wrap">
+              <table aria-label="Entradas administrables del changelog">
+                <thead>
+                  <tr>
+                    <th>Version</th>
+                    <th>Titulo</th>
+                    <th>Audiencia</th>
+                    <th>Modulo</th>
+                    <th>Estado</th>
+                    <th>Auditoria</th>
+                    <th>Acciones</th>
+                  </tr>
+                </thead>
+                <tbody id="adminRows"></tbody>
+              </table>
+            </div>
+            <div class="empty-state" id="adminEmpty">No hay entradas que coincidan con los filtros aplicados.</div>
+          </div>
+
+          <div class="inline-form-panel is-hidden" id="releaseFormPanel">
+            <div class="form-heading">
+              <h2 id="formTitle">Nueva entrada</h2>
+              <p>Formulario de administracion. Los campos obligatorios deben validarse antes de guardar.</p>
+            </div>
+            <form class="form-body" id="releaseForm" novalidate>
+              <input type="hidden" id="releaseId" />
+              <div class="section">
+                <h3 class="section-title">Datos de publicacion</h3>
+                <div class="form-grid">
+                  <div class="field">
+                    <label class="label" for="version">Version <span class="required">*</span></label>
+                    <input class="input" id="version" name="version" placeholder="v0.10.0" required />
+                    <p class="field-note">Formato sugerido: vMayor.Menor.Parche.</p>
+                  </div>
+                  <div class="field">
+                    <label class="label" for="date">Fecha <span class="required">*</span></label>
+                    <input class="input" id="date" name="date" type="date" required />
+                  </div>
+                  <div class="field">
+                    <label class="label" for="audience">Audiencia <span class="required">*</span></label>
+                    <select class="select" id="audience" name="audience" required>
+                      <option value="externo">Externo</option>
+                      <option value="interno">Interno</option>
+                      <option value="ambos">Ambos</option>
+                    </select>
+                  </div>
+                  <div class="field">
+                    <label class="label" for="module">Modulo <span class="required">*</span></label>
+                    <select class="select" id="module" name="module" required>
+                      <option value="catalogo">Catalogo</option>
+                      <option value="autenticacion">Autenticacion</option>
+                      <option value="transporte">Transporte</option>
+                      <option value="planeacion">Planeacion</option>
+                      <option value="puerto">Puerto</option>
+                      <option value="fincas">Fincas</option>
+                      <option value="usuarios">Usuarios y empresas</option>
+                    </select>
+                  </div>
+                  <div class="field">
+                    <label class="label" for="type">Tipo <span class="required">*</span></label>
+                    <select class="select" id="type" name="type" required>
+                      <option value="feature">Nuevo</option>
+                      <option value="improvement">Mejora</option>
+                      <option value="fix">Correccion</option>
+                      <option value="docs">Documentacion</option>
+                    </select>
+                  </div>
+                  <div class="field">
+                    <label class="label" for="status">Estado <span class="required">*</span></label>
+                    <select class="select" id="status" name="status" required>
+                      <option value="borrador">Borrador</option>
+                      <option value="publicado">Publicado</option>
+                      <option value="removido">Removido</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+
+              <div class="section">
+                <h3 class="section-title">Contenido</h3>
+                <div class="form-grid">
+                  <div class="field span-3">
+                    <label class="label" for="title">Titulo <span class="required">*</span></label>
+                    <input class="input" id="title" name="title" placeholder="Nombre corto del cambio" required />
+                  </div>
+                  <div class="field span-3">
+                    <label class="label" for="summary">Resumen visible <span class="required">*</span></label>
+                    <textarea class="textarea" id="summary" name="summary" placeholder="Explica beneficio, alcance y modulo afectado." required></textarea>
+                  </div>
+                  <div class="field span-3">
+                    <label class="label" for="changes">Cambios publicados <span class="required">*</span></label>
+                    <textarea class="textarea" id="changes" name="changes" placeholder="Un cambio por linea." required></textarea>
+                  </div>
+                  <div class="field span-3">
+                    <label class="label" for="technicalNotes">Notas internas</label>
+                    <textarea class="textarea" id="technicalNotes" name="technicalNotes" placeholder="Riesgos, dependencias, validaciones QA o decisiones tecnicas. No se publican en externo."></textarea>
+                  </div>
+                  <div class="field">
+                    <label class="label" for="owner">Responsable <span class="required">*</span></label>
+                    <input class="input" id="owner" name="owner" placeholder="usuario.ti" required />
+                  </div>
+                </div>
+              </div>
+
+              <div class="form-actions">
+                <button class="btn btn-ghost" type="button" id="cancelForm">Cancelar</button>
+                <button class="btn btn-secondary" type="button" id="clearForm">Limpiar formulario</button>
+                <button class="btn btn-primary" type="submit">Guardar entrada</button>
+              </div>
+            </form>
+          </div>
+        </section>
+
+        <section class="card" aria-labelledby="auditTitle">
+          <div class="card-header">
+            <div>
+              <h2 class="card-title" id="auditTitle">Auditoria reciente</h2>
+              <p class="card-subtitle">Registro visual de acciones realizadas en esta propuesta.</p>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="audit-list" id="adminAuditList"></div>
+          </div>
+        </section>
+      </section>
+    </main>
+  </div>
+
+  <script src="../shared/sial-core.js"></script>
+  <script src="sial-changelog-admin.js"></script>
+</body>
+</html>

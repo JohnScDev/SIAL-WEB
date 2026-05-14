@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SIAL | Registro de finca</title>
+  <script>
+    (function () {
+      const savedTheme = localStorage.getItem("sial-theme");
+      const systemDark = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
+      document.documentElement.dataset.theme = savedTheme || (systemDark ? "dark" : "light");
+    })();
+  </script>  <link rel="stylesheet" href="sial-fincas.css" />
+</head>
+<body data-view-family="gestion">
+  <div class="app-shell">
+    <aside class="sidebar" aria-label="Navegacion principal"><div class="brand"><span class="brand-badge">S</span><span>SIAL</span></div><p class="menu-caption">Fincas</p><nav data-nav></nav></aside>
+    <header class="header"><div class="header-left"><button class="icon-btn" aria-label="Abrir menu"><svg class="icon" viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button><label class="search"><svg class="icon" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-3.5-3.5"></path></svg><input aria-label="Busqueda principal" placeholder="Buscar..." /></label></div><div class="header-right"><button class="icon-btn theme-toggle" type="button" data-theme-toggle aria-label="Cambiar a modo oscuro" aria-pressed="false" title="Cambiar a modo oscuro"><svg class="icon theme-icon theme-icon-moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12.8A8.5 8.5 0 1 1 11.2 3a6.8 6.8 0 0 0 9.8 9.8Z"></path></svg><svg class="icon theme-icon theme-icon-sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2"></path><path d="M12 20v2"></path><path d="m4.93 4.93 1.41 1.41"></path><path d="m17.66 17.66 1.41 1.41"></path><path d="M2 12h2"></path><path d="M20 12h2"></path><path d="m6.34 17.66-1.41 1.41"></path><path d="m19.07 4.93-1.41 1.41"></path></svg></button><button class="icon-btn" aria-label="Notificaciones"><svg class="icon" viewBox="0 0 24 24"><path d="M15 17h5l-1.4-1.4A2 2 0 0 1 18 14.2V11a6 6 0 1 0-12 0v3.2a2 2 0 0 1-.6 1.4L4 17h5"></path><path d="M10 17a2 2 0 0 0 4 0"></path></svg></button><span class="avatar">QA</span></div></header>
+    <main class="main">
+      <section class="page">
+        <p class="page-eyebrow">Fincas / Registro</p>
+        <div class="page-header"><div><h1 class="page-title">Registro de finca</h1><p class="page-subtitle">Formulario administrativo extenso para crear o editar una finca. Al guardar, la vista debe retornar a la gestion conservando auditoria y estado.</p></div><a class="btn btn-secondary" href="gestion-fincas.html">Volver a gestion</a></div>
+        <div class="notice notice-info"><svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"></circle><path d="M12 8v5"></path><path d="M12 16h.01"></path></svg><span>El codigo de finca es definido por el usuario, no es autoincremental y no debe repetirse. Nombre y razon social se guardan en mayusculas sostenidas.</span></div>
+        <article class="card form-card">
+          <div class="form-heading"><h2>Formulario de finca</h2><p>Campos obligatorios, llaves foraneas a Company, Grupos y Sectores, estado activo inicial y trazabilidad completa.</p></div>
+          <div class="form-body">
+            <div class="notice notice-success is-hidden" id="formOk">Finca lista para guardar.</div>
+            <form data-generic-form novalidate>
+              <section class="section"><h3 class="section-title">Identificacion</h3><div class="grid">
+                <div class="field span-4"><label class="label" for="farmCode">Codigo finca <span class="required">*</span></label><input class="input" id="farmCode" data-required data-unique-list="FIN-AC01|FIN-BP07" aria-describedby="farmCodeNote" placeholder="FIN-AC01" /><div class="field-note" id="farmCodeNote">Llave primaria alfanumerica definida por usuario.</div></div>
+                <div class="field span-4"><label class="label">Estado inicial</label><span class="status status-active">Activo</span><div class="field-note">El estado siempre debe tener valor.</div></div>
+                <div class="field span-4"><label class="label" for="nit">NIT finca</label><input class="input" id="nit" placeholder="900456123-8" /><div class="field-note">Opcional.</div></div>
+                <div class="field span-6"><label class="label" for="farmName">Nombre finca <span class="required">*</span></label><input class="input" id="farmName" data-required data-uppercase aria-describedby="farmNameNote" placeholder="FINCA LA ESPERANZA" /><div class="field-note" id="farmNameNote">Se guarda en mayusculas sostenidas.</div></div>
+                <div class="field span-6"><label class="label" for="legalName">Razon social</label><input class="input" id="legalName" data-uppercase aria-describedby="legalNameNote" placeholder="AGROCEIBA SAS" /><div class="field-note" id="legalNameNote">Opcional. Se guarda en mayusculas sostenidas.</div></div>
+              </div></section>
+              <section class="section"><h3 class="section-title">Asignacion administrativa</h3><div class="grid">
+                <div class="field span-4"><label class="label" for="producer">Productor o cooperativa <span class="required">*</span></label><select class="select" id="producer" data-required aria-describedby="producerNote"><option value="">Selecciona productor</option><option>AgroCeiba</option><option>Banapalma</option></select><div class="field-note" id="producerNote">Llave foranea a Company.</div></div>
+                <div class="field span-4"><label class="label" for="group">Grupo <span class="required">*</span></label><select class="select" id="group" data-required aria-describedby="groupNote"><option value="">Selecciona grupo</option><option>GRUPO COSTA NORTE</option><option>GRUPO ORIENTE UNO</option></select><div class="field-note" id="groupNote">Una finca solo puede pertenecer a un grupo.</div></div>
+                <div class="field span-4"><label class="label" for="sector">Sector <span class="required">*</span></label><select class="select" id="sector" data-required aria-describedby="sectorNote"><option value="">Selecciona sector</option><option>SECTOR NORTE</option><option>SECTOR ORIENTE</option></select><div class="field-note" id="sectorNote">Una finca solo puede estar ubicada en un sector.</div></div>
+                <div class="field span-12">
+                  <label class="label" for="geo">Geolocalizacion</label>
+                  <div class="geo-map-panel" data-geo-component>
+                    <div class="geo-map-controls">
+                      <div class="field">
+                        <input class="input" id="geo" data-geo-input aria-describedby="geoNote" placeholder="10.965, -74.801" />
+                        <div class="field-note" id="geoNote">Opcional. Ingresa latitud y longitud separadas por coma para ubicar la finca en el mapa.</div>
+                      </div>
+                      <button class="btn btn-secondary" type="button" data-geo-locate>Ubicar en mapa</button>
+                    </div>
+                    <div class="geo-map-layout">
+                      <div class="geo-map" role="img" aria-label="Mapa operativo de referencia para ubicar la finca">
+                        <svg viewBox="0 0 640 320" aria-hidden="true" focusable="false">
+                          <path class="geo-map-water" d="M0 0h198c-18 45-36 84-18 128 20 52 2 112-42 154L0 320Z"></path>
+                          <path class="geo-map-zone" d="M214 28c96-22 198 6 286 46 74 34 120 82 112 138-10 68-102 90-174 82-78-8-126-44-198-42-78 2-140-44-126-106 10-44 46-98 100-118Z"></path>
+                          <path class="geo-map-route" d="M160 246c72-44 120-84 172-92 76-12 126 32 186 16 44-12 76-42 106-70"></path>
+                          <path class="geo-map-route" d="M236 70c28 56 68 86 122 112 58 28 88 54 110 110"></path>
+                        </svg>
+                        <span class="geo-map-label" data-geo-map-label>Sin coordenadas</span>
+                        <span class="geo-marker" data-geo-marker aria-hidden="true"></span>
+                      </div>
+                      <div class="geo-summary" aria-live="polite">
+                        <div class="geo-summary-item"><span>Latitud</span><strong data-geo-lat>-</strong></div>
+                        <div class="geo-summary-item"><span>Longitud</span><strong data-geo-lng>-</strong></div>
+                        <div class="geo-summary-item"><span>Referencia operativa</span><strong data-geo-ref>Ingresa coordenadas validas.</strong></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div></section>
+              <section class="section"><h3 class="section-title">Trazabilidad</h3><div class="grid">
+                <div class="field span-3"><label class="label">Fecha creacion</label><input class="input" value="Autogenerada" readonly /></div>
+                <div class="field span-3"><label class="label">Creado por</label><input class="input" value="Usuario actual" readonly /></div>
+                <div class="field span-3"><label class="label">Fecha modificacion</label><input class="input" value="Autogenerada al editar" readonly /></div>
+                <div class="field span-3"><label class="label">Modificado por</label><input class="input" value="Usuario actual" readonly /></div>
+              </div></section>
+              <div class="form-actions"><a class="btn btn-secondary" href="gestion-fincas.html">Cancelar</a><button class="btn btn-primary" type="submit">Guardar finca</button></div>
+            </form>
+          </div>
+        </article>
+      </section>
+    </main>
+  </div>
+  <script src="../shared/sial-core.js"></script>
+  <script src="sial-fincas.js"></script>
+  <script>SIAL.applyShell("fincas"); SIAL.initGeoMap(); SIAL.initGenericForm();</script>
+</body>
+</html>

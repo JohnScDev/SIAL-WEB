@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SIAL | Novedades</title>
+  <script>
+    (function () {
+      const savedTheme = localStorage.getItem("sial-theme");
+      const systemDark = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
+      document.documentElement.dataset.theme = savedTheme || (systemDark ? "dark" : "light");
+    })();
+  </script>
+  <link rel="stylesheet" href="sial-changelog.css" />
+</head>
+<body data-view-family="documentacion">
+  <main class="public-changelog-shell" id="versiones">
+    <section class="page changelog-page public-changelog-page">
+      <div class="public-changelog-topbar">
+        <div class="brand public-changelog-brand" aria-label="SIAL"><span class="brand-badge">S</span><span>SIAL</span></div>
+        <button class="icon-btn theme-toggle" type="button" data-theme-toggle aria-label="Cambiar a modo oscuro" aria-pressed="false" title="Cambiar a modo oscuro">
+          <svg class="icon theme-icon theme-icon-moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12.8A8.5 8.5 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"></path></svg>
+          <svg class="icon theme-icon theme-icon-sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2"></path><path d="M12 20v2"></path><path d="m4.93 4.93 1.41 1.41"></path><path d="m17.66 17.66 1.41 1.41"></path><path d="M2 12h2"></path><path d="M20 12h2"></path><path d="m6.34 17.66-1.41 1.41"></path><path d="m19.07 4.93-1.41 1.41"></path></svg>
+        </button>
+      </div>
+
+      <p class="page-eyebrow">SIAL / Historial de cambios</p>
+      <div class="changelog-hero">
+        <div>
+          <h1 class="page-title">Novedades SIAL</h1>
+          <p class="page-subtitle">Novedades funcionales, mejoras visibles y ajustes de experiencia disponibles en las propuestas web SIAL, organizadas por version para consulta de usuarios.</p>
+        </div>
+        <button class="btn btn-secondary" type="button" id="copyPublicLink">Copiar enlace</button>
+      </div>
+
+      <div class="release-filterbar" aria-label="Filtros del changelog">
+        <input class="input" id="releaseSearch" type="search" placeholder="Buscar en versiones" aria-label="Buscar en versiones" />
+        <select class="select" id="moduleFilter" aria-label="Filtrar por modulo">
+          <option value="all">Todos los modulos</option>
+          <option value="catalogo">Catalogo</option>
+          <option value="autenticacion">Autenticacion</option>
+          <option value="transporte">Transporte</option>
+          <option value="planeacion">Planeacion</option>
+          <option value="puerto">Puerto</option>
+          <option value="fincas">Fincas</option>
+          <option value="usuarios">Usuarios y empresas</option>
+        </select>
+        <select class="select" id="typeFilter" aria-label="Filtrar por tipo">
+          <option value="all">Todos los tipos</option>
+          <option value="feature">Nuevo</option>
+          <option value="improvement">Mejora</option>
+          <option value="fix">Correccion</option>
+          <option value="docs">Documentacion</option>
+        </select>
+        <span class="chip" id="releaseCount">0 versiones visibles</span>
+      </div>
+
+      <div class="release-list public-release-list" id="releaseList"></div>
+      <div class="empty-state" id="releaseEmpty">No hay versiones que coincidan con los filtros aplicados.</div>
+    </section>
+  </main>
+
+  <script src="../shared/sial-core.js"></script>
+  <script src="sial-changelog.js"></script>
+</body>
+</html>

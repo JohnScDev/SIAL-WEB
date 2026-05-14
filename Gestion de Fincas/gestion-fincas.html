@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SIAL | Gestion de fincas</title>
+  <script>
+    (function () {
+      const savedTheme = localStorage.getItem("sial-theme");
+      const systemDark = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
+      document.documentElement.dataset.theme = savedTheme || (systemDark ? "dark" : "light");
+    })();
+  </script>  <link rel="stylesheet" href="sial-fincas.css" />
+</head>
+<body data-view-family="gestion">
+  <div class="app-shell">
+    <aside class="sidebar" aria-label="Navegacion principal"><div class="brand"><span class="brand-badge">S</span><span>SIAL</span></div><p class="menu-caption">Fincas</p><nav data-nav></nav></aside>
+    <header class="header"><div class="header-left"><button class="icon-btn" aria-label="Abrir menu"><svg class="icon" viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button><label class="search"><svg class="icon" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-3.5-3.5"></path></svg><input aria-label="Busqueda principal" placeholder="Buscar..." /></label></div><div class="header-right"><button class="icon-btn theme-toggle" type="button" data-theme-toggle aria-label="Cambiar a modo oscuro" aria-pressed="false" title="Cambiar a modo oscuro"><svg class="icon theme-icon theme-icon-moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12.8A8.5 8.5 0 1 1 11.2 3a6.8 6.8 0 0 0 9.8 9.8Z"></path></svg><svg class="icon theme-icon theme-icon-sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2"></path><path d="M12 20v2"></path><path d="m4.93 4.93 1.41 1.41"></path><path d="m17.66 17.66 1.41 1.41"></path><path d="M2 12h2"></path><path d="M20 12h2"></path><path d="m6.34 17.66-1.41 1.41"></path><path d="m19.07 4.93-1.41 1.41"></path></svg></button><button class="icon-btn" aria-label="Notificaciones"><svg class="icon" viewBox="0 0 24 24"><path d="M15 17h5l-1.4-1.4A2 2 0 0 1 18 14.2V11a6 6 0 1 0-12 0v3.2a2 2 0 0 1-.6 1.4L4 17h5"></path><path d="M10 17a2 2 0 0 0 4 0"></path></svg></button><span class="avatar">QA</span></div></header>
+    <main class="main">
+      <section class="page">
+        <p class="page-eyebrow">Fincas / Tabla maestra</p>
+        <div class="page-header"><div><h1 class="page-title">Gestion de fincas</h1><p class="page-subtitle">Vista principal para consultar, filtrar, auditar, editar e inactivar fincas. El registro se maneja en una vista dedicada por ser una maestra grande con FKs y reglas de negocio.</p></div></div>
+        <div class="notice notice-info"><svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"></circle><path d="M12 8v5"></path><path d="M12 16h.01"></path></svg><span>No se elimina una finca con operaciones asociadas; se conserva historico y se inactiva con auditoria.</span></div>
+
+        <article class="card">
+          <div class="card-header"><div><h2 class="card-title">Fincas registradas</h2><p class="card-subtitle">Consulta de productor, grupo, sector, estado y auditoria.</p></div><div class="card-actions"><span class="chip" id="farmCount">0 registros visibles</span><a class="btn btn-primary" href="registro-finca.html">Registrar finca</a></div></div>
+          <div class="card-body"><div class="toolbar"><input class="input" id="farmSearch" type="search" placeholder="Buscar finca o productor" /><select class="select" id="farmStatus"><option value="all">Todos</option><option value="active">Activo</option><option value="inactive">Inactivo</option></select><select class="select" id="farmContext"><option value="all">Todos los sectores</option><option value="NORTE">Norte</option><option value="ORIENTE">Oriente</option></select></div></div>
+          <div class="table-wrap"><table><thead><tr><th>Codigo</th><th>Finca</th><th>Productor</th><th>Grupo</th><th>Sector</th><th>Estado</th><th>Auditoria</th><th>Acciones</th></tr></thead><tbody>
+            <tr data-status="active" data-context="NORTE" data-code="FIN-AC01" data-name="FINCA LA ESPERANZA" data-producer="AgroCeiba" data-group="GRUPO COSTA NORTE" data-sector="NORTE" data-state="Activo" data-geo="10.965,-74.801" data-audit="Editar - admin.fincas|27/04/2026 08:12;Crear - admin.fincas|22/04/2026 09:20"><td>FIN-AC01</td><td>FINCA LA ESPERANZA</td><td>AgroCeiba</td><td>GRUPO COSTA NORTE</td><td>NORTE</td><td><span class="status status-active">Activo</span></td><td class="muted">Editar - admin.fincas<br />27/04/2026 08:12</td><td><div class="row-actions"><button class="icon-btn" type="button" aria-label="Visualizar finca FIN-AC01" data-open-detail><svg class="icon" viewBox="0 0 24 24"><path d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6-10-6-10-6Z"></path><circle cx="12" cy="12" r="3"></circle></svg></button><a class="icon-btn" aria-label="Editar finca FIN-AC01" href="registro-finca.html?modo=editar&codigo=FIN-AC01"><svg class="icon" viewBox="0 0 24 24"><path d="M12 20h9"></path><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"></path></svg></a><button class="icon-btn" aria-label="Inactivar"><svg class="icon" viewBox="0 0 24 24"><path d="m18 6-12 12"></path><path d="m6 6 12 12"></path></svg></button></div></td></tr>
+            <tr data-status="inactive" data-context="ORIENTE" data-code="FIN-BP07" data-name="FINCA LOS ALMENDROS" data-producer="Banapalma" data-group="GRUPO ORIENTE UNO" data-sector="ORIENTE" data-state="Inactivo" data-geo="10.615,-74.924" data-audit="Desactivar - auditor.master|25/04/2026 14:40;Crear - admin.fincas|20/04/2026 10:05"><td>FIN-BP07</td><td>FINCA LOS ALMENDROS</td><td>Banapalma</td><td>GRUPO ORIENTE UNO</td><td>ORIENTE</td><td><span class="status status-inactive">Inactivo</span></td><td class="muted">Desactivar - auditor.master<br />25/04/2026 14:40</td><td><div class="row-actions"><button class="icon-btn" type="button" aria-label="Visualizar finca FIN-BP07" data-open-detail><svg class="icon" viewBox="0 0 24 24"><path d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6-10-6-10-6Z"></path><circle cx="12" cy="12" r="3"></circle></svg></button><a class="icon-btn" aria-label="Editar finca FIN-BP07" href="registro-finca.html?modo=editar&codigo=FIN-BP07"><svg class="icon" viewBox="0 0 24 24"><path d="M12 20h9"></path><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"></path></svg></a><button class="icon-btn" aria-label="Activar"><svg class="icon" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"></path></svg></button></div></td></tr>
+          </tbody></table></div><div class="card-body"><div class="empty-state" id="farmEmpty">No hay fincas que coincidan con los filtros.</div></div>
+        </article>
+      </section>
+      <div class="drawer-backdrop" id="detailBackdrop" aria-hidden="true"></div>
+      <aside class="drawer" id="detailDrawer" aria-label="Detalle de finca" aria-modal="true" role="dialog">
+        <div class="drawer-head"><div><h3>Detalle de finca</h3><p>Visualizacion de registro, asignacion y auditoria.</p></div><button class="icon-btn" id="closeDetail" type="button" aria-label="Cerrar detalle"><svg class="icon" viewBox="0 0 24 24"><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></svg></button></div>
+        <div class="drawer-body">
+          <div class="detail-group"><span class="detail-label">Codigo</span><div class="detail-value" data-detail-target="code">-</div></div>
+          <div class="detail-group"><span class="detail-label">Finca</span><div class="detail-value" data-detail-target="name">-</div></div>
+          <div class="detail-group"><span class="detail-label">Productor</span><div class="detail-value" data-detail-target="producer">-</div></div>
+          <div class="detail-group"><span class="detail-label">Grupo</span><div class="detail-value" data-detail-target="group">-</div></div>
+          <div class="detail-group"><span class="detail-label">Sector</span><div class="detail-value" data-detail-target="sector">-</div></div>
+          <div class="detail-group"><span class="detail-label">Geolocalizacion</span><div class="detail-value" data-detail-target="geo">-</div></div>
+          <div class="geo-map-panel compact" data-geo-component>
+            <div class="geo-map" role="img" aria-label="Mapa de referencia de finca seleccionada">
+              <svg viewBox="0 0 640 320" aria-hidden="true" focusable="false">
+                <path class="geo-map-water" d="M0 0h198c-18 45-36 84-18 128 20 52 2 112-42 154L0 320Z"></path>
+                <path class="geo-map-zone" d="M214 28c96-22 198 6 286 46 74 34 120 82 112 138-10 68-102 90-174 82-78-8-126-44-198-42-78 2-140-44-126-106 10-44 46-98 100-118Z"></path>
+                <path class="geo-map-route" d="M160 246c72-44 120-84 172-92 76-12 126 32 186 16 44-12 76-42 106-70"></path>
+              </svg>
+              <span class="geo-map-label" data-geo-map-label>Sin coordenadas</span>
+              <span class="geo-marker" data-geo-marker aria-hidden="true"></span>
+            </div>
+          </div>
+          <div class="detail-group"><span class="detail-label">Estado</span><div class="detail-value" data-detail-target="state">-</div></div>
+          <div class="detail-group"><span class="detail-label">Auditoria</span><div class="stack" id="detailAudit"></div></div>
+        </div>
+      </aside>
+    </main>
+  </div>
+  <script src="../shared/sial-core.js"></script>
+  <script src="sial-fincas.js"></script>
+  <script>SIAL.applyShell("fincas"); SIAL.initDrawer(); SIAL.initTableFilters({ rowSelector: "tbody tr", search: "#farmSearch", status: "#farmStatus", context: "#farmContext", empty: "#farmEmpty", count: "#farmCount" });</script>
+</body>
+</html>

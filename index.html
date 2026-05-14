@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SIAL | Catalogo UI/UX</title>
+  <script>
+    (function () {
+      const savedTheme = localStorage.getItem("sial-theme");
+      const systemDark = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
+      document.documentElement.dataset.theme = savedTheme || (systemDark ? "dark" : "light");
+    })();
+  </script>
+  <link rel="stylesheet" href="sial-catalogo.css" />
+</head>
+<body data-view-family="gestion">
+  <div class="app-shell">
+    <aside class="sidebar" aria-label="Navegacion del catalogo">
+      <div class="brand"><span class="brand-badge">S</span><span>SIAL</span></div>
+      <p class="menu-caption">Catalogo</p>
+      <nav class="stack" aria-label="Modulos disponibles">
+        <a class="nav-link active" href="#catalogo" data-section-link="catalogo">
+          <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h16"></path><path d="M4 12h16"></path><path d="M4 19h16"></path></svg>
+          <span>Catalogo</span>
+        </a>
+        <a class="nav-link" href="#autenticacion" data-section-link="autenticacion">
+          <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"></rect><path d="M8 11V8a4 4 0 0 1 8 0v3"></path><path d="M12 15v2"></path></svg>
+          <span>Login</span>
+        </a>
+        <a class="nav-link" href="#libreria" data-section-link="libreria">
+          <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16"></path><path d="M4 12h16"></path><path d="M4 18h16"></path></svg>
+          <span>Libreria UI</span>
+        </a>
+        <a class="nav-link" href="#indicadores" data-section-link="indicadores">
+          <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 19V5"></path><path d="M4 19h16"></path><path d="M8 15l3-4 3 2 5-7"></path></svg>
+          <span>Indicadores</span>
+        </a>
+        <a class="nav-link" href="#changelog" data-section-link="changelog">
+          <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="3" width="16" height="18" rx="2"></rect><path d="M8 8h8"></path><path d="M8 12h8"></path><path d="M8 16h5"></path></svg>
+          <span>Changelog</span>
+        </a>
+        <a class="nav-link" href="#transporte" data-section-link="transporte">
+          <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 7h11v10H3z"></path><path d="M14 11h4l3 3v3h-7z"></path><circle cx="7" cy="18" r="2"></circle><circle cx="18" cy="18" r="2"></circle></svg>
+          <span>Transporte</span>
+        </a>
+        <a class="nav-link" href="#usuarios" data-section-link="usuarios">
+          <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M22 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+          <span>Usuarios</span>
+        </a>
+        <a class="nav-link" href="#empresas" data-section-link="empresas">
+          <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 21h18"></path><path d="M5 21V7l8-4v18"></path><path d="M19 21V11l-6-4"></path><path d="M9 9h1"></path><path d="M9 13h1"></path><path d="M9 17h1"></path></svg>
+          <span>Empresas</span>
+        </a>
+        <a class="nav-link" href="#fincas" data-section-link="fincas">
+          <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V9l8-5 8 5v11"></path><path d="M8 20v-7h8v7"></path></svg>
+          <span>Fincas</span>
+        </a>
+        <a class="nav-link" href="#aviso-corte" data-section-link="aviso-corte">
+          <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="5" width="16" height="16" rx="2"></rect><path d="M16 3v4"></path><path d="M8 3v4"></path><path d="M4 11h16"></path><path d="M8 15h2"></path><path d="M13 15h3"></path></svg>
+          <span>Planeacion</span>
+        </a>
+        <a class="nav-link" href="#puerto" data-section-link="puerto">
+          <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20h16"></path><path d="M7 20V9l5-4 5 4v11"></path><path d="M9 13h6"></path></svg>
+          <span>Puerto</span>
+        </a>
+      </nav>
+    </aside>
+
+    <header class="header">
+      <div class="header-left">
+        <button class="icon-btn" type="button" aria-label="Abrir menu">
+          <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"></path></svg>
+        </button>
+        <label class="search">
+          <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-3.5-3.5"></path></svg>
+          <input id="globalSearch" type="search" placeholder="Buscar modulo, vista o patron" aria-label="Buscar en catalogo" />
+        </label>
+      </div>
+      <div class="header-right">
+        <button class="icon-btn theme-toggle" type="button" data-theme-toggle aria-label="Cambiar a modo oscuro" aria-pressed="false" title="Cambiar a modo oscuro">
+          <svg class="icon theme-icon theme-icon-moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12.8A8.5 8.5 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"></path></svg>
+          <svg class="icon theme-icon theme-icon-sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2"></path><path d="M12 20v2"></path><path d="m4.93 4.93 1.41 1.41"></path><path d="m17.66 17.66 1.41 1.41"></path><path d="M2 12h2"></path><path d="M20 12h2"></path><path d="m6.34 17.66-1.41 1.41"></path><path d="m19.07 4.93-1.41 1.41"></path></svg>
+        </button>
+        <button class="icon-btn" type="button" aria-label="Notificaciones">
+          <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M15 17h5l-1.4-1.4A2 2 0 0 1 18 14.2V11a6 6 0 1 0-12 0v3.2a2 2 0 0 1-.6 1.4L4 17h5"></path><path d="M10 17a2 2 0 0 0 4 0"></path></svg>
+        </button>
+        <span class="avatar">QA</span>
+      </div>
+    </header>
+
+    <main class="main" id="catalogo">
+      <section class="page">
+        <p class="page-eyebrow">SIAL / Catalogo de propuestas UI UX</p>
+        <div class="page-header">
+          <div>
+            <h1 class="page-title">Catalogo de vistas SIAL</h1>
+            <p class="page-subtitle">Indice funcional para revisar propuestas HTML por modulo, tipo de vista, estado de avance y patrones aplicados.</p>
+          </div>
+        </div>
+
+        <section class="stats" aria-label="Resumen del catalogo">
+          <article class="stat">
+            <label>Modulos publicados</label>
+            <strong>9</strong>
+            <span>Login, Changelog, Indicadores, Usuarios, Empresas, Transporte, Fincas, Planeacion y Puerto.</span>
+          </article>
+          <article class="stat">
+            <label>Vistas enlazadas</label>
+            <strong id="visibleCount">0</strong>
+            <span>Autenticacion, gestion, registro, relacion y analitica.</span>
+          </article>
+          <article class="stat">
+            <label>Patron vigente</label>
+            <strong>Gestion</strong>
+            <span>Registro embebido o vista dedicada segun complejidad.</span>
+          </article>
+          <article class="stat">
+            <label>Estado global</label>
+            <strong>Propuesta</strong>
+            <span>Base navegable para validacion UI/UX.</span>
+          </article>
+        </section>
+
+        <section class="notice notice-info" role="note">
+          <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M12 8v5"></path><path d="M12 16h.01"></path></svg>
+          <span>Este catalogo centraliza propuestas estaticas. La fuente normativa sigue siendo el documento base SIAL; si existe conflicto, prevalece el documento.</span>
+        </section>
+
+        <section class="card controls-card" aria-labelledby="filtersTitle">
+          <div class="card-header">
+            <div>
+              <h2 class="card-title" id="filtersTitle">Filtros del catalogo</h2>
+              <p class="card-subtitle">Consulta por modulo, familia de vista o estado de documentacion.</p>
+            </div>
+            <button class="btn btn-secondary" type="button" id="clearFilters">Limpiar filtros</button>
+          </div>
+          <div class="card-body">
+            <div class="toolbar">
+              <select class="select" id="moduleFilter" aria-label="Filtrar por modulo">
+                <option value="all">Todos los modulos</option>
+                <option value="autenticacion">Login</option>
+                <option value="libreria">Libreria UI</option>
+                <option value="indicadores">Indicadores</option>
+                <option value="changelog">Changelog</option>
+                <option value="transporte">Transporte</option>
+                <option value="usuarios">Usuarios</option>
+                <option value="empresas">Empresas</option>
+                <option value="fincas">Fincas</option>
+                <option value="aviso-corte">Planeacion Aviso de Corte</option>
+                <option value="puerto">Operaciones Puerto</option>
+              </select>
+              <select class="select" id="familyFilter" aria-label="Filtrar por familia de vista">
+                <option value="all">Todas las familias</option>
+                <option value="autenticacion">Autenticacion</option>
+                <option value="gestion">Gestion</option>
+                <option value="registro">Registro</option>
+                <option value="relacion">Relacion</option>
+                <option value="analitica">Analitica</option>
+                <option value="documentacion">Documentacion</option>
+                <option value="comunicacion">Comunicacion</option>
+              </select>
+              <select class="select" id="statusFilter" aria-label="Filtrar por estado">
+                <option value="all">Todos los estados</option>
+                <option value="implementada">Implementada</option>
+                <option value="base">Base catalogo</option>
+              </select>
+            </div>
+          </div>
+        </section>
+
+        <section class="catalog-section" id="libreria" aria-labelledby="libraryTitle">
+          <div class="section-heading">
+            <div>
+              <p class="section-kicker">Base reutilizable</p>
+              <h2 id="libraryTitle">Libreria UI y componentes</h2>
+              <p>Referencia visual para validar tokens, estados, dark mode y componentes compartidos antes de expandir nuevos modulos.</p>
+            </div>
+            <a class="btn btn-primary" href="shared/componentes.html">Abrir libreria</a>
+          </div>
+          <div class="catalog-grid" data-module-group="libreria"></div>
+        </section>
+
+        <section class="catalog-section" id="indicadores" aria-labelledby="indicatorsTitle">
+          <div class="section-heading">
+            <div>
+              <p class="section-kicker">Vista funcional</p>
+              <h2 id="indicatorsTitle">Indicadores y KPIs</h2>
+              <p>Catalogo funcional de indicadores, metricas, proyecciones, riesgo y graficas analiticas con datos simulados.</p>
+            </div>
+            <div class="card-actions">
+              <a class="btn btn-primary" href="Indicadores/index.html">Abrir indicadores</a>
+              <a class="btn btn-secondary" href="shared/componentes.html#indicadores">Ver base UI</a>
+            </div>
+          </div>
+          <div class="catalog-grid" data-module-group="indicadores"></div>
+        </section>
+
+        <section class="catalog-section" id="changelog" aria-labelledby="changelogTitle">
+          <div class="section-heading">
+            <div>
+              <p class="section-kicker">Comunicacion y soporte</p>
+              <h2 id="changelogTitle">Changelog SIAL</h2>
+              <p>Historial externo para usuarios, registro interno para TI y vista administrativa para crear, editar o remover entradas con trazabilidad.</p>
+            </div>
+            <div class="card-actions">
+              <a class="btn btn-primary" href="Changelog/index.html">Ver externo</a>
+              <a class="btn btn-secondary" href="Changelog/changelog-interno.html">Ver interno</a>
+              <a class="btn btn-secondary" href="Changelog/administracion-changelog.html">Administrar</a>
+            </div>
+          </div>
+          <div class="catalog-grid" data-module-group="changelog"></div>
+        </section>
+
+        <section class="catalog-section" id="autenticacion" aria-labelledby="authTitle">
+          <div class="section-heading">
+            <div>
+              <p class="section-kicker">Modulo</p>
+              <h2 id="authTitle">Login y Autenticacion</h2>
+              <p>Propuestas de acceso inicial al sistema, recuperación y experiencia institucional de autenticacion.</p>
+            </div>
+            <a class="btn btn-primary" href="Login/index.html">Abrir modulo</a>
+          </div>
+          <div class="catalog-grid" data-module-group="autenticacion"></div>
+        </section>
+
+        <section class="catalog-section" id="transporte" aria-labelledby="transportTitle">
+          <div class="section-heading">
+            <div>
+              <p class="section-kicker">Modulo</p>
+              <h2 id="transportTitle">Gestion de Transporte</h2>
+              <p>Conductores, licencias, vehiculos, tipos de empresa y vistas analiticas de transporte.</p>
+            </div>
+            <a class="btn btn-primary" href="Gestion%20de%20Transporte/index.html">Abrir modulo</a>
+          </div>
+          <div class="catalog-grid" data-module-group="transporte"></div>
+        </section>
+
+        <section class="catalog-section" id="usuarios" aria-labelledby="usersTitle">
+          <div class="section-heading">
+            <div>
+              <p class="section-kicker">Modulo</p>
+              <h2 id="usersTitle">Gestion de Usuarios</h2>
+              <p>Usuarios, registro extendido, edicion y asignacion acumulativa de empresa + roles.</p>
+            </div>
+            <a class="btn btn-primary" href="Gestion%20de%20Usuarios/index.html">Abrir modulo</a>
+          </div>
+          <div class="catalog-grid" data-module-group="usuarios"></div>
+        </section>
+
+        <section class="catalog-section" id="empresas" aria-labelledby="companiesTitle">
+          <div class="section-heading">
+            <div>
+              <p class="section-kicker">Modulo</p>
+              <h2 id="companiesTitle">Gestion de Empresas</h2>
+              <p>Empresas, registro administrativo y gestion de roles disponibles por empresa.</p>
+            </div>
+            <a class="btn btn-primary" href="Gestion%20de%20Empresas/index.html">Abrir modulo</a>
+          </div>
+          <div class="catalog-grid" data-module-group="empresas"></div>
+        </section>
+
+        <section class="catalog-section" id="fincas" aria-labelledby="farmsTitle">
+          <div class="section-heading">
+            <div>
+              <p class="section-kicker">Modulo</p>
+              <h2 id="farmsTitle">Gestion de Fincas</h2>
+              <p>Fincas, grupos, sectores, referencias y clases de referencia.</p>
+            </div>
+            <a class="btn btn-primary" href="Gestion%20de%20Fincas/index.html">Abrir modulo</a>
+          </div>
+          <div class="catalog-grid" data-module-group="fincas"></div>
+        </section>
+
+        <section class="catalog-section" id="aviso-corte" aria-labelledby="cutNoticeTitle">
+          <div class="section-heading">
+            <div>
+              <p class="section-kicker">Modulo</p>
+              <h2 id="cutNoticeTitle">Planeacion Aviso de Corte</h2>
+              <p>Semanas productivas, generacion anual automatica y calendario oficial de cintas.</p>
+            </div>
+            <a class="btn btn-primary" href="Gestion%20de%20Planeacion/index.html">Abrir modulo</a>
+          </div>
+          <div class="catalog-grid" data-module-group="aviso-corte"></div>
+        </section>
+
+        <section class="catalog-section" id="puerto" aria-labelledby="portTitle">
+          <div class="section-heading">
+            <div>
+              <p class="section-kicker">Modulo</p>
+              <h2 id="portTitle">Gestion Operaciones Puerto</h2>
+              <p>Contenedores, tipos de contenedor, etapas operativas y puertos.</p>
+            </div>
+            <a class="btn btn-primary" href="Gestion%20Operaciones%20Puerto/index.html">Abrir modulo</a>
+          </div>
+          <div class="catalog-grid" data-module-group="puerto"></div>
+        </section>
+
+        <section class="card pattern-card" aria-labelledby="patternsTitle">
+          <div class="card-header">
+            <div>
+              <h2 class="card-title" id="patternsTitle">Criterios aplicados</h2>
+              <p class="card-subtitle">Reglas de estructura usadas para mantener consistencia entre propuestas.</p>
+            </div>
+          </div>
+          <div class="pattern-grid">
+            <div class="pattern-item"><strong>Maestras cortas</strong><span>Formulario embebido dentro de la card de gestion.</span></div>
+            <div class="pattern-item"><strong>Maestras medianas</strong><span>Formulario desplegable en la misma vista si no supera dos secciones.</span></div>
+            <div class="pattern-item"><strong>Maestras grandes</strong><span>Registro o edicion en vista separada, enlazada desde la gestion.</span></div>
+            <div class="pattern-item"><strong>Visualizacion</strong><span>Drawer lateral derecho para no cubrir el menu principal.</span></div>
+          </div>
+        </section>
+
+        <div class="empty-state" id="emptyState">No hay vistas que coincidan con los filtros aplicados.</div>
+      </section>
+    </main>
+  </div>
+
+  <script src="shared/sial-core.js"></script>
+  <script src="sial-catalogo.js"></script>
+</body>
+</html>
