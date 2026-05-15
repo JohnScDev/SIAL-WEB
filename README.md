@@ -10,6 +10,7 @@ Interfaz raiz para publicar en Netlify las propuestas HTML del entorno web SIAL.
 - `shared/componentes.html`: referencia visual de componentes compartidos, tokens, estados y dark mode.
 - `Errores/`: vistas dedicadas para estados 401, 403, 404 y 500.
 - `404.html`: fallback visual raiz para GitHub Pages.
+- `shared/sial-core.css` y `shared/sial-core.js`: incluyen `SIAL View Motion`, capa reversible para transiciones entre paginas y vistas.
 
 ## Modulos enlazados
 

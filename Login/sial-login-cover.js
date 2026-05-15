@@ -13,6 +13,106 @@
   let active = 0;
   let paused = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   let timer = null;
+  const viewMotion = initCoverViewMotion();
+
+  /* === SIAL View Motion START (cover auth reversible block) ===
+     Remove this function and the viewMotion.start call below to disable cover-flow page motion. */
+  function initCoverViewMotion() {
+    if (!document.body || document.body.hasAttribute("data-view-motion-disabled")) {
+      return { start: (targetHref) => { window.location.href = targetHref; } };
+    }
+    const root = document.documentElement;
+    const reducedMotion = () => window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    let navigationTimer = null;
+    let overlayTimer = null;
+
+    function ensureMotionSurfaces() {
+      if (!document.querySelector("[data-view-motion-bar]")) {
+        const bar = document.createElement("div");
+        bar.className = "view-motion-bar";
+        bar.dataset.viewMotionBar = "true";
+        bar.setAttribute("aria-hidden", "true");
+        document.body.appendChild(bar);
+      }
+      if (!document.querySelector("[data-view-motion-overlay]")) {
+        const overlay = document.createElement("div");
+        overlay.className = "view-motion-overlay";
+        overlay.dataset.viewMotionOverlay = "true";
+        overlay.setAttribute("role", "status");
+        overlay.setAttribute("aria-live", "polite");
+        overlay.innerHTML = `
+          <div class="view-motion-card">
+            <span class="view-motion-brand" aria-hidden="true"></span>
+            <span class="view-motion-text">Cargando vista</span>
+            <span class="view-motion-track" aria-hidden="true"><span></span></span>
+          </div>
+        `;
+        document.body.appendChild(overlay);
+      }
+    }
+
+    function resetMotion() {
+      window.clearTimeout(navigationTimer);
+      window.clearTimeout(overlayTimer);
+      delete root.dataset.viewMotionOverlay;
+      if (root.dataset.viewMotion === "leaving") root.dataset.viewMotion = "ready";
+    }
+
+    function start(targetHref) {
+      if (reducedMotion()) {
+        window.location.href = targetHref;
+        return;
+      }
+      resetMotion();
+      ensureMotionSurfaces();
+      root.dataset.viewMotion = "leaving";
+      overlayTimer = window.setTimeout(() => {
+        root.dataset.viewMotionOverlay = "visible";
+      }, 320);
+      navigationTimer = window.setTimeout(() => {
+        window.location.href = targetHref;
+      }, 150);
+    }
+
+    function shouldHandleLink(link, event) {
+      if (!link || event.defaultPrevented || event.button !== 0) return false;
+      if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return false;
+      if (link.hasAttribute("download")) return false;
+      if (link.target && link.target !== "_self") return false;
+      const rawHref = link.getAttribute("href");
+      if (!rawHref || rawHref.startsWith("#")) return false;
+      if (/^(mailto:|tel:|javascript:)/i.test(rawHref)) return false;
+      let url;
+      try {
+        url = new URL(rawHref, window.location.href);
+      } catch {
+        return false;
+      }
+      if (url.origin !== window.location.origin) return false;
+      const sameDocument = url.pathname === window.location.pathname && url.search === window.location.search;
+      if (sameDocument && url.hash) return false;
+      return url.href !== window.location.href;
+    }
+
+    document.addEventListener("click", (event) => {
+      const link = event.target.closest?.("a[href]");
+      if (!shouldHandleLink(link, event)) return;
+      event.preventDefault();
+      start(link.href);
+    });
+
+    window.addEventListener("pagehide", resetMotion);
+    ensureMotionSurfaces();
+    if (!reducedMotion()) {
+      root.dataset.viewMotion = "entering";
+      window.setTimeout(() => {
+        if (root.dataset.viewMotion === "entering") root.dataset.viewMotion = "ready";
+      }, 620);
+    }
+
+    return { start };
+  }
+  /* === SIAL View Motion END (cover auth reversible block) === */
 
   function classFor(index) {
     const total = slides.length;
@@ -135,7 +235,7 @@
       window.setTimeout(() => {
         const redirect = form.dataset.redirect;
         if (redirect) {
-          window.location.href = redirect;
+          viewMotion.start(redirect);
           return;
         }
         submit.removeAttribute("disabled");

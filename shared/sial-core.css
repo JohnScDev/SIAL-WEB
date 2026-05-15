@@ -2264,6 +2264,177 @@ tbody tr.state-updated {
   background: var(--color-success-bg);
 }
 
+/* === SIAL View Motion START (reversible block) ===
+   Remove this block plus initPageTransitions in sial-core.js to disable page motion. */
+.view-motion-bar {
+  position: fixed;
+  z-index: 90;
+  inset: 0 0 auto;
+  height: 3px;
+  background: linear-gradient(90deg, var(--color-primary-500), var(--color-info-main), var(--color-primary-600));
+  box-shadow: 0 10px 28px color-mix(in srgb, var(--color-primary-500) 34%, transparent);
+  opacity: 0;
+  pointer-events: none;
+  transform: scaleX(0);
+  transform-origin: left center;
+}
+.view-motion-overlay {
+  position: fixed;
+  z-index: 85;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  background:
+    linear-gradient(180deg, color-mix(in srgb, var(--color-bg) 88%, transparent), color-mix(in srgb, var(--color-bg) 96%, transparent)),
+    color-mix(in srgb, var(--color-surface) 34%, transparent);
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity .2s ease, visibility .2s ease;
+}
+.view-motion-card {
+  min-width: min(320px, calc(100vw - 48px));
+  display: grid;
+  justify-items: center;
+  gap: 14px;
+  padding: 28px;
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-surface);
+  background: color-mix(in srgb, var(--color-surface) 94%, transparent);
+  box-shadow: var(--shadow-overlay);
+  backdrop-filter: blur(12px);
+}
+.view-motion-brand {
+  position: relative;
+  width: 72px;
+  height: 72px;
+  display: grid;
+  place-items: center;
+  border-radius: 18px;
+  background:
+    linear-gradient(145deg, color-mix(in srgb, var(--color-primary-500) 10%, var(--color-surface)), var(--color-surface)),
+    var(--color-surface);
+  box-shadow:
+    inset 0 0 0 1px color-mix(in srgb, var(--color-primary-500) 18%, transparent),
+    0 18px 44px color-mix(in srgb, var(--color-primary-500) 20%, transparent);
+}
+.view-motion-brand::before {
+  content: "";
+  width: 58px;
+  height: 58px;
+  display: block;
+  background: url("brand/isotipo-sial.svg") center / contain no-repeat;
+}
+.view-motion-brand::after {
+  content: "";
+  position: absolute;
+  inset: -5px;
+  border-radius: 22px;
+  border: 2px solid transparent;
+  border-top-color: color-mix(in srgb, var(--color-primary-500) 72%, transparent);
+  border-right-color: color-mix(in srgb, var(--color-info-main) 58%, transparent);
+  opacity: .85;
+  animation: viewMotionOrbit 1.08s cubic-bezier(.65, 0, .35, 1) infinite;
+}
+.view-motion-text {
+  color: var(--color-text);
+  font-size: 14px;
+  font-weight: 600;
+}
+.view-motion-track {
+  width: 184px;
+  height: 4px;
+  overflow: hidden;
+  border-radius: var(--radius-pill);
+  background: var(--color-bar-bg);
+}
+.view-motion-track span {
+  display: block;
+  width: 48%;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, var(--color-primary-500), var(--color-info-main));
+  animation: viewMotionTrack 1s ease-in-out infinite;
+}
+.view-motion-preview {
+  position: relative;
+  min-height: 220px;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  padding: 28px;
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-surface);
+  background:
+    linear-gradient(180deg, color-mix(in srgb, var(--color-primary-50) 48%, transparent), transparent),
+    var(--color-empty-bg);
+}
+.view-motion-preview-bar {
+  position: absolute;
+  inset: 0 0 auto;
+  height: 3px;
+  background: linear-gradient(90deg, var(--color-primary-500), var(--color-info-main), var(--color-primary-600));
+  animation: viewMotionBar 1.25s cubic-bezier(.16, 1, .3, 1) infinite alternate;
+  transform-origin: left center;
+}
+.view-motion-preview .view-motion-card {
+  min-width: 260px;
+  box-shadow: var(--shadow-elevated);
+}
+.view-motion-spec-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+  margin-bottom: 16px;
+}
+@media (max-width: 900px) {
+  .view-motion-spec-grid { grid-template-columns: 1fr; }
+}
+html[data-view-motion="entering"] :where(.main .page, .public-changelog-page, .error-page) {
+  animation: viewMotionEnter .34s cubic-bezier(.2, .8, .2, 1) both;
+}
+html[data-view-motion="entering"] [data-view-motion-item] {
+  animation: viewMotionItem .42s cubic-bezier(.2, .8, .2, 1) both;
+  animation-delay: calc(var(--view-motion-index, 0) * 34ms);
+}
+html[data-view-motion="leaving"] .view-motion-bar {
+  opacity: 1;
+  animation: viewMotionBar 1.25s cubic-bezier(.16, 1, .3, 1) forwards;
+}
+html[data-view-motion="leaving"] :where(.main .page, .public-changelog-page, .error-page) {
+  opacity: .58;
+  transform: translateY(6px) scale(.998);
+  transition: opacity .18s ease, transform .18s ease;
+}
+html[data-view-motion-overlay="visible"] .view-motion-overlay {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+}
+@keyframes viewMotionBar {
+  0% { transform: scaleX(0); }
+  58% { transform: scaleX(.72); }
+  100% { transform: scaleX(.94); }
+}
+@keyframes viewMotionEnter {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes viewMotionItem {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes viewMotionOrbit {
+  to { transform: rotate(360deg); }
+}
+@keyframes viewMotionTrack {
+  0% { transform: translateX(-105%); }
+  52% { transform: translateX(64%); }
+  100% { transform: translateX(214%); }
+}
+/* === SIAL View Motion END (reversible block) === */
+
 /* Error system */
 .error-shell {
   min-height: 100vh;
@@ -2706,6 +2877,9 @@ tbody tr.state-updated {
   .error-state-meta { grid-column: auto; }
   .error-state-actions { justify-content: stretch; }
   .error-state-actions .btn { width: 100%; }
+  .view-motion-card { min-width: min(280px, calc(100vw - 32px)); padding: 24px; }
+  .view-motion-brand { width: 64px; height: 64px; }
+  .view-motion-brand::before { width: 52px; height: 52px; }
   .public-changelog-shell { padding: 24px 16px; }
   .public-changelog-topbar { margin-bottom: 28px; }
   .specimen-grid { grid-template-columns: 1fr; }
@@ -2759,7 +2933,15 @@ tbody tr.state-updated {
   .nav-module-toggle,
   .nav-module-toggle .icon,
   .nav-sublist,
-  .nav-sub-link {
+  .nav-sub-link,
+  .view-motion-bar,
+  .view-motion-overlay,
+  .view-motion-card,
+  .view-motion-brand,
+  .view-motion-brand::after,
+  .view-motion-preview-bar,
+  .view-motion-track span,
+  [data-view-motion-item] {
     animation: none !important;
     transition: none !important;
   }
@@ -2768,6 +2950,11 @@ tbody tr.state-updated {
   .nav-link:hover,
   .nav-link:focus-visible,
   .nav-module-toggle:hover {
+    transform: none;
+  }
+  html[data-view-motion="entering"] :where(.main .page, .public-changelog-page, .error-page),
+  html[data-view-motion="leaving"] :where(.main .page, .public-changelog-page, .error-page) {
+    opacity: 1;
     transform: none;
   }
 }

@@ -26,6 +26,7 @@ La base actual concentra:
 - Shell, sidebar expandido/colapsado, navegacion por area/modulo/vista, vistas de modulo contraibles, header, busqueda, avatar y boton de tema.
 - Marca del shell mediante `brand-badge`, usando el isotipo SIAL compartido sin duplicar el texto de marca en cada vista. El texto `SIAL` conserva la escala, peso y familia tipografica del login institucional.
 - Microinteracciones del sidebar: hover operativo, indicador activo animado, acordeon suave de submenus, transicion al contraer/desplegar el menu y marca estable con aparicion lateral del texto, respetando `prefers-reduced-motion`.
+- SIAL View Motion: capa estetica reversible para transicion entre paginas/vistas con barra superior, salida suave, entrada de contenido y overlay institucional diferido.
 - Botones primary, secondary, ghost, destructive e icon-only.
 - Cards, headers de card, stats, grids y layouts responsivos.
 - Alertas `notice-info`, `notice-warning`, `notice-error`, `notice-success` con fondo, texto y borde semantico.
@@ -59,6 +60,23 @@ Las paginas completas de error viven en `Errores/` y usan la misma marca, modo o
 - `500`: falla interna de servicio; accion principal de reintento.
 
 Cuando el error ocurre dentro de una tabla, card o consulta, usar `error-state` en lugar de sacar al usuario de la vista.
+
+## SIAL View Motion
+
+La transicion entre paginas y vistas se controla desde `SIALCore.initPageTransitions()` y esta identificada como bloque reversible en `sial-core.css` y `sial-core.js` con comentarios `SIAL View Motion START/END`.
+
+Comportamiento:
+
+- Barra superior inmediata para confirmar navegacion interna.
+- Salida suave del contenido actual antes de cambiar de URL.
+- Overlay institucional con isotipo y texto `Cargando vista` solo si la carga tarda.
+- Entrada breve del contenido y escalonado ligero de secciones principales.
+
+Reversibilidad:
+
+- Para apagarlo globalmente, retirar los bloques `SIAL View Motion START/END` en `sial-core.css` y `sial-core.js`.
+- Para excluir una vista puntual, agregar `data-view-motion-disabled` en el `<body>`.
+- En autenticacion, la variante equivalente esta marcada como `auth reversible block` en `Login/sial-login.css`, `Login/sial-login.js` y `Login/sial-login-cover.js`.
 
 ## Dark mode
 

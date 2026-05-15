@@ -52,7 +52,7 @@
     <div class="drawer-head"><div><h3>Detalle etapa</h3><p>Consulta lateral de uso, estado y auditoria.</p></div><button class="icon-btn" id="closeDetail" aria-label="Cerrar detalle"><svg class="icon" viewBox="0 0 24 24"><path d="m18 6-12 12"></path><path d="m6 6 12 12"></path></svg></button></div>
     <div class="drawer-body"><div class="detail-group"><span class="detail-label">Codigo</span><div class="detail-value" data-detail-target="code">-</div></div><div class="detail-group"><span class="detail-label">Etapa</span><div class="detail-value" data-detail-target="name">-</div></div><div class="detail-group"><span class="detail-label">Uso operativo</span><div class="detail-value" data-detail-target="use">-</div></div><div class="detail-group"><span class="detail-label">Estado</span><div class="detail-value" data-detail-target="state">-</div></div><div class="detail-group"><span class="detail-label">Auditoria</span><div class="stack" id="detailAudit"></div></div></div>
   </aside>
-  <script src="../shared/sial-core.js?v=20260515-errors1"></script>
+  <script src="../shared/sial-core.js?v=20260515-motion1"></script>
   <script src="sial-puerto.js"></script>
   <script>SIAL.applyShell("etapas"); SIAL.initDrawer(); SIAL.initEmbeddedForm({ newTitle: "Nueva etapa", editTitle: "Editar etapa" }); SIAL.initCatalogForm({ existingNames: "DISPONIBLE|EN TRANSITO|EN INSPECCION|CARGADO|CERRADO|EN PUERTO|EXPORTADO" }); SIAL.initTableFilters({ rowSelector: "tbody tr", search: "#stageSearch", status: "#stageStatus", context: "#stageContext", empty: "#stageEmpty", count: "#stageCount" });</script>
 </body>

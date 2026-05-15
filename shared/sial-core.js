@@ -345,6 +345,147 @@ const SIALCore = (() => {
     initSidebarToggle();
   }
 
+  /* === SIAL View Motion START (reversible block) ===
+     Remove this function, its exports, and the DOMContentLoaded call at the end to disable page motion. */
+  function initPageTransitions(config = {}) {
+    if (!document.body) {
+      document.addEventListener("DOMContentLoaded", () => initPageTransitions(config), { once: true });
+      return;
+    }
+    const root = document.documentElement;
+    if (root.dataset.viewMotionReady === "true") return;
+    if (root.dataset.viewMotionDisabled === "true" || document.body.hasAttribute("data-view-motion-disabled")) return;
+    root.dataset.viewMotionReady = "true";
+
+    const reducedMotion = () => window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const leaveDelay = Number(config.leaveDelay ?? 150);
+    const overlayDelay = Number(config.overlayDelay ?? 320);
+    let navigationTimer = null;
+    let overlayTimer = null;
+
+    function ensureMotionSurfaces() {
+      if (!qs("[data-view-motion-bar]")) {
+        const bar = document.createElement("div");
+        bar.className = "view-motion-bar";
+        bar.dataset.viewMotionBar = "true";
+        bar.setAttribute("aria-hidden", "true");
+        document.body.appendChild(bar);
+      }
+      if (!qs("[data-view-motion-overlay]")) {
+        const overlay = document.createElement("div");
+        overlay.className = "view-motion-overlay";
+        overlay.dataset.viewMotionOverlay = "true";
+        overlay.setAttribute("role", "status");
+        overlay.setAttribute("aria-live", "polite");
+        overlay.innerHTML = `
+          <div class="view-motion-card">
+            <span class="view-motion-brand" aria-hidden="true"></span>
+            <span class="view-motion-text">Cargando vista</span>
+            <span class="view-motion-track" aria-hidden="true"><span></span></span>
+          </div>
+        `;
+        document.body.appendChild(overlay);
+      }
+    }
+
+    function markMotionItems() {
+      const selectors = [
+        ".main .page > .page-header",
+        ".main .page > .notice",
+        ".main .page > .stats",
+        ".main .page > .card",
+        ".main .page > .catalog-section",
+        ".main .page > .pattern-card",
+        ".public-changelog-page > .changelog-hero",
+        ".public-changelog-page > .release-filterbar",
+        ".public-changelog-page > .release-list",
+        ".error-page > .error-panel"
+      ];
+      qsa("[data-view-motion-item]").forEach((item) => {
+        delete item.dataset.viewMotionItem;
+        item.style.removeProperty("--view-motion-index");
+      });
+      qsa(selectors.join(",")).slice(0, 12).forEach((item, index) => {
+        item.dataset.viewMotionItem = "true";
+        item.style.setProperty("--view-motion-index", String(index));
+      });
+    }
+
+    function enterView() {
+      ensureMotionSurfaces();
+      markMotionItems();
+      if (reducedMotion()) {
+        root.dataset.viewMotion = "ready";
+        return;
+      }
+      root.dataset.viewMotion = "entering";
+      window.setTimeout(() => {
+        if (root.dataset.viewMotion === "entering") root.dataset.viewMotion = "ready";
+      }, 760);
+    }
+
+    function resetMotion() {
+      window.clearTimeout(navigationTimer);
+      window.clearTimeout(overlayTimer);
+      delete root.dataset.viewMotionOverlay;
+      if (root.dataset.viewMotion === "leaving") root.dataset.viewMotion = "ready";
+    }
+
+    function shouldHandleLink(link, event) {
+      if (!link || event.defaultPrevented || event.button !== 0) return false;
+      if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return false;
+      if (link.hasAttribute("download")) return false;
+      if (link.target && link.target !== "_self") return false;
+      if (link.dataset.viewMotion === "false") return false;
+      const rawHref = link.getAttribute("href");
+      if (!rawHref || rawHref.startsWith("#")) return false;
+      if (/^(mailto:|tel:|javascript:)/i.test(rawHref)) return false;
+
+      let url;
+      try {
+        url = new URL(rawHref, window.location.href);
+      } catch {
+        return false;
+      }
+      if (url.origin !== window.location.origin) return false;
+      const sameDocument = url.pathname === window.location.pathname && url.search === window.location.search;
+      if (sameDocument && url.hash) return false;
+      return url.href !== window.location.href;
+    }
+
+    function startTransition(targetHref) {
+      if (reducedMotion()) {
+        window.location.href = targetHref;
+        return;
+      }
+      resetMotion();
+      ensureMotionSurfaces();
+      root.dataset.viewMotion = "leaving";
+      overlayTimer = window.setTimeout(() => {
+        root.dataset.viewMotionOverlay = "visible";
+      }, overlayDelay);
+      navigationTimer = window.setTimeout(() => {
+        window.location.href = targetHref;
+      }, leaveDelay);
+    }
+
+    document.addEventListener("click", (event) => {
+      const link = event.target.closest?.("a[href]");
+      if (!shouldHandleLink(link, event)) return;
+      event.preventDefault();
+      startTransition(link.href);
+    });
+
+    window.addEventListener("pagehide", resetMotion);
+    window.addEventListener("pageshow", (event) => {
+      resetMotion();
+      if (event.persisted) enterView();
+    });
+
+    window.requestAnimationFrame(enterView);
+  }
+  /* === SIAL View Motion END (reversible block) === */
+
   function setFieldState(input, note, error, successText = "Dato validado.") {
     if (!input || !note) return;
     input.classList.toggle("is-error", Boolean(error));
@@ -816,6 +957,7 @@ const SIALCore = (() => {
     escapeHtml,
     normalize,
     initThemeToggle,
+    initPageTransitions,
     initSidebarToggle,
     initNavigation,
     navigationRegistry,
@@ -829,3 +971,11 @@ const SIALCore = (() => {
 })();
 
 window.SIALCore = SIALCore;
+
+/* === SIAL View Motion START (reversible hook) === */
+if (document.readyState === "loading") {
+  document.addEventListener("DOMContentLoaded", () => SIALCore.initPageTransitions(), { once: true });
+} else {
+  SIALCore.initPageTransitions();
+}
+/* === SIAL View Motion END (reversible hook) === */

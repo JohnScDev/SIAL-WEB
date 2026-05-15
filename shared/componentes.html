@@ -11,7 +11,7 @@
       document.documentElement.dataset.theme = savedTheme || (systemDark ? "dark" : "light");
     })();
   </script>
-  <link rel="stylesheet" href="sial-core.css?v=20260515-errors1" />
+  <link rel="stylesheet" href="sial-core.css?v=20260515-motion1" />
 </head>
 <body data-view-family="gestion">
   <div class="app-shell">
@@ -50,6 +50,10 @@
         <a class="nav-link" href="#estados">
           <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v18"></path><path d="M5 8h14"></path><path d="M5 16h14"></path></svg>
           <span>Estados</span>
+        </a>
+        <a class="nav-link" href="#view-motion">
+          <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h16"></path><path d="M13 5l7 7-7 7"></path><path d="M4 5h4"></path><path d="M4 19h4"></path></svg>
+          <span>Motion</span>
         </a>
         <a class="nav-link" href="#indicadores">
           <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 19V5"></path><path d="M4 19h16"></path><path d="M8 15l3-4 3 2 5-7"></path></svg>
@@ -559,6 +563,44 @@
               </div>
               <span class="error-state-meta">Codigo 500 · Error interno del servicio</span>
             </div>
+          </div>
+        </section>
+
+        <section class="card" id="view-motion" aria-labelledby="viewMotionTitle">
+          <div class="card-header">
+            <div>
+              <h2 class="card-title" id="viewMotionTitle">SIAL View Motion</h2>
+              <p class="card-subtitle">Capa estetica reversible para transiciones entre paginas y vistas: barra superior, salida suave y loader institucional diferido.</p>
+            </div>
+            <span class="tag tag-warning">Reversible</span>
+          </div>
+          <div class="card-body">
+            <div class="view-motion-spec-grid">
+              <article class="component-preview">
+                <span class="tag">Inmediato</span>
+                <strong>Barra superior</strong>
+                <p>Confirma el cambio de vista sin bloquear lectura ni mover el layout.</p>
+              </article>
+              <article class="component-preview">
+                <span class="tag">Diferido</span>
+                <strong>Overlay SIAL</strong>
+                <p>Solo aparece si la navegacion tarda, usando isotipo y texto operativo.</p>
+              </article>
+              <article class="component-preview">
+                <span class="tag">Entrada</span>
+                <strong>Fade y elevacion</strong>
+                <p>El contenido nuevo entra con movimiento breve y componentes escalonados.</p>
+              </article>
+            </div>
+            <div class="view-motion-preview" aria-label="Previsualizacion de SIAL View Motion">
+              <span class="view-motion-preview-bar" aria-hidden="true"></span>
+              <div class="view-motion-card">
+                <span class="view-motion-brand" aria-hidden="true"></span>
+                <span class="view-motion-text">Cargando vista</span>
+                <span class="view-motion-track" aria-hidden="true"><span></span></span>
+              </div>
+            </div>
+            <p class="field-note">Identificacion tecnica: bloques `SIAL View Motion START/END`, helper `initPageTransitions()` y atributo opcional `data-view-motion-disabled`.</p>
           </div>
         </section>
 
@@ -1396,7 +1438,7 @@
     </div>
   </aside>
 
-  <script src="sial-core.js?v=20260515-errors1"></script>
+  <script src="sial-core.js?v=20260515-motion1"></script>
   <script>
     window.SIALCore?.initThemeToggle?.();
     window.SIALCore?.initDrawer?.();

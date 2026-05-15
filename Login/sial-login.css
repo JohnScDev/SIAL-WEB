@@ -526,9 +526,143 @@ button, input { font: inherit; }
 
 .is-hidden { display: none !important; }
 
+/* === SIAL View Motion START (auth reversible block) ===
+   Remove this block plus initAuthViewMotion in sial-login.js to disable auth page motion. */
+.view-motion-bar {
+  position: fixed;
+  z-index: 90;
+  inset: 0 0 auto;
+  height: 3px;
+  background: linear-gradient(90deg, var(--color-primary-500), #1d7fe0, var(--color-primary-600));
+  box-shadow: 0 10px 28px rgba(0, 92, 168, .28);
+  opacity: 0;
+  pointer-events: none;
+  transform: scaleX(0);
+  transform-origin: left center;
+}
+.view-motion-overlay {
+  position: fixed;
+  z-index: 85;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  background: rgba(245, 247, 250, .88);
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity .2s ease, visibility .2s ease;
+  backdrop-filter: blur(8px);
+}
+.view-motion-card {
+  min-width: min(320px, calc(100vw - 48px));
+  display: grid;
+  justify-items: center;
+  gap: 14px;
+  padding: 28px;
+  border: 1px solid var(--color-border-subtle);
+  border-radius: 16px;
+  background: rgba(255, 255, 255, .94);
+  box-shadow: var(--shadow-elevated);
+}
+.view-motion-brand {
+  position: relative;
+  width: 72px;
+  height: 72px;
+  display: grid;
+  place-items: center;
+  border-radius: 18px;
+  background: linear-gradient(145deg, var(--color-primary-50), var(--color-surface));
+  box-shadow: inset 0 0 0 1px rgba(0, 92, 168, .16), 0 18px 44px rgba(0, 92, 168, .16);
+}
+.view-motion-brand::before {
+  content: "";
+  width: 58px;
+  height: 58px;
+  display: block;
+  background: url("../shared/brand/isotipo-sial.svg") center / contain no-repeat;
+}
+.view-motion-brand::after {
+  content: "";
+  position: absolute;
+  inset: -5px;
+  border-radius: 22px;
+  border: 2px solid transparent;
+  border-top-color: rgba(0, 92, 168, .72);
+  border-right-color: rgba(29, 127, 224, .58);
+  animation: viewMotionOrbit 1.08s cubic-bezier(.65, 0, .35, 1) infinite;
+}
+.view-motion-text {
+  color: var(--color-text);
+  font-size: 14px;
+  font-weight: 600;
+}
+.view-motion-track {
+  width: 184px;
+  height: 4px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: var(--color-primary-100);
+}
+.view-motion-track span {
+  display: block;
+  width: 48%;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, var(--color-primary-500), #1d7fe0);
+  animation: viewMotionTrack 1s ease-in-out infinite;
+}
+html[data-view-motion="entering"] .auth-shell {
+  animation: viewMotionEnter .34s cubic-bezier(.2, .8, .2, 1) both;
+}
+html[data-view-motion="leaving"] .view-motion-bar {
+  opacity: 1;
+  animation: viewMotionBar 1.25s cubic-bezier(.16, 1, .3, 1) forwards;
+}
+html[data-view-motion="leaving"] .auth-shell {
+  opacity: .58;
+  transform: translateY(6px) scale(.998);
+  transition: opacity .18s ease, transform .18s ease;
+}
+html[data-view-motion-overlay="visible"] .view-motion-overlay {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+}
+@keyframes viewMotionBar {
+  0% { transform: scaleX(0); }
+  58% { transform: scaleX(.72); }
+  100% { transform: scaleX(.94); }
+}
+@keyframes viewMotionEnter {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes viewMotionOrbit {
+  to { transform: rotate(360deg); }
+}
+@keyframes viewMotionTrack {
+  0% { transform: translateX(-105%); }
+  52% { transform: translateX(64%); }
+  100% { transform: translateX(214%); }
+}
+/* === SIAL View Motion END (auth reversible block) === */
+
 @media (prefers-reduced-motion: reduce) {
-  .carousel-slide {
+  .carousel-slide,
+  .view-motion-bar,
+  .view-motion-overlay,
+  .view-motion-card,
+  .view-motion-brand,
+  .view-motion-brand::after,
+  .view-motion-track span {
     transition: none;
+    animation: none;
+  }
+  html[data-view-motion="entering"] .auth-shell,
+  html[data-view-motion="leaving"] .auth-shell {
+    opacity: 1;
+    transform: none;
   }
 }
 
