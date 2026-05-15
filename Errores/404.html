@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SIAL | Error 404</title>
+  <script>
+    (function () {
+      const savedTheme = localStorage.getItem("sial-theme");
+      const systemDark = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
+      document.documentElement.dataset.theme = savedTheme || (systemDark ? "dark" : "light");
+    })();
+  </script>
+  <link rel="stylesheet" href="../shared/sial-core.css?v=20260515-errors1" />
+</head>
+<body data-view-family="sistema">
+  <main class="error-shell" id="error-404">
+    <section class="page error-page" aria-labelledby="errorTitle">
+      <div class="public-changelog-topbar error-topbar">
+        <a class="brand public-changelog-brand" href="../index.html" aria-label="Volver al catalogo SIAL"><span class="brand-badge">S</span><span>SIAL</span></a>
+        <button class="icon-btn theme-toggle" type="button" data-theme-toggle aria-label="Cambiar a modo oscuro" aria-pressed="false" title="Cambiar a modo oscuro">
+          <svg class="icon theme-icon theme-icon-moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12.8A8.5 8.5 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"></path></svg>
+          <svg class="icon theme-icon theme-icon-sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2"></path><path d="M12 20v2"></path><path d="m4.93 4.93 1.41 1.41"></path><path d="m17.66 17.66 1.41 1.41"></path><path d="M2 12h2"></path><path d="M20 12h2"></path><path d="m6.34 17.66-1.41 1.41"></path><path d="m19.07 4.93-1.41 1.41"></path></svg>
+        </button>
+      </div>
+
+      <article class="error-panel error-panel-missing" aria-describedby="errorDescription">
+        <div class="error-main">
+          <p class="page-eyebrow">SIAL / Estado del sistema</p>
+          <span class="error-code" aria-label="Codigo de error 404">404</span>
+          <h1 class="error-title" id="errorTitle">Vista no encontrada</h1>
+          <p class="error-description" id="errorDescription">La direccion solicitada no existe, fue movida o todavia no esta publicada en el catalogo de propuestas SIAL.</p>
+          <div class="error-actions">
+            <a class="btn btn-primary" href="../index.html">Volver al catalogo</a>
+            <a class="btn btn-secondary" href="../shared/componentes.html">Ver libreria UI</a>
+          </div>
+        </div>
+        <aside class="error-support" aria-label="Sugerencias para resolver el error">
+          <span class="tag">Navegacion</span>
+          <h2>Que puedes hacer</h2>
+          <ul class="error-list">
+            <li>Regresa al catalogo y abre la vista desde su card.</li>
+            <li>Valida si el enlace conserva mayusculas, espacios y nombre del archivo.</li>
+            <li>Reporta el enlace si venia desde el menu o una documentacion.</li>
+          </ul>
+          <p class="error-meta">Codigo 404 · Recurso no encontrado</p>
+        </aside>
+      </article>
+    </section>
+  </main>
+
+  <script src="../shared/sial-core.js?v=20260515-errors1"></script>
+  <script>window.SIALCore?.initThemeToggle?.();</script>
+</body>
+</html>

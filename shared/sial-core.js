@@ -279,7 +279,29 @@ const SIALCore = (() => {
         const sublist = qs(`#${button.getAttribute("aria-controls")}`, nav);
         if (!sublist) return;
         const willExpand = sublist.hasAttribute("hidden");
-        sublist.toggleAttribute("hidden", !willExpand);
+        const reducedMotion = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+        const motionDuration = reducedMotion ? 0 : 180;
+        clearTimeout(sublist.navMotionTimer);
+        if (willExpand) {
+          sublist.hidden = false;
+          if (reducedMotion) {
+            delete sublist.dataset.navMotion;
+          } else {
+            sublist.dataset.navMotion = "opening";
+          }
+          sublist.navMotionTimer = window.setTimeout(() => {
+            delete sublist.dataset.navMotion;
+          }, motionDuration + 40);
+        } else if (motionDuration > 0) {
+          sublist.dataset.navMotion = "closing";
+          sublist.navMotionTimer = window.setTimeout(() => {
+            sublist.hidden = true;
+            delete sublist.dataset.navMotion;
+          }, motionDuration);
+        } else {
+          sublist.hidden = true;
+          delete sublist.dataset.navMotion;
+        }
         button.setAttribute("aria-expanded", String(willExpand));
         button.setAttribute("aria-label", `${willExpand ? "Contraer" : "Expandir"} vistas de ${activeModule.label}`);
         button.setAttribute("title", willExpand ? "Contraer vistas" : "Expandir vistas");

@@ -225,14 +225,15 @@ button, input { font: inherit; }
 .brand-mark {
   width: 52px;
   height: 52px;
+  flex: 0 0 52px;
   display: grid;
   place-items: center;
-  border-radius: 14px;
-  background: var(--color-primary-500);
-  color: #fff;
-  font-size: 28px;
-  font-weight: 700;
-  box-shadow: var(--shadow-elevated);
+  overflow: hidden;
+  border-radius: 0;
+  background: transparent url("../shared/brand/isotipo-sial.svg") center / contain no-repeat;
+  color: transparent;
+  text-indent: -999px;
+  box-shadow: none;
 }
 
 .brand-block strong {

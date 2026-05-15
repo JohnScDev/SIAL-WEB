@@ -11,6 +11,46 @@ const SIALCatalog = (() => {
       tags: ["Componentes", "Dark mode", "Tokens"]
     },
     {
+      module: "sistema",
+      moduleLabel: "Estados del sistema",
+      title: "Error 401 - Sesion no autenticada",
+      family: "sistema",
+      status: "implementada",
+      href: "Errores/401.html",
+      description: "Pagina institucional para sesion vencida, no autenticada o acceso que requiere volver al login.",
+      tags: ["401", "Autenticacion", "Sesion"]
+    },
+    {
+      module: "sistema",
+      moduleLabel: "Estados del sistema",
+      title: "Error 403 - Acceso restringido",
+      family: "sistema",
+      status: "implementada",
+      href: "Errores/403.html",
+      description: "Pagina para usuarios sin permisos funcionales sobre una vista, modulo u operacion protegida.",
+      tags: ["403", "Permisos", "Seguridad"]
+    },
+    {
+      module: "sistema",
+      moduleLabel: "Estados del sistema",
+      title: "Error 404 - Vista no encontrada",
+      family: "sistema",
+      status: "implementada",
+      href: "Errores/404.html",
+      description: "Pagina para rutas inexistentes o vistas no publicadas; incluye fallback raiz para GitHub Pages.",
+      tags: ["404", "Ruta", "GitHub Pages"]
+    },
+    {
+      module: "sistema",
+      moduleLabel: "Estados del sistema",
+      title: "Error 500 - Falla de servicio",
+      family: "sistema",
+      status: "implementada",
+      href: "Errores/500.html",
+      description: "Pagina para errores internos o fallas de servicio, con accion de reintento y retorno seguro.",
+      tags: ["500", "Servicio", "Reintentar"]
+    },
+    {
       module: "indicadores",
       moduleLabel: "Indicadores y KPIs",
       title: "Catalogo funcional de indicadores",
@@ -505,7 +545,7 @@ const SIALCatalog = (() => {
   }
 
   function render() {
-    ["libreria", "indicadores", "changelog", "autenticacion", "usuarios", "empresas", "transporte", "fincas", "puerto", "aviso-corte"].forEach((module) => {
+    ["libreria", "sistema", "indicadores", "changelog", "autenticacion", "usuarios", "empresas", "transporte", "fincas", "puerto", "aviso-corte"].forEach((module) => {
       const group = qs(`[data-module-group="${module}"]`);
       if (!group) return;
       group.innerHTML = views.filter((view) => view.module === module).map(cardTemplate).join("");

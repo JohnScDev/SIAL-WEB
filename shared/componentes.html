@@ -11,7 +11,7 @@
       document.documentElement.dataset.theme = savedTheme || (systemDark ? "dark" : "light");
     })();
   </script>
-  <link rel="stylesheet" href="sial-core.css" />
+  <link rel="stylesheet" href="sial-core.css?v=20260515-errors1" />
 </head>
 <body data-view-family="gestion">
   <div class="app-shell">
@@ -528,15 +528,36 @@
               </article>
               <article class="state-panel">
                 <span class="tag tag-success">Sin permisos</span>
-                <div class="permission-box">
-                  <strong>Acceso restringido</strong>
-                  <p class="field-note">Solo usuarios administrativos pueden gestionar esta tabla maestra.</p>
+                <div class="error-state error-state-info error-state-compact" role="status" aria-label="Estado sin permisos">
+                  <span class="error-state-icon" aria-hidden="true"><svg class="icon" viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="10" rx="2"></rect><path d="M8 11V8a4 4 0 0 1 8 0v3"></path></svg></span>
+                  <div>
+                    <strong class="error-state-title">Acceso restringido</strong>
+                    <p>Solo usuarios administrativos pueden gestionar esta tabla maestra.</p>
+                  </div>
                 </div>
               </article>
               <article class="state-panel">
                 <span class="tag tag-warning">Error</span>
-                <div class="notice notice-error"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="m15 9-6 6"></path><path d="m9 9 6 6"></path></svg><span>No se pudo consultar la informacion. Intenta nuevamente.</span></div>
+                <div class="error-state error-state-compact" role="alert" aria-label="Error de consulta">
+                  <span class="error-state-icon" aria-hidden="true"><svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"></circle><path d="m15 9-6 6"></path><path d="m9 9 6 6"></path></svg></span>
+                  <div>
+                    <strong class="error-state-title">No se pudo consultar la informacion</strong>
+                    <p>Intenta nuevamente sin salir de la vista.</p>
+                  </div>
+                </div>
               </article>
+            </div>
+            <div class="error-state" role="alert" aria-label="Error embebido compartido">
+              <span class="error-state-icon" aria-hidden="true"><svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"></circle><path d="M12 8v5"></path><path d="M12 16h.01"></path></svg></span>
+              <div>
+                <strong class="error-state-title">Error embebido de modulo</strong>
+                <p>Usar cuando una tabla, card o consulta falle sin sacar al usuario de la vista actual.</p>
+              </div>
+              <div class="error-state-actions">
+                <button class="btn btn-primary" type="button">Reintentar</button>
+                <a class="btn btn-secondary" href="../Errores/500.html">Ver pagina 500</a>
+              </div>
+              <span class="error-state-meta">Codigo 500 · Error interno del servicio</span>
             </div>
           </div>
         </section>
@@ -1375,7 +1396,7 @@
     </div>
   </aside>
 
-  <script src="sial-core.js?v=20260514-routes2"></script>
+  <script src="sial-core.js?v=20260515-errors1"></script>
   <script>
     window.SIALCore?.initThemeToggle?.();
     window.SIALCore?.initDrawer?.();

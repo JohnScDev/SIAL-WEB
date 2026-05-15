@@ -8,12 +8,15 @@ Interfaz raiz para publicar en Netlify las propuestas HTML del entorno web SIAL.
 - `sial-catalogo.css`: estilos autonomos alineados al lenguaje visual usado en las propuestas.
 - `sial-catalogo.js`: dataset de vistas, render de cards y filtros.
 - `shared/componentes.html`: referencia visual de componentes compartidos, tokens, estados y dark mode.
+- `Errores/`: vistas dedicadas para estados 401, 403, 404 y 500.
+- `404.html`: fallback visual raiz para GitHub Pages.
 
 ## Modulos enlazados
 
 - `Login`
 - `Changelog`
 - `shared/componentes.html`
+- `Errores`
 - `Gestion de Transporte`
 - `Gestion de Usuarios`
 - `Gestion de Empresas`

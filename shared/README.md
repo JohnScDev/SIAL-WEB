@@ -7,6 +7,7 @@ Libreria compartida para las propuestas HTML del entorno SIAL.
 - `sial-core.css`: tokens, dark mode, layout, shell, cards, botones, formularios, tablas, drawers, estados y patrones comunes.
 - `sial-core.js`: utilidades reutilizables para tema, filtros, drawers, formularios embebidos, estados de campo, confirmacion de acciones de estado y changelog.
 - `componentes.html`: inventario visual para QA de tokens, componentes, indicadores, estados y modo oscuro.
+- `brand/isotipo-sial.svg`: isotipo SIAL compartido para la marca del shell y encabezados donde el texto `SIAL` se conserva por separado.
 
 ## Regla de uso
 
@@ -23,9 +24,12 @@ Las reglas locales solo deben agregarse si el modulo necesita una variante espec
 La base actual concentra:
 
 - Shell, sidebar expandido/colapsado, navegacion por area/modulo/vista, vistas de modulo contraibles, header, busqueda, avatar y boton de tema.
+- Marca del shell mediante `brand-badge`, usando el isotipo SIAL compartido sin duplicar el texto de marca en cada vista. El texto `SIAL` conserva la escala, peso y familia tipografica del login institucional.
+- Microinteracciones del sidebar: hover operativo, indicador activo animado, acordeon suave de submenus, transicion al contraer/desplegar el menu y marca estable con aparicion lateral del texto, respetando `prefers-reduced-motion`.
 - Botones primary, secondary, ghost, destructive e icon-only.
 - Cards, headers de card, stats, grids y layouts responsivos.
 - Alertas `notice-info`, `notice-warning`, `notice-error`, `notice-success` con fondo, texto y borde semantico.
+- Sistema de errores compartido: paginas dedicadas para `401`, `403`, `404`, `500` y componente embebido `error-state` para fallas dentro de modulos o tablas.
 - Inputs, selects, textarea, field-note, validacion error/success y read-only.
 - Componentes de autenticacion: stepper OTP, campo de contrasena con accion embebida y acceso a novedades.
 - Tablas, toolbar, paginacion 10/30/50, empty state, badges, chips y estados.
@@ -44,6 +48,17 @@ Las acciones de tabla para activar o inactivar deben usar botones `icon-btn` con
 `SIALCore.initNavigation` inicializa automaticamente la confirmacion. El flujo muestra el registro afectado, aclara que no hay eliminacion fisica, registra auditoria visual de prototipo y actualiza `data-status`, badge, icono y filtros.
 
 No se deben duplicar definiciones de estos componentes en los CSS locales.
+
+## Estados de error
+
+Las paginas completas de error viven en `Errores/` y usan la misma marca, modo oscuro y tokens de `sial-core.css`.
+
+- `401`: sesion no autenticada o vencida; accion principal hacia login.
+- `403`: usuario sin permisos; accion principal de retorno seguro.
+- `404`: ruta o vista no encontrada; existe tambien `404.html` en la raiz para GitHub Pages.
+- `500`: falla interna de servicio; accion principal de reintento.
+
+Cuando el error ocurre dentro de una tabla, card o consulta, usar `error-state` en lugar de sacar al usuario de la vista.
 
 ## Dark mode
 
