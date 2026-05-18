@@ -11,13 +11,15 @@ Libreria compartida para las propuestas HTML del entorno SIAL.
 
 ## Regla de uso
 
+`shared` es la fuente tecnica principal de componentes web SIAL dentro de estas propuestas. Las copias publicadas, como `sial-catalogo/shared` o la carpeta `shared` en Drive, deben salir de esta carpeta y no evolucionar de forma independiente.
+
 Cada modulo debe conservar su archivo local, por ejemplo `sial-fincas.css`, pero ese archivo debe importar la libreria:
 
 ```css
 @import url("../shared/sial-core.css");
 ```
 
-Las reglas locales solo deben agregarse si el modulo necesita una variante especifica no cubierta por la libreria.
+Las reglas locales solo deben agregarse si el modulo necesita una variante especifica no cubierta por la libreria. Antes de crear una regla local, validar si el comportamiento pertenece a un componente reutilizable. Si pertenece al sistema, debe agregarse aqui.
 
 ## Componentes centralizados
 
@@ -91,3 +93,15 @@ Cada vista debe incluir el script temprano en el `<head>` para evitar parpadeo v
 3. Crear CSS local con import a `../shared/sial-core.css`.
 4. Crear JS local solo con reglas de negocio del modulo.
 5. Incluir `../shared/sial-core.js` antes del JS local.
+
+## Control antes de publicar
+
+Antes de copiar cambios al catalogo o a Drive, validar:
+
+- `node --check shared/sial-core.js`.
+- Existencia de `shared/brand/isotipo-sial.svg`.
+- Existencia de `SIALCore.initShell`.
+- Existencia de `SIALCore.initPageTransitions`.
+- Existencia de `view-motion-overlay` y texto `Cargando vista`.
+- Escaneo SIAL UI de los modulos modificados.
+- Que las vistas de login con `.brand-mark` usen el isotipo compartido y no una marca local dibujada.

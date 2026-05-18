@@ -24,7 +24,7 @@
 
         <article class="card">
           <div class="card-header"><div><h2 class="card-title">Categorias existentes</h2><p class="card-subtitle">Listado maestro compacto con acciones permitidas, estado y auditoria.</p></div><div class="card-actions"><span class="chip" id="licenseCount">0 registros visibles</span><button class="btn btn-primary" type="button" data-open-inline-form aria-expanded="false" aria-controls="licenseInlineForm">Nueva categoria</button></div></div>
-          <div class="card-body"><div class="toolbar compact"><input class="input" id="licenseSearch" type="search" placeholder="Buscar codigo o descripcion" /><select class="select" id="licenseStatus"><option value="all">Todos</option><option value="active">Activo</option><option value="inactive">Inactivo</option></select><select class="select" id="licenseContext"><option value="all">Todos los grupos</option><option value="publico">Servicio publico</option><option value="particular">Particular</option></select></div></div>
+          <div class="card-body"><div class="toolbar compact"><input class="input" id="licenseSearch" type="search" aria-label="Buscar codigo o descripcion" placeholder="Buscar codigo o descripcion" /><select class="select" id="licenseStatus"><option value="all">Todos</option><option value="active">Activo</option><option value="inactive">Inactivo</option></select><select class="select" id="licenseContext"><option value="all">Todos los grupos</option><option value="publico">Servicio publico</option><option value="particular">Particular</option></select></div></div>
 
           <div class="inline-form-panel is-hidden" id="licenseInlineForm" data-inline-form-panel>
             <div class="form-heading"><h2 data-inline-form-title>Nueva categoria</h2><p>Formulario corto dentro de la gestion. El codigo debe ser unico, alfanumerico y guardarse en mayusculas sostenidas.</p></div>
@@ -63,7 +63,7 @@
     </div>
   </aside>
 
-  <script src="../shared/sial-core.js?v=20260515-motion1"></script>
+  <script src="../shared/sial-core.js"></script>
   <script src="sial-conductores.js"></script>
   <script>
     SIAL.applyShell("licencias");

@@ -24,7 +24,7 @@
 
         <article class="card">
           <div class="card-header"><div><h2 class="card-title">Relaciones registradas</h2><p class="card-subtitle">Consulta de categorias activas por conductor con auditoria y registro embebido.</p></div><div class="card-actions"><span class="chip" id="relationCount">0 registros visibles</span><button class="btn btn-primary" type="button" data-open-inline-form aria-expanded="false" aria-controls="relationInlineForm">Nueva relacion</button></div></div>
-          <div class="card-body"><div class="toolbar compact"><input class="input" id="relationSearch" type="search" placeholder="Buscar conductor o licencia" /><select class="select" id="relationStatus"><option value="all">Todos</option><option value="active">Vigente</option><option value="warning">Por vencer</option></select><select class="select" id="relationContext"><option value="all">Todas las empresas</option><option value="SIAL Central">SIAL Central</option><option value="Banapalma">Banapalma</option></select></div></div>
+          <div class="card-body"><div class="toolbar compact"><input class="input" id="relationSearch" type="search" aria-label="Buscar conductor o licencia" placeholder="Buscar conductor o licencia" /><select class="select" id="relationStatus"><option value="all">Todos</option><option value="active">Vigente</option><option value="warning">Por vencer</option></select><select class="select" id="relationContext"><option value="all">Todas las empresas</option><option value="SIAL Central">SIAL Central</option><option value="Banapalma">Banapalma</option></select></div></div>
 
           <div class="inline-form-panel is-hidden" id="relationInlineForm" data-inline-form-panel>
             <div class="form-heading"><h2 data-inline-form-title>Nueva relacion</h2><p>Formulario relacional corto con validacion de llave compuesta y fecha de vencimiento obligatoria.</p></div>
@@ -49,7 +49,7 @@
           </tbody></table></div>
           <div class="card-body"><div class="empty-state" id="relationEmpty">No hay relaciones que coincidan con los filtros.</div></div>
         </article>
-        <article class="card" style="margin-top:20px">
+        <article class="card mt-24">
           <div class="card-header"><div><h2 class="card-title">Estado sin permisos</h2><p class="card-subtitle">Representacion requerida por el documento para usuarios no administrativos.</p></div></div>
           <div class="card-body"><div class="notice notice-error"><svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"></circle><path d="M12 8v5"></path><path d="M12 16h.01"></path></svg><span>No tienes permisos administrativos para gestionar relaciones conductor + licencia. Puedes consultar los registros autorizados, pero no crear ni modificar asignaciones.</span></div></div>
         </article>
@@ -71,7 +71,7 @@
     </div>
   </aside>
 
-  <script src="../shared/sial-core.js?v=20260515-motion1"></script>
+  <script src="../shared/sial-core.js"></script>
   <script src="sial-conductores.js"></script>
   <script>
     SIAL.applyShell("relacion");

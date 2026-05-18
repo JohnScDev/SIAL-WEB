@@ -314,6 +314,10 @@ const SIALCore = (() => {
     initStateActionConfirm();
   }
 
+  function initShell(config = {}) {
+    initNavigation(config);
+  }
+
   function initThemeToggle() {
     const toggles = qsa("[data-theme-toggle]").filter((toggle) => toggle.dataset.themeReady !== "true");
     if (!toggles.length) return;
@@ -960,6 +964,7 @@ const SIALCore = (() => {
     initPageTransitions,
     initSidebarToggle,
     initNavigation,
+    initShell,
     navigationRegistry,
     setFieldState,
     initTableFilters,

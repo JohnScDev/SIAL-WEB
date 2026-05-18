@@ -7,8 +7,8 @@ const SIAL = (() => {
   };
 
   function applyShell(activeKey) {
-    if (window.SIALCore?.initNavigation) {
-      window.SIALCore.initNavigation({ area: "gestion", module: "fincas", view: activeKey || "fincas" });
+    if (window.SIALCore?.initShell) {
+      window.SIALCore.initShell({ area: "gestion", module: "fincas", view: activeKey || "fincas" });
       return;
     }
     window.SIALCore?.initThemeToggle?.();

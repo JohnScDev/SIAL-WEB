@@ -102,7 +102,7 @@
   right: 44px;
   bottom: 104px;
   z-index: 5;
-  color: #fff;
+  color: var(--color-on-primary);
 }
 
 .cover-caption span {
@@ -112,7 +112,7 @@
   padding: 0 10px;
   border-radius: 999px;
   background: rgba(254, 204, 0, .94);
-  color: #1a1f36;
+  color: var(--color-text);
   font-size: 12px;
   font-weight: 700;
   letter-spacing: .08em;
@@ -147,7 +147,7 @@
   border: 1px solid rgba(255, 255, 255, .5);
   border-radius: 8px;
   background: rgba(255, 255, 255, .14);
-  color: #fff;
+  color: var(--color-on-primary);
   cursor: pointer;
 }
 

@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>SIAL | Login institucional</title>
-  <link rel="stylesheet" href="sial-login.css?v=20260515-motion1" />
+  <link rel="stylesheet" href="sial-login.css?v=20260429-anchos" />
 </head>
 <body>
   <main class="auth-page" aria-labelledby="loginTitle">
@@ -77,7 +77,7 @@
             <p>Accede con tus credenciales asignadas. Despues del ingreso selecciona la empresa de trabajo.</p>
           </div>
 
-          <form class="login-form" novalidate>
+          <form class="login-form" novalidate data-auth-form data-loading-text="Validando acceso..." data-default-text="Iniciar sesion" data-redirect="seleccionar-empresa.html">
             <div class="alert alert-error is-hidden" role="alert" aria-live="polite" data-login-error>
               No fue posible iniciar sesion. Verifica usuario y contrasena.
             </div>
@@ -119,6 +119,6 @@
     </section>
   </main>
 
-  <script src="sial-login.js?v=20260515-motion1"></script>
+  <script src="sial-login.js"></script>
 </body>
 </html>

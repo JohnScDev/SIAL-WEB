@@ -91,7 +91,7 @@ const SIALChangelogAdmin = (() => {
       .replaceAll("<", "&lt;")
       .replaceAll(">", "&gt;")
       .replaceAll('"', "&quot;")
-      .replaceAll("'", "&#039;");
+      .replaceAll("'", "&apos;");
   }
 
   function displayDate(date) {

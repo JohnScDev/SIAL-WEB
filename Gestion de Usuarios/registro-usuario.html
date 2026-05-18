@@ -43,7 +43,7 @@
               </div></section>
               <section class="section"><h3 class="section-title">Asignacion operativa</h3><div class="grid">
                 <div class="field span-12"><label class="label" for="company">Empresa <span class="required">*</span></label><select class="select" id="company" aria-describedby="companyNote"><option value="">Elige una empresa</option><option>SIAL Central</option><option>Banapalma</option><option>AgroCeiba</option></select><div class="field-note" id="companyNote">Selecciona una empresa para habilitar sus roles disponibles.</div></div>
-                <div class="field span-12"><div class="role-box"><p class="role-box-title">Roles disponibles para la empresa seleccionada</p><div class="role-grid" id="roleDraftGrid"></div><div class="field-note" id="rolesNote">Selecciona uno o mas roles y agrega la asignacion.</div><div class="assignment-actions" style="margin-top:12px"><button class="btn btn-secondary" type="button" id="addAssignment">Agregar asignacion</button></div><div class="assignment-summary"><div class="card-subtitle" id="assignmentNote">Agrega al menos una relacion empresa + roles antes de finalizar.</div><div class="assignment-list" id="assignmentList"></div></div></div></div>
+                <div class="field span-12"><div class="role-box"><p class="role-box-title">Roles disponibles para la empresa seleccionada</p><div class="role-grid" id="roleDraftGrid"></div><div class="field-note" id="rolesNote">Selecciona uno o mas roles y agrega la asignacion.</div><div class="assignment-actions mt-12"><button class="btn btn-secondary" type="button" id="addAssignment">Agregar asignacion</button></div><div class="assignment-summary"><div class="card-subtitle" id="assignmentNote">Agrega al menos una relacion empresa + roles antes de finalizar.</div><div class="assignment-list" id="assignmentList"></div></div></div></div>
               </div></section>
               <div class="form-actions"><a class="btn btn-secondary" href="gestion-usuarios.html">Cancelar</a><button class="btn btn-secondary" type="reset">Limpiar formulario</button><button class="btn btn-primary" type="submit">Guardar usuario</button></div>
             </form>
@@ -52,7 +52,7 @@
       </section>
     </main>
   </div>
-  <script src="../shared/sial-core.js?v=20260515-motion1"></script>
+  <script src="../shared/sial-core.js"></script>
   <script src="sial-usuarios.js"></script>
   <script>SIAL.applyShell("registro"); SIAL.initUserRoleAssignment(); SIAL.initBasicFormValidation();</script>
 </body>

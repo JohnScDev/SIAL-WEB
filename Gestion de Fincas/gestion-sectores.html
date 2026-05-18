@@ -24,7 +24,7 @@
 
         <article class="card">
           <div class="card-header"><div><h2 class="card-title">Sectores registrados</h2><p class="card-subtitle">Gestion compacta con registro embebido, filtros de uso y auditoria.</p></div><div class="card-actions"><span class="chip" id="sectorCount">0 registros visibles</span><button class="btn btn-primary" type="button" data-open-inline-form aria-expanded="false" aria-controls="sectorInlineForm">Nuevo sector</button></div></div>
-          <div class="card-body"><div class="toolbar compact"><input class="input" id="sectorSearch" type="search" placeholder="Buscar sector" /><select class="select" id="sectorStatus"><option value="all">Todos</option><option value="active">Activo</option><option value="inactive">Inactivo</option></select><select class="select" id="sectorContext"><option value="all">Todos los usos</option><option value="uso">Con fincas</option><option value="libre">Sin fincas</option></select></div></div>
+          <div class="card-body"><div class="toolbar compact"><input class="input" id="sectorSearch" type="search" aria-label="Buscar sector" placeholder="Buscar sector" /><select class="select" id="sectorStatus"><option value="all">Todos</option><option value="active">Activo</option><option value="inactive">Inactivo</option></select><select class="select" id="sectorContext"><option value="all">Todos los usos</option><option value="uso">Con fincas</option><option value="libre">Sin fincas</option></select></div></div>
 
           <div class="inline-form-panel is-hidden" id="sectorInlineForm" data-inline-form-panel>
             <div class="form-heading"><h2 data-inline-form-title>Nuevo sector</h2><p>Registro corto dentro de la gestion. El codigo es autoincremental, el nombre debe ser unico y se guarda en mayusculas sostenidas.</p></div>
@@ -60,7 +60,7 @@
       </aside>
     </main>
   </div>
-  <script src="../shared/sial-core.js?v=20260515-motion1"></script>
+  <script src="../shared/sial-core.js"></script>
   <script src="sial-fincas.js"></script>
   <script>SIAL.applyShell("sectores"); SIAL.initDrawer(); SIAL.initEmbeddedForm({ newTitle: "Nuevo sector", editTitle: "Editar sector" }); SIAL.initGenericForm(); SIAL.initTableFilters({ rowSelector: "tbody tr", search: "#sectorSearch", status: "#sectorStatus", context: "#sectorContext", empty: "#sectorEmpty", count: "#sectorCount" });</script>
 </body>

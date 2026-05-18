@@ -24,7 +24,7 @@
 
         <article class="card">
           <div class="card-header"><div><h2 class="card-title">Clases registradas</h2><p class="card-subtitle">Gestion compacta con registro embebido, filtros, estado y trazabilidad.</p></div><div class="card-actions"><span class="chip" id="classCount">0 registros visibles</span><button class="btn btn-primary" type="button" data-open-inline-form aria-expanded="false" aria-controls="classInlineForm">Nueva clase</button></div></div>
-          <div class="card-body"><div class="toolbar compact"><input class="input" id="classSearch" type="search" placeholder="Buscar clase" /><select class="select" id="classStatus"><option value="all">Todos</option><option value="active">Activo</option><option value="inactive">Inactivo</option></select><select class="select" id="classContext"><option value="all">Todos los tamanos</option><option value="LARGA">Larga</option><option value="CORTA">Corta</option></select></div></div>
+          <div class="card-body"><div class="toolbar compact"><input class="input" id="classSearch" type="search" aria-label="Buscar clase" placeholder="Buscar clase" /><select class="select" id="classStatus"><option value="all">Todos</option><option value="active">Activo</option><option value="inactive">Inactivo</option></select><select class="select" id="classContext"><option value="all">Todos los tamanos</option><option value="LARGA">Larga</option><option value="CORTA">Corta</option></select></div></div>
 
           <div class="inline-form-panel is-hidden" id="classInlineForm" data-inline-form-panel>
             <div class="form-heading"><h2 data-inline-form-title>Nueva clase de referencia</h2><p>Formulario corto dentro de la gestion. El codigo es autoincremental, el nombre se guarda en mayusculas y nombre + tamano fruta debe ser unico.</p></div>
@@ -47,7 +47,7 @@
             <tr data-status="inactive" data-context="CORTA" data-code="302" data-name="INDUSTRIAL" data-size="CORTA" data-state="Inactivo" data-audit="Desactivar - auditor.master|24/04/2026 11:10"><td>302</td><td>INDUSTRIAL</td><td>CORTA</td><td><span class="status status-inactive">Inactivo</span></td><td class="muted">Desactivar - auditor.master<br />24/04/2026 11:10</td><td><div class="row-actions"><button class="icon-btn" type="button" aria-label="Visualizar clase 302" data-open-detail><svg class="icon" viewBox="0 0 24 24"><path d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6-10-6-10-6Z"></path><circle cx="12" cy="12" r="3"></circle></svg></button><button class="icon-btn" aria-label="Editar" data-edit-inline><svg class="icon" viewBox="0 0 24 24"><path d="M12 20h9"></path><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"></path></svg></button><button class="icon-btn" aria-label="Activar"><svg class="icon" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"></path></svg></button></div></td></tr>
           </tbody></table></div><div class="card-body"><div class="empty-state" id="classEmpty">No hay clases que coincidan con los filtros.</div></div>
         </article>
-        <article class="card" style="margin-top:20px"><div class="card-header"><div><h2 class="card-title">Estado sin permisos</h2><p class="card-subtitle">Representacion para usuarios no administrativos.</p></div></div><div class="card-body"><div class="notice notice-error">No tienes permisos administrativos para gestionar clases de referencia. Puedes consultar registros autorizados, pero no crear ni modificar.</div></div></article>
+        <article class="card mt-24"><div class="card-header"><div><h2 class="card-title">Estado sin permisos</h2><p class="card-subtitle">Representacion para usuarios no administrativos.</p></div></div><div class="card-body"><div class="notice notice-error">No tienes permisos administrativos para gestionar clases de referencia. Puedes consultar registros autorizados, pero no crear ni modificar.</div></div></article>
       </section>
       <div class="drawer-backdrop" id="detailBackdrop" aria-hidden="true"></div>
       <aside class="drawer" id="detailDrawer" aria-label="Detalle de clase de referencia" aria-modal="true" role="dialog">
@@ -62,7 +62,7 @@
       </aside>
     </main>
   </div>
-  <script src="../shared/sial-core.js?v=20260515-motion1"></script>
+  <script src="../shared/sial-core.js"></script>
   <script src="sial-fincas.js"></script>
   <script>SIAL.applyShell("clases"); SIAL.initDrawer(); SIAL.initEmbeddedForm({ newTitle: "Nueva clase de referencia", editTitle: "Editar clase de referencia" }); SIAL.initGenericForm(); SIAL.initTableFilters({ rowSelector: "tbody tr", search: "#classSearch", status: "#classStatus", context: "#classContext", empty: "#classEmpty", count: "#classCount" });</script>
 </body>

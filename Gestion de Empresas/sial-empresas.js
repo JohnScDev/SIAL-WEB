@@ -3,8 +3,8 @@ const SIAL = (() => {
   const qsa = (selector, root = document) => Array.from(root.querySelectorAll(selector));
 
   function applyShell(activeKey) {
-    if (window.SIALCore?.initNavigation) {
-      window.SIALCore.initNavigation({ area: "gestion", module: "empresas", view: activeKey || "empresas" });
+    if (window.SIALCore?.initShell) {
+      window.SIALCore.initShell({ area: "gestion", module: "empresas", view: activeKey || "empresas" });
       return;
     }
     window.SIALCore?.initThemeToggle?.();

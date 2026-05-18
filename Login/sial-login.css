@@ -1,25 +1,4 @@
-@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap");
-
-:root {
-  --color-primary-50: #f2f7fc;
-  --color-primary-100: #e6f0f8;
-  --color-primary-500: #005ca8;
-  --color-primary-600: #004a87;
-  --color-primary-700: #003766;
-  --color-warning-main: #d4a800;
-  --color-error-main: #d32f2f;
-  --color-error-bg: #fdecea;
-  --color-error-text: #7a1c1c;
-  --color-bg: #f5f7fa;
-  --color-surface: #ffffff;
-  --color-border: #d9dde3;
-  --color-border-subtle: #e7eaf0;
-  --color-text: #1a1f36;
-  --color-text-2: #5b6475;
-  --color-text-3: #8c94a6;
-  --shadow-elevated: 0 12px 32px rgba(16, 24, 40, .12);
-  --font-primary: "Poppins", "Segoe UI", Arial, sans-serif;
-}
+@import url("../shared/sial-core.css");
 
 * { box-sizing: border-box; }
 html, body { min-height: 100%; margin: 0; }
@@ -108,7 +87,7 @@ button, input { font: inherit; }
   right: 32px;
   bottom: 84px;
   z-index: 1;
-  color: #fff;
+  color: var(--color-on-primary);
 }
 
 .carousel-slide figcaption span {
@@ -118,7 +97,7 @@ button, input { font: inherit; }
   padding: 0 10px;
   border-radius: 999px;
   background: rgba(254, 204, 0, .92);
-  color: #1a1f36;
+  color: var(--color-text);
   font-size: 12px;
   font-weight: 700;
   letter-spacing: .08em;
@@ -170,7 +149,7 @@ button, input { font: inherit; }
   border: 1px solid rgba(255, 255, 255, .5);
   border-radius: 8px;
   background: rgba(255, 255, 255, .14);
-  color: #fff;
+  color: var(--color-on-primary);
   cursor: pointer;
 }
 
@@ -196,7 +175,7 @@ button, input { font: inherit; }
   place-items: center;
   border: 1px solid var(--color-border-subtle);
   border-radius: 999px;
-  background: #fff;
+  background: var(--color-surface);
   color: var(--color-primary-500);
   font-size: 22px;
   line-height: 1;
@@ -225,15 +204,15 @@ button, input { font: inherit; }
 .brand-mark {
   width: 52px;
   height: 52px;
-  flex: 0 0 52px;
   display: grid;
   place-items: center;
-  overflow: hidden;
-  border-radius: 0;
+  border-radius: 14px;
   background: transparent url("../shared/brand/isotipo-sial.svg") center / contain no-repeat;
   color: transparent;
+  font-size: 0;
   text-indent: -999px;
-  box-shadow: none;
+  overflow: hidden;
+  box-shadow: var(--shadow-elevated);
 }
 
 .brand-block strong {
@@ -282,7 +261,7 @@ button, input { font: inherit; }
   padding: 0 8px;
   border: 1px solid var(--color-border-subtle);
   border-radius: 999px;
-  background: #fff;
+  background: var(--color-surface);
   color: var(--color-text-3);
   font-size: 11px;
   font-weight: 600;
@@ -313,7 +292,7 @@ button, input { font: inherit; }
 
 .auth-step.is-current span {
   background: var(--color-primary-500);
-  color: #fff;
+  color: var(--color-on-primary);
 }
 
 .login-form {
@@ -356,7 +335,7 @@ button, input { font: inherit; }
   height: 44px;
   border: 1px solid var(--color-border);
   border-radius: 8px;
-  background: #fff;
+  background: var(--color-field-bg);
   color: var(--color-text);
   padding: 0 12px;
 }
@@ -369,6 +348,181 @@ button, input { font: inherit; }
   outline: none;
   border-color: var(--color-primary-500);
   box-shadow: 0 0 0 4px rgba(0, 92, 168, .14);
+}
+
+.company-selector {
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.company-selector legend {
+  margin: 0 0 6px;
+  padding: 0;
+  color: var(--color-text);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.company-list {
+  display: grid;
+  gap: 8px;
+  margin-top: 12px;
+  max-height: 320px;
+  overflow: auto;
+  padding-right: 4px;
+}
+
+.company-option {
+  position: relative;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 12px;
+  align-items: flex-start;
+  min-width: 0;
+  padding: 12px;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  background: var(--color-field-bg);
+  cursor: pointer;
+  transition: border-color .18s ease, box-shadow .18s ease, background .18s ease;
+}
+
+.company-option:hover {
+  border-color: var(--color-primary-500);
+  background: var(--color-primary-50);
+}
+
+.company-option:has(input:focus-visible) {
+  outline: 2px solid var(--color-focus-ring);
+  outline-offset: 2px;
+}
+
+.company-option:has(input:checked) {
+  border-color: var(--color-primary-500);
+  box-shadow: 0 0 0 3px rgba(0, 92, 168, .12);
+}
+
+.company-option.is-disabled {
+  cursor: not-allowed;
+  opacity: .72;
+}
+
+.company-option.is-disabled:hover {
+  border-color: var(--color-border);
+  background: var(--color-field-bg);
+}
+
+.company-option input {
+  width: 18px;
+  height: 18px;
+  margin: 3px 0 0;
+  accent-color: var(--color-primary-500);
+}
+
+.company-option-body,
+.company-option-main,
+.company-option-meta {
+  min-width: 0;
+  display: grid;
+}
+
+.company-option-body {
+  gap: 8px;
+}
+
+.company-option-main {
+  gap: 2px;
+}
+
+.company-option-main strong {
+  color: var(--color-text);
+  font-size: 14px;
+  line-height: 1.35;
+}
+
+.company-option-main em {
+  color: var(--color-text-2);
+  font-size: 12px;
+  font-style: normal;
+  line-height: 1.45;
+}
+
+.company-option-meta {
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 8px;
+  align-items: center;
+  color: var(--color-text-3);
+  font-size: 11px;
+  line-height: 1.4;
+}
+
+.company-status {
+  display: inline-flex;
+  align-items: center;
+  min-height: 24px;
+  padding: 0 10px;
+  border-radius: var(--radius-pill);
+  font-size: 11px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.company-status.is-active {
+  background: var(--color-success-bg);
+  color: var(--color-success-text);
+}
+
+.company-status.is-warning {
+  background: var(--color-warning-bg);
+  color: var(--color-warning-text);
+}
+
+.company-status.is-inactive {
+  background: var(--color-error-bg);
+  color: var(--color-error-text);
+}
+
+.company-empty {
+  margin-top: 12px;
+  padding: 16px;
+  border: 1px solid var(--color-border-subtle);
+  border-radius: 8px;
+  background: var(--color-empty-bg);
+  color: var(--color-text-2);
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.company-loading {
+  display: grid;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.company-loading span {
+  height: 54px;
+  border-radius: 8px;
+  background: linear-gradient(90deg, var(--color-empty-bg), var(--color-border-subtle), var(--color-empty-bg));
+  background-size: 220% 100%;
+  animation: companySkeleton 1.2s ease-in-out infinite;
+}
+
+.support-link {
+  color: var(--color-primary-500);
+  font-size: 12px;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.support-link:hover {
+  text-decoration: underline;
+}
+
+@keyframes companySkeleton {
+  0% { background-position: 120% 0; }
+  100% { background-position: -120% 0; }
 }
 
 .otp-group {
@@ -487,7 +641,7 @@ button, input { font: inherit; }
   border: 0;
   border-radius: 8px;
   background: var(--color-primary-500);
-  color: #fff;
+  color: var(--color-on-primary);
   font-weight: 600;
   cursor: pointer;
 }
@@ -526,143 +680,9 @@ button, input { font: inherit; }
 
 .is-hidden { display: none !important; }
 
-/* === SIAL View Motion START (auth reversible block) ===
-   Remove this block plus initAuthViewMotion in sial-login.js to disable auth page motion. */
-.view-motion-bar {
-  position: fixed;
-  z-index: 90;
-  inset: 0 0 auto;
-  height: 3px;
-  background: linear-gradient(90deg, var(--color-primary-500), #1d7fe0, var(--color-primary-600));
-  box-shadow: 0 10px 28px rgba(0, 92, 168, .28);
-  opacity: 0;
-  pointer-events: none;
-  transform: scaleX(0);
-  transform-origin: left center;
-}
-.view-motion-overlay {
-  position: fixed;
-  z-index: 85;
-  inset: 0;
-  display: grid;
-  place-items: center;
-  padding: 24px;
-  background: rgba(245, 247, 250, .88);
-  opacity: 0;
-  visibility: hidden;
-  pointer-events: none;
-  transition: opacity .2s ease, visibility .2s ease;
-  backdrop-filter: blur(8px);
-}
-.view-motion-card {
-  min-width: min(320px, calc(100vw - 48px));
-  display: grid;
-  justify-items: center;
-  gap: 14px;
-  padding: 28px;
-  border: 1px solid var(--color-border-subtle);
-  border-radius: 16px;
-  background: rgba(255, 255, 255, .94);
-  box-shadow: var(--shadow-elevated);
-}
-.view-motion-brand {
-  position: relative;
-  width: 72px;
-  height: 72px;
-  display: grid;
-  place-items: center;
-  border-radius: 18px;
-  background: linear-gradient(145deg, var(--color-primary-50), var(--color-surface));
-  box-shadow: inset 0 0 0 1px rgba(0, 92, 168, .16), 0 18px 44px rgba(0, 92, 168, .16);
-}
-.view-motion-brand::before {
-  content: "";
-  width: 58px;
-  height: 58px;
-  display: block;
-  background: url("../shared/brand/isotipo-sial.svg") center / contain no-repeat;
-}
-.view-motion-brand::after {
-  content: "";
-  position: absolute;
-  inset: -5px;
-  border-radius: 22px;
-  border: 2px solid transparent;
-  border-top-color: rgba(0, 92, 168, .72);
-  border-right-color: rgba(29, 127, 224, .58);
-  animation: viewMotionOrbit 1.08s cubic-bezier(.65, 0, .35, 1) infinite;
-}
-.view-motion-text {
-  color: var(--color-text);
-  font-size: 14px;
-  font-weight: 600;
-}
-.view-motion-track {
-  width: 184px;
-  height: 4px;
-  overflow: hidden;
-  border-radius: 999px;
-  background: var(--color-primary-100);
-}
-.view-motion-track span {
-  display: block;
-  width: 48%;
-  height: 100%;
-  border-radius: inherit;
-  background: linear-gradient(90deg, var(--color-primary-500), #1d7fe0);
-  animation: viewMotionTrack 1s ease-in-out infinite;
-}
-html[data-view-motion="entering"] .auth-shell {
-  animation: viewMotionEnter .34s cubic-bezier(.2, .8, .2, 1) both;
-}
-html[data-view-motion="leaving"] .view-motion-bar {
-  opacity: 1;
-  animation: viewMotionBar 1.25s cubic-bezier(.16, 1, .3, 1) forwards;
-}
-html[data-view-motion="leaving"] .auth-shell {
-  opacity: .58;
-  transform: translateY(6px) scale(.998);
-  transition: opacity .18s ease, transform .18s ease;
-}
-html[data-view-motion-overlay="visible"] .view-motion-overlay {
-  opacity: 1;
-  visibility: visible;
-  pointer-events: auto;
-}
-@keyframes viewMotionBar {
-  0% { transform: scaleX(0); }
-  58% { transform: scaleX(.72); }
-  100% { transform: scaleX(.94); }
-}
-@keyframes viewMotionEnter {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-@keyframes viewMotionOrbit {
-  to { transform: rotate(360deg); }
-}
-@keyframes viewMotionTrack {
-  0% { transform: translateX(-105%); }
-  52% { transform: translateX(64%); }
-  100% { transform: translateX(214%); }
-}
-/* === SIAL View Motion END (auth reversible block) === */
-
 @media (prefers-reduced-motion: reduce) {
-  .carousel-slide,
-  .view-motion-bar,
-  .view-motion-overlay,
-  .view-motion-card,
-  .view-motion-brand,
-  .view-motion-brand::after,
-  .view-motion-track span {
+  .carousel-slide {
     transition: none;
-    animation: none;
-  }
-  html[data-view-motion="entering"] .auth-shell,
-  html[data-view-motion="leaving"] .auth-shell {
-    opacity: 1;
-    transform: none;
   }
 }
 

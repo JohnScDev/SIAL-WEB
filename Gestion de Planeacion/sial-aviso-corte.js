@@ -14,8 +14,8 @@ const SIAL = (() => {
   ];
 
   function applyShell(activeKey) {
-    if (window.SIALCore?.initNavigation) {
-      window.SIALCore.initNavigation({ area: "gestion", module: "planeacion", view: activeKey || "semanas" });
+    if (window.SIALCore?.initShell) {
+      window.SIALCore.initShell({ area: "gestion", module: "planeacion", view: activeKey || "semanas" });
       return;
     }
     window.SIALCore?.initThemeToggle?.();
