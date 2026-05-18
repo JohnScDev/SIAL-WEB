@@ -60,7 +60,7 @@ button, input { font: inherit; }
 .carousel-slide {
   margin: 0;
   opacity: 0;
-  transition: opacity .7s ease;
+  transition: opacity var(--motion-duration-loading) ease;
 }
 
 .carousel-slide.is-active { opacity: 1; }
@@ -301,12 +301,24 @@ button, input { font: inherit; }
   margin-top: 24px;
 }
 
+.login-panel {
+  animation: authPanelEnter var(--motion-duration-slow) var(--motion-ease-standard) both;
+}
+
+.login-form.is-submitting {
+  pointer-events: none;
+}
+
 .alert {
   padding: 12px 14px;
   border: 1px solid transparent;
   border-radius: 10px;
   font-size: 13px;
   line-height: 1.5;
+}
+
+.alert:not(.is-hidden) {
+  animation: authFeedbackIn var(--motion-duration-base) var(--motion-ease-standard) both;
 }
 
 .alert-error {
@@ -338,6 +350,7 @@ button, input { font: inherit; }
   background: var(--color-field-bg);
   color: var(--color-text);
   padding: 0 12px;
+  transition: border-color var(--motion-duration-fast) ease, box-shadow var(--motion-duration-fast) ease, background-color var(--motion-duration-fast) ease;
 }
 
 .field input::placeholder {
@@ -348,6 +361,28 @@ button, input { font: inherit; }
   outline: none;
   border-color: var(--color-primary-500);
   box-shadow: 0 0 0 4px rgba(0, 92, 168, .14);
+}
+
+.field input:user-invalid,
+.field input[aria-invalid="true"] {
+  border-color: var(--color-error-main);
+  background: var(--color-field-error-bg);
+}
+
+.field input[aria-invalid="true"]:focus {
+  border-color: var(--color-error-main);
+  box-shadow: 0 0 0 4px rgba(211, 47, 47, .14);
+}
+
+.field.is-invalid .field-note {
+  color: var(--color-text-3);
+}
+
+.field-error {
+  margin: -2px 0 0;
+  color: var(--color-error-main);
+  font-size: 12px;
+  line-height: 1.45;
 }
 
 .company-selector {
@@ -374,6 +409,11 @@ button, input { font: inherit; }
   padding-right: 4px;
 }
 
+.company-selector[aria-invalid="true"] .company-list {
+  border-radius: 8px;
+  box-shadow: 0 0 0 2px rgba(211, 47, 47, .16);
+}
+
 .company-option {
   position: relative;
   display: grid;
@@ -386,12 +426,29 @@ button, input { font: inherit; }
   border-radius: 8px;
   background: var(--color-field-bg);
   cursor: pointer;
-  transition: border-color .18s ease, box-shadow .18s ease, background .18s ease;
+  overflow: hidden;
+  transition: border-color var(--motion-duration-fast) ease, box-shadow var(--motion-duration-fast) ease, background var(--motion-duration-fast) ease, transform var(--motion-duration-fast) ease;
+}
+
+.company-option::before {
+  content: "";
+  position: absolute;
+  top: 10px;
+  bottom: 10px;
+  left: 0;
+  width: 4px;
+  border-radius: 0 4px 4px 0;
+  background: var(--color-primary-500);
+  opacity: 0;
+  transform: scaleY(.4);
+  transform-origin: center;
+  transition: opacity var(--motion-duration-fast) ease, transform var(--motion-duration-fast) ease;
 }
 
 .company-option:hover {
   border-color: var(--color-primary-500);
   background: var(--color-primary-50);
+  transform: translateY(-1px);
 }
 
 .company-option:has(input:focus-visible) {
@@ -404,6 +461,36 @@ button, input { font: inherit; }
   box-shadow: 0 0 0 3px rgba(0, 92, 168, .12);
 }
 
+.company-option:has(input:checked)::before {
+  opacity: 1;
+  transform: scaleY(1);
+}
+
+.company-option.is-selected-pulse {
+  animation: companySelectedPulse var(--motion-duration-slow) ease-out;
+}
+
+.company-option.is-blocked-attempt {
+  border-color: var(--color-error-main);
+  animation: companyBlockedAttempt var(--motion-duration-base) ease-in-out 2;
+}
+
+.company-option.is-continuing {
+  border-color: var(--color-primary-500);
+  box-shadow: 0 0 0 3px rgba(0, 92, 168, .14);
+}
+
+.company-option.is-continuing::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, .38), transparent);
+  transform: translateX(-100%);
+  animation: companyContinueSweep var(--motion-duration-loading) ease-out both;
+  pointer-events: none;
+}
+
 .company-option.is-disabled {
   cursor: not-allowed;
   opacity: .72;
@@ -412,6 +499,7 @@ button, input { font: inherit; }
 .company-option.is-disabled:hover {
   border-color: var(--color-border);
   background: var(--color-field-bg);
+  transform: none;
 }
 
 .company-option input {
@@ -525,6 +613,42 @@ button, input { font: inherit; }
   100% { background-position: -120% 0; }
 }
 
+@keyframes authPanelEnter {
+  0% { opacity: 0; transform: translateY(6px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes authFeedbackIn {
+  0% { opacity: 0; transform: translateY(-4px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes authButtonSpin {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes otpDigitEntered {
+  0% { transform: scale(.94); }
+  55% { transform: scale(1.04); }
+  100% { transform: scale(1); }
+}
+
+@keyframes companySelectedPulse {
+  0% { box-shadow: 0 0 0 0 rgba(0, 92, 168, .22); }
+  100% { box-shadow: 0 0 0 8px rgba(0, 92, 168, 0); }
+}
+
+@keyframes companyBlockedAttempt {
+  0%, 100% { transform: translateX(0); }
+  35% { transform: translateX(-3px); }
+  70% { transform: translateX(3px); }
+}
+
+@keyframes companyContinueSweep {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
 .otp-group {
   display: grid;
   grid-template-columns: repeat(6, minmax(0, 1fr));
@@ -537,6 +661,23 @@ button, input { font: inherit; }
   text-align: center;
   font-size: 18px;
   font-weight: 700;
+  transition: border-color var(--motion-duration-fast) ease, box-shadow var(--motion-duration-fast) ease, transform var(--motion-duration-fast) ease, background-color var(--motion-duration-fast) ease;
+}
+
+.otp-input.is-filled {
+  border-color: var(--color-primary-500);
+  background: var(--color-primary-50);
+  color: var(--color-primary-700);
+}
+
+.otp-input.is-digit-entered {
+  animation: otpDigitEntered var(--motion-duration-base) var(--motion-ease-standard);
+}
+
+.otp-group[aria-invalid="true"] .otp-input,
+.otp-input[aria-invalid="true"] {
+  border-color: var(--color-error-main);
+  background: var(--color-field-error-bg);
 }
 
 .field-note {
@@ -552,6 +693,34 @@ button, input { font: inherit; }
 
 .password-field input {
   padding-right: 48px;
+}
+
+.password-strength {
+  display: grid;
+  gap: 6px;
+  margin-top: 8px;
+}
+
+.password-strength-track {
+  height: 6px;
+  border-radius: var(--radius-pill);
+  background: var(--color-bar-bg);
+  overflow: hidden;
+}
+
+.password-strength-bar {
+  display: block;
+  width: var(--password-strength, 0%);
+  height: 100%;
+  border-radius: inherit;
+  background: var(--password-strength-color, var(--color-error-main));
+  transition: width var(--motion-duration-base) var(--motion-ease-standard), background-color var(--motion-duration-fast) ease;
+}
+
+.password-strength-text {
+  color: var(--color-text-3);
+  font-size: 12px;
+  line-height: 1.45;
 }
 
 .icon-action {
@@ -644,15 +813,39 @@ button, input { font: inherit; }
   color: var(--color-on-primary);
   font-weight: 600;
   cursor: pointer;
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: background-color var(--motion-duration-fast) ease, opacity var(--motion-duration-fast) ease, transform var(--motion-duration-fast) ease;
 }
 
 .btn-primary:hover {
   background: var(--color-primary-600);
 }
 
+.btn-primary:active {
+  transform: translateY(1px);
+}
+
 .btn-primary:disabled {
   cursor: not-allowed;
   opacity: .65;
+}
+
+.btn-primary.is-loading {
+  opacity: .9;
+}
+
+.btn-primary.is-loading::after {
+  content: "";
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(255, 255, 255, .45);
+  border-top-color: var(--color-on-primary);
+  border-radius: 50%;
+  animation: authButtonSpin var(--motion-duration-loading) linear infinite;
 }
 
 .login-support {
@@ -681,8 +874,27 @@ button, input { font: inherit; }
 .is-hidden { display: none !important; }
 
 @media (prefers-reduced-motion: reduce) {
-  .carousel-slide {
+  .carousel-slide,
+  .login-panel,
+  .alert,
+  .field input,
+  .otp-input,
+  .btn-primary,
+  .password-strength-bar,
+  .company-option,
+  .company-option::before {
     transition: none;
+  }
+
+  .company-loading span,
+  .login-panel,
+  .alert:not(.is-hidden),
+  .btn-primary.is-loading::after,
+  .otp-input.is-digit-entered,
+  .company-option.is-selected-pulse,
+  .company-option.is-blocked-attempt,
+  .company-option.is-continuing::after {
+    animation: none;
   }
 }
 

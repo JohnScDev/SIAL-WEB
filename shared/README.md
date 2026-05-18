@@ -29,12 +29,13 @@ La base actual concentra:
 - Marca del shell mediante `brand-badge`, usando el isotipo SIAL compartido sin duplicar el texto de marca en cada vista. El texto `SIAL` conserva la escala, peso y familia tipografica del login institucional.
 - Microinteracciones del sidebar: hover operativo, indicador activo animado, acordeon suave de submenus, transicion al contraer/desplegar el menu y marca estable con aparicion lateral del texto, respetando `prefers-reduced-motion`.
 - SIAL View Motion: capa estetica reversible para transicion entre paginas/vistas con barra superior, salida suave, entrada de contenido y overlay institucional diferido.
-- Botones primary, secondary, ghost, destructive e icon-only.
+- Tokens de movimiento `--motion-duration-*` y `--motion-ease-*` para evitar animaciones por vista sin contrato.
+- Botones primary, secondary, ghost, destructive e icon-only, incluyendo estado `is-loading` para operaciones async.
 - Cards, headers de card, stats, grids y layouts responsivos.
 - Alertas `notice-info`, `notice-warning`, `notice-error`, `notice-success` con fondo, texto y borde semantico.
 - Sistema de errores compartido: paginas dedicadas para `401`, `403`, `404`, `500` y componente embebido `error-state` para fallas dentro de modulos o tablas.
 - Inputs, selects, textarea, field-note, validacion error/success y read-only.
-- Componentes de autenticacion: stepper OTP, campo de contrasena con accion embebida y acceso a novedades.
+- Componentes de autenticacion: stepper OTP, campo de contrasena con accion embebida, medidor de fortaleza, loading de submit y acceso a novedades.
 - Tablas, toolbar, paginacion 10/30/50, empty state, badges, chips y estados.
 - Drawers, backdrop, detalle, auditoria y contenedores relacionales.
 - Confirmacion centralizada para activar o inactivar registros desde tablas mediante `SIALCore.initStateActionConfirm`, sin eliminacion fisica y con actualizacion visual de auditoria.
@@ -79,6 +80,17 @@ Reversibilidad:
 - Para apagarlo globalmente, retirar los bloques `SIAL View Motion START/END` en `sial-core.css` y `sial-core.js`.
 - Para excluir una vista puntual, agregar `data-view-motion-disabled` en el `<body>`.
 - En autenticacion, la variante equivalente esta marcada como `auth reversible block` en `Login/sial-login.css`, `Login/sial-login.js` y `Login/sial-login-cover.js`.
+
+## Motion funcional de autenticacion
+
+El login usa movimiento solo cuando comunica estado funcional:
+
+- Submit en proceso: `btn-primary.is-loading` y formulario `is-submitting` para prevenir doble envio.
+- OTP diligenciado: `otp-input.is-filled` y pulso corto `is-digit-entered`.
+- Nueva clave: `password-strength` con barra progresiva y texto `aria-live`.
+- Selector de empresa: `company-option` con seleccionado, intento bloqueado y continuidad.
+
+Todos estos estados deben respetar `prefers-reduced-motion` y no deben animar alto, ancho, margen o contenido critico que pueda generar salto de layout.
 
 ## Dark mode
 

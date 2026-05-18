@@ -115,17 +115,22 @@
   function updateOtpSubmit() {
     const submit = document.querySelector("[data-otp-group]")?.closest("form")?.querySelector("[data-login-submit]");
     if (!submit) return;
-    submit.disabled = otpInputs.some((input) => input.value.length !== 1);
+    submit.removeAttribute("disabled");
+    submit.dataset.otpComplete = String(otpInputs.every((input) => input.value.length === 1));
   }
 
   forms.forEach((form) => {
     const submit = form.querySelector("[data-login-submit]");
     const error = form.querySelector("[data-login-error]");
     if (!submit) return;
+    window.SialAuthValidation?.initForm(form);
 
     form.addEventListener("submit", (event) => {
       event.preventDefault();
-      if (!form.checkValidity()) {
+      if (window.SialAuthValidation && !window.SialAuthValidation.validateForm(form)) {
+        return;
+      }
+      if (!window.SialAuthValidation && !form.checkValidity()) {
         form.reportValidity();
         return;
       }

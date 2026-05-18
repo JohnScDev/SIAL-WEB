@@ -87,7 +87,7 @@
             <p>Accede con tus credenciales asignadas. Despues del ingreso selecciona la empresa de trabajo.</p>
           </div>
 
-          <form class="login-form" novalidate>
+          <form class="login-form" novalidate data-auth-form data-loading-text="Validando acceso..." data-default-text="Iniciar sesion" data-redirect="seleccionar-empresa.html">
             <div class="alert alert-error is-hidden" role="alert" aria-live="polite" data-login-error>
               No fue posible iniciar sesion. Verifica usuario y contrasena.
             </div>
@@ -129,6 +129,7 @@
     </section>
   </main>
 
+  <script src="sial-auth-validation.js"></script>
   <script src="sial-login-cover.js?v=20260501-cover-flow"></script>
 </body>
 </html>
