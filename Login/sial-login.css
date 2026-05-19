@@ -13,6 +13,35 @@ a { color: inherit; }
 button, input { font: inherit; }
 :focus-visible { outline: 2px solid var(--color-primary-500); outline-offset: 3px; }
 
+:root {
+  --auth-visual-overlay-primary-strong: color-mix(in srgb, var(--color-primary-700) 66%, transparent);
+  --auth-visual-overlay-primary-soft: color-mix(in srgb, var(--color-primary-700) 16%, transparent);
+  --auth-visual-overlay-primary-end: color-mix(in srgb, var(--color-primary-700) 58%, transparent);
+  --auth-visual-overlay-depth: color-mix(in srgb, var(--color-text) 72%, transparent);
+  --auth-visual-overlay-depth-soft: color-mix(in srgb, var(--color-text) 8%, transparent);
+  --auth-badge-bg: var(--color-warning-bg);
+  --auth-badge-text: var(--color-warning-text);
+  --auth-control-soft: color-mix(in srgb, var(--color-on-primary) 14%, transparent);
+  --auth-control-border: color-mix(in srgb, var(--color-on-primary) 50%, transparent);
+  --auth-dot-bg: color-mix(in srgb, var(--color-on-primary) 42%, transparent);
+  --auth-focus-shadow: color-mix(in srgb, var(--color-primary-500) 14%, transparent);
+  --auth-focus-shadow-soft: color-mix(in srgb, var(--color-primary-500) 12%, transparent);
+  --auth-error-shadow: color-mix(in srgb, var(--color-error-main) 16%, transparent);
+  --auth-sweep: color-mix(in srgb, var(--color-surface) 38%, transparent);
+  --auth-spinner-border: color-mix(in srgb, var(--color-on-primary) 45%, transparent);
+}
+
+html[data-theme="dark"] {
+  --auth-visual-overlay-primary-strong: color-mix(in srgb, var(--color-bg) 72%, transparent);
+  --auth-visual-overlay-primary-soft: color-mix(in srgb, var(--color-bg) 34%, transparent);
+  --auth-visual-overlay-primary-end: color-mix(in srgb, var(--color-bg) 64%, transparent);
+  --auth-visual-overlay-depth: color-mix(in srgb, var(--color-bg) 58%, transparent);
+  --auth-visual-overlay-depth-soft: color-mix(in srgb, var(--color-bg) 12%, transparent);
+  --auth-dot-bg: color-mix(in srgb, var(--color-text-2) 42%, transparent);
+  --auth-control-soft: color-mix(in srgb, var(--color-surface-overlay) 52%, transparent);
+  --auth-control-border: var(--color-border);
+}
+
 .icon {
   width: 18px;
   height: 18px;
@@ -77,8 +106,8 @@ button, input { font: inherit; }
   position: absolute;
   inset: 0;
   background:
-    linear-gradient(90deg, rgba(0, 55, 102, .66), rgba(0, 55, 102, .16) 54%, rgba(0, 55, 102, .58)),
-    linear-gradient(0deg, rgba(26, 31, 54, .72), rgba(26, 31, 54, .08) 48%);
+    linear-gradient(90deg, var(--auth-visual-overlay-primary-strong), var(--auth-visual-overlay-primary-soft) 54%, var(--auth-visual-overlay-primary-end)),
+    linear-gradient(0deg, var(--auth-visual-overlay-depth), var(--auth-visual-overlay-depth-soft) 48%);
 }
 
 .carousel-slide figcaption {
@@ -96,8 +125,8 @@ button, input { font: inherit; }
   align-items: center;
   padding: 0 10px;
   border-radius: 999px;
-  background: rgba(254, 204, 0, .92);
-  color: var(--color-text);
+  background: var(--auth-badge-bg);
+  color: var(--auth-badge-text);
   font-size: 12px;
   font-weight: 700;
   letter-spacing: .08em;
@@ -135,7 +164,7 @@ button, input { font: inherit; }
   height: 6px;
   border: 0;
   border-radius: 999px;
-  background: rgba(255, 255, 255, .42);
+  background: var(--auth-dot-bg);
   cursor: pointer;
 }
 
@@ -146,9 +175,9 @@ button, input { font: inherit; }
 .pause-btn {
   min-height: 36px;
   padding: 0 12px;
-  border: 1px solid rgba(255, 255, 255, .5);
+  border: 1px solid var(--auth-control-border);
   border-radius: 8px;
-  background: rgba(255, 255, 255, .14);
+  background: var(--auth-control-soft);
   color: var(--color-on-primary);
   cursor: pointer;
 }
@@ -160,33 +189,49 @@ button, input { font: inherit; }
   padding: 40px 48px;
   overflow-y: auto;
   background:
-    radial-gradient(circle at 100% 0, rgba(0, 92, 168, .08), transparent 34%),
+    radial-gradient(circle at 100% 0, color-mix(in srgb, var(--color-primary-500) 8%, transparent), transparent 34%),
     var(--color-surface);
 }
 
-.changelog-access {
+.auth-utility-actions {
   position: absolute;
   top: 28px;
   right: 28px;
   z-index: 3;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.changelog-access,
+.auth-theme-toggle {
   width: 40px;
   height: 40px;
   display: grid;
   place-items: center;
   border: 1px solid var(--color-border-subtle);
-  border-radius: 999px;
+  border-radius: var(--radius-control);
   background: var(--color-surface);
-  color: var(--color-primary-500);
-  font-size: 22px;
+  color: var(--color-text);
+  box-shadow: none;
+  cursor: pointer;
+}
+
+.changelog-access {
+  font-size: 18px;
   line-height: 1;
   font-weight: 700;
   text-decoration: none;
-  box-shadow: 0 8px 20px rgba(16, 24, 40, .08);
 }
 
-.changelog-access:hover {
-  border-color: var(--color-primary-500);
-  background: var(--color-primary-50);
+.auth-theme-toggle {
+  position: relative;
+}
+
+.changelog-access:hover,
+.auth-theme-toggle:hover {
+  border-color: var(--color-border-subtle);
+  background: var(--color-hover-surface);
 }
 
 .login-card {
@@ -282,7 +327,7 @@ button, input { font: inherit; }
 
 .auth-step.is-done,
 .auth-step.is-current {
-  border-color: rgba(0, 92, 168, .18);
+  border-color: color-mix(in srgb, var(--color-primary-500) 18%, transparent);
   color: var(--color-primary-600);
 }
 
@@ -360,7 +405,7 @@ button, input { font: inherit; }
 .field input:focus {
   outline: none;
   border-color: var(--color-primary-500);
-  box-shadow: 0 0 0 4px rgba(0, 92, 168, .14);
+  box-shadow: 0 0 0 4px var(--auth-focus-shadow);
 }
 
 .field input:user-invalid,
@@ -371,7 +416,7 @@ button, input { font: inherit; }
 
 .field input[aria-invalid="true"]:focus {
   border-color: var(--color-error-main);
-  box-shadow: 0 0 0 4px rgba(211, 47, 47, .14);
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--color-error-main) 14%, transparent);
 }
 
 .field.is-invalid .field-note {
@@ -411,7 +456,7 @@ button, input { font: inherit; }
 
 .company-selector[aria-invalid="true"] .company-list {
   border-radius: 8px;
-  box-shadow: 0 0 0 2px rgba(211, 47, 47, .16);
+  box-shadow: 0 0 0 2px var(--auth-error-shadow);
 }
 
 .company-option {
@@ -458,7 +503,7 @@ button, input { font: inherit; }
 
 .company-option:has(input:checked) {
   border-color: var(--color-primary-500);
-  box-shadow: 0 0 0 3px rgba(0, 92, 168, .12);
+  box-shadow: 0 0 0 3px var(--auth-focus-shadow-soft);
 }
 
 .company-option:has(input:checked)::before {
@@ -477,7 +522,7 @@ button, input { font: inherit; }
 
 .company-option.is-continuing {
   border-color: var(--color-primary-500);
-  box-shadow: 0 0 0 3px rgba(0, 92, 168, .14);
+  box-shadow: 0 0 0 3px var(--auth-focus-shadow);
 }
 
 .company-option.is-continuing::after {
@@ -485,7 +530,7 @@ button, input { font: inherit; }
   position: absolute;
   inset: 0;
   border-radius: inherit;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, .38), transparent);
+  background: linear-gradient(90deg, transparent, var(--auth-sweep), transparent);
   transform: translateX(-100%);
   animation: companyContinueSweep var(--motion-duration-loading) ease-out both;
   pointer-events: none;
@@ -634,8 +679,8 @@ button, input { font: inherit; }
 }
 
 @keyframes companySelectedPulse {
-  0% { box-shadow: 0 0 0 0 rgba(0, 92, 168, .22); }
-  100% { box-shadow: 0 0 0 8px rgba(0, 92, 168, 0); }
+  0% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--color-primary-500) 22%, transparent); }
+  100% { box-shadow: 0 0 0 8px color-mix(in srgb, var(--color-primary-500) 0%, transparent); }
 }
 
 @keyframes companyBlockedAttempt {
@@ -842,7 +887,7 @@ button, input { font: inherit; }
   content: "";
   width: 16px;
   height: 16px;
-  border: 2px solid rgba(255, 255, 255, .45);
+  border: 2px solid var(--auth-spinner-border);
   border-top-color: var(--color-on-primary);
   border-radius: 50%;
   animation: authButtonSpin var(--motion-duration-loading) linear infinite;
@@ -937,7 +982,7 @@ button, input { font: inherit; }
   .login-panel {
     padding: 32px 24px;
   }
-  .changelog-access {
+  .auth-utility-actions {
     top: 18px;
     right: 18px;
   }
@@ -962,11 +1007,15 @@ button, input { font: inherit; }
     align-items: start;
     padding: 28px 16px;
   }
-  .changelog-access {
-    width: 36px;
-    height: 36px;
+  .auth-utility-actions {
     top: 14px;
     right: 14px;
+    gap: 6px;
+  }
+  .changelog-access,
+  .auth-theme-toggle {
+    width: 36px;
+    height: 36px;
     font-size: 20px;
   }
   .brand-block {

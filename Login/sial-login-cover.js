@@ -1,4 +1,6 @@
 (function () {
+  window.SIALCore?.initThemeToggle?.();
+
   const slides = Array.from(document.querySelectorAll("[data-cover-slide]"));
   const controls = Array.from(document.querySelectorAll("[data-cover-control]"));
   const prev = document.querySelector("[data-cover-prev]");

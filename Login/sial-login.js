@@ -1,4 +1,6 @@
 (function () {
+  window.SIALCore?.initThemeToggle?.();
+
   const slides = Array.from(document.querySelectorAll("[data-slide]"));
   const controls = Array.from(document.querySelectorAll("[data-slide-control]"));
   const toggle = document.querySelector("[data-carousel-toggle]");

@@ -34,6 +34,12 @@
       </aside>
 
       <section class="login-panel" aria-label="Formulario de recuperacion de contrasena">
+        <div class="auth-utility-actions" aria-label="Acciones de autenticacion">
+          <button class="icon-btn theme-toggle auth-theme-toggle" type="button" data-theme-toggle aria-label="Cambiar a modo oscuro" aria-pressed="false" title="Cambiar a modo oscuro">
+            <svg class="icon theme-icon theme-icon-moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12.8A8.5 8.5 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"></path></svg>
+            <svg class="icon theme-icon theme-icon-sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2"></path><path d="M12 20v2"></path><path d="m4.93 4.93 1.41 1.41"></path><path d="m17.66 17.66 1.41 1.41"></path><path d="M2 12h2"></path><path d="M20 12h2"></path><path d="m6.34 17.66-1.41 1.41"></path><path d="m19.07 4.93-1.41 1.41"></path></svg>
+          </button>
+        </div>
         <div class="login-card">
           <div class="brand-block" aria-label="SIAL"><span class="brand-mark">S</span><div><strong>SIAL</strong><span>Sistema de Informacion Agrologistico</span></div></div>
           <nav class="auth-steps" aria-label="Progreso de recuperacion de contrasena">
@@ -59,6 +65,7 @@
       </section>
     </section>
   </main>
+  <script src="../shared/sial-core.js"></script>
   <script src="sial-auth-validation.js"></script>
   <script src="sial-login-cover.js?v=20260501-cover-flow"></script>
 </body>
