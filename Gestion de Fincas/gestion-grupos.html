@@ -27,14 +27,13 @@
           <div class="card-body"><div class="toolbar compact"><input class="input" id="groupSearch" type="search" aria-label="Buscar grupo" placeholder="Buscar grupo" /><select class="select" id="groupStatus"><option value="all">Todos</option><option value="active">Activo</option><option value="inactive">Inactivo</option></select><select class="select" id="groupContext"><option value="all">Todos los productores</option><option value="AgroCeiba">AgroCeiba</option><option value="Banapalma">Banapalma</option></select></div></div>
 
           <div class="inline-form-panel is-hidden" id="groupInlineForm" data-inline-form-panel>
-            <div class="form-heading"><h2 data-inline-form-title>Nuevo grupo</h2><p>Registro corto dentro de la vista de gestion. El codigo es autoincremental y el nombre debe ser unico en mayusculas sostenidas.</p></div>
+            <div class="form-heading"><h2 data-inline-form-title>Nuevo grupo</h2><p>Registro corto dentro de la vista de gestion. El nombre debe ser unico en mayusculas sostenidas.</p></div>
             <div class="form-body">
               <div class="notice notice-success is-hidden" id="formOk">Grupo listo para guardar.</div>
               <form data-generic-form novalidate>
                 <section class="section"><div class="grid">
-                  <div class="field span-3"><label class="label" for="groupCode">Codigo grupo</label><input class="input" id="groupCode" value="Autoincremental" readonly /><div class="field-note">Llave primaria autoincremental.</div></div>
-                  <div class="field span-3"><label class="label">Estado inicial</label><span class="status status-active">Activo</span><div class="field-note">Estado obligatorio.</div></div>
-                  <div class="field span-6"><label class="label" for="groupName">Nombre grupo <span class="required">*</span></label><input class="input" id="groupName" data-required data-uppercase data-unique-list="GRUPO COSTA NORTE|GRUPO ORIENTE UNO" aria-describedby="groupNameNote" placeholder="GRUPO COSTA NORTE" /><div class="field-note" id="groupNameNote">Debe ser unico y guardarse en mayusculas sostenidas.</div></div>
+                  <div class="field span-4"><label class="label">Estado inicial</label><span class="status status-active">Activo</span><div class="field-note">Estado obligatorio.</div></div>
+                  <div class="field span-8"><label class="label" for="groupName">Nombre grupo <span class="required">*</span></label><input class="input" id="groupName" data-required data-uppercase data-unique-list="GRUPO COSTA NORTE|GRUPO ORIENTE UNO" aria-describedby="groupNameNote" placeholder="GRUPO COSTA NORTE" /><div class="field-note" id="groupNameNote">Debe ser unico y guardarse en mayusculas sostenidas.</div></div>
                 </div></section>
                 <div class="form-actions"><button class="btn btn-secondary" type="button" data-cancel-inline-form>Cancelar</button><button class="btn btn-primary" type="submit">Guardar grupo</button></div>
               </form>

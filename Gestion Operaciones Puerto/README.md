@@ -6,8 +6,8 @@ Propuesta estatica alineada al documento base SIAL y a los patrones aplicados en
 
 - `gestion-contenedores.html`: maestra de contenedores con formulario embebido, validacion de formato ISO, tipo de contenedor obligatorio, filtros y drawer derecho de visualizacion.
 - `gestion-tipos-contenedor.html`: maestra corta con formulario embebido para codigo, descripcion y capacidad numerica mayor a cero.
-- `gestion-etapas-contenedor.html`: maestra corta con codigo autogenerado, etapa unica en mayusculas sostenidas y estado obligatorio.
-- `gestion-puertos.html`: maestra corta con codigo autoincremental, nombre unico en mayusculas sostenidas y estado obligatorio.
+- `gestion-etapas-contenedor.html`: maestra corta con formulario embebido para etapa unica en mayusculas sostenidas y estado obligatorio; el codigo autogenerado se conserva en el listado.
+- `gestion-puertos.html`: maestra corta con formulario embebido para nombre unico en mayusculas sostenidas y estado obligatorio; el codigo autoincremental se conserva en el listado.
 
 ## Patrones aplicados
 
@@ -23,6 +23,7 @@ Propuesta estatica alineada al documento base SIAL y a los patrones aplicados en
 - Validaciones de campos obligatorios antes de guardar.
 - Prevencion de duplicidad en campos unicos.
 - Mayusculas sostenidas para codigos, nombres y etapas cuando aplica.
+- Los codigos generados por sistema se visualizan en listados, no como campos de captura.
 - Capacidad de tipo de contenedor mayor a cero.
 - Formato ISO de numero de contenedor: 4 letras + 7 digitos.
 - Estado obligatorio para todas las maestras.

@@ -27,15 +27,14 @@
           <div class="card-body"><div class="toolbar compact"><input class="input" id="classSearch" type="search" aria-label="Buscar clase" placeholder="Buscar clase" /><select class="select" id="classStatus"><option value="all">Todos</option><option value="active">Activo</option><option value="inactive">Inactivo</option></select><select class="select" id="classContext"><option value="all">Todos los tamanos</option><option value="LARGA">Larga</option><option value="CORTA">Corta</option></select></div></div>
 
           <div class="inline-form-panel is-hidden" id="classInlineForm" data-inline-form-panel>
-            <div class="form-heading"><h2 data-inline-form-title>Nueva clase de referencia</h2><p>Formulario corto dentro de la gestion. El codigo es autoincremental, el nombre se guarda en mayusculas y nombre + tamano fruta debe ser unico.</p></div>
+            <div class="form-heading"><h2 data-inline-form-title>Nueva clase de referencia</h2><p>Formulario corto dentro de la gestion. El nombre se guarda en mayusculas y nombre + tamano fruta debe ser unico.</p></div>
             <div class="form-body">
               <div class="notice notice-success is-hidden" id="formOk">Clase lista para guardar.</div>
               <form data-generic-form novalidate>
                 <section class="section"><div class="grid">
-                  <div class="field span-3"><label class="label" for="classCode">Codigo clase</label><input class="input" id="classCode" value="Autoincremental" readonly /><div class="field-note">Llave primaria autoincremental.</div></div>
                   <div class="field span-3"><label class="label">Estado inicial</label><span class="status status-active">Activo</span><div class="field-note">Estado obligatorio.</div></div>
-                  <div class="field span-3"><label class="label" for="className">Nombre clase <span class="required">*</span></label><input class="input" id="className" data-required data-uppercase data-unique-list="EXPORTACION|INDUSTRIAL" aria-describedby="classNameNote" placeholder="EXPORTACION" /><div class="field-note" id="classNameNote">Mayusculas sostenidas.</div></div>
-                  <div class="field span-3"><label class="label" for="fruitSize">Tamano fruta <span class="required">*</span></label><select class="select" id="fruitSize" data-required aria-describedby="fruitSizeNote"><option value="">Selecciona</option><option>CORTA</option><option>LARGA</option></select><div class="field-note" id="fruitSizeNote">Obligatorio para evitar duplicidad compuesta.</div></div>
+                  <div class="field span-5"><label class="label" for="className">Nombre clase <span class="required">*</span></label><input class="input" id="className" data-required data-uppercase data-unique-list="EXPORTACION|INDUSTRIAL" aria-describedby="classNameNote" placeholder="EXPORTACION" /><div class="field-note" id="classNameNote">Mayusculas sostenidas.</div></div>
+                  <div class="field span-4"><label class="label" for="fruitSize">Tamano fruta <span class="required">*</span></label><select class="select" id="fruitSize" data-required aria-describedby="fruitSizeNote"><option value="">Selecciona</option><option>CORTA</option><option>LARGA</option></select><div class="field-note" id="fruitSizeNote">Obligatorio para evitar duplicidad compuesta.</div></div>
                 </div></section>
                 <div class="form-actions"><button class="btn btn-secondary" type="button" data-cancel-inline-form>Cancelar</button><button class="btn btn-primary" type="submit">Guardar clase</button></div>
               </form>

@@ -26,7 +26,7 @@ Criterios aplicados:
 - Categorias de licencia: maestra corta con listado maestro como prioridad y formulario embebido dentro de la card de gestion.
 - Conductor + licencia: `Gestion Relacional` compacta con listado como prioridad y formulario embebido.
 - Vehiculos: `Listado Maestro` como prioridad + formulario administrativo extenso en vista dedicada. Incluye SOAT, tecnomecanica, empresas activas, flota propia y disponibilidad.
-- Tipos de vehiculo: maestra corta con formulario embebido, codigo autoincremental, nombre unico en mayusculas y activar/inactivar.
+- Tipos de vehiculo: maestra corta con formulario embebido para nombre unico en mayusculas y activar/inactivar; el codigo autoincremental se conserva en el listado.
 - Tipos de empresa: maestra corta con formulario embebido, nombre unico en mayusculas y control de tipos como transportadora, aseguradora y CDA.
 - Empresa + tipo: relacion compacta con formulario embebido y llave compuesta codigo empresa + codigo tipo empresa.
 - Dashboard transporte: vista analitica sin formulario, orientada a KPIs, distribucion de flota, alertas y capacidad por empresa.
