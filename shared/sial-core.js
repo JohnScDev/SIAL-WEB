@@ -2,6 +2,15 @@ const SIALCore = (() => {
   const qs = (selector, root = document) => root.querySelector(selector);
   const qsa = (selector, root = document) => Array.from(root.querySelectorAll(selector));
   const normalize = (value) => String(value || "").trim().toLowerCase();
+  const getCoreScript = () => {
+    const scripts = qsa('script[src*="sial-core.js"]');
+    return document.currentScript || scripts[scripts.length - 1] || null;
+  };
+  const getSharedAssetUrl = (assetPath) => {
+    const coreScript = getCoreScript();
+    if (!coreScript?.src) return `shared/${assetPath}`;
+    return new URL(assetPath, coreScript.src).href;
+  };
   const defaultTypeLabels = {
     feature: "Nuevo",
     improvement: "Mejora",
@@ -347,6 +356,20 @@ const SIALCore = (() => {
       });
     });
     initSidebarToggle();
+  }
+
+  function ensureFavicon() {
+    const href = getSharedAssetUrl("brand/isotipo-sial.svg");
+    const iconLinks = qsa('link[rel~="icon"], link[rel="shortcut icon"]');
+    let icon = iconLinks[0];
+    if (!icon) {
+      icon = document.createElement("link");
+      document.head.appendChild(icon);
+    }
+    icon.setAttribute("rel", "icon");
+    icon.setAttribute("type", "image/svg+xml");
+    icon.setAttribute("href", href);
+    iconLinks.slice(1).forEach((extraIcon) => extraIcon.remove());
   }
 
   /* === SIAL View Motion START (reversible block) ===
@@ -960,6 +983,8 @@ const SIALCore = (() => {
     qsa,
     escapeHtml,
     normalize,
+    getSharedAssetUrl,
+    ensureFavicon,
     initThemeToggle,
     initPageTransitions,
     initSidebarToggle,
@@ -976,6 +1001,8 @@ const SIALCore = (() => {
 })();
 
 window.SIALCore = SIALCore;
+
+SIALCore.ensureFavicon();
 
 /* === SIAL View Motion START (reversible hook) === */
 if (document.readyState === "loading") {
