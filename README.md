@@ -18,6 +18,7 @@ Interfaz raiz para publicar en Netlify las propuestas HTML del entorno web SIAL.
 - `Gestion de Usuarios`
 - `Gestion de Empresas`
 - `Gestion de Fincas`
+- `Referencias` (expuesto en el menu desde vistas ubicadas fisicamente en `Gestion de Fincas`)
 - `Gestion de Planeacion`
 - `Gestion Operaciones Puerto`
 

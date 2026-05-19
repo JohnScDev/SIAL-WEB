@@ -172,7 +172,7 @@ const SIALCatalog = (() => {
     },
     {
       module: "empresas",
-      moduleLabel: "Gestion de Empresas",
+      moduleLabel: "Empresa",
       title: "Gestion de empresas",
       family: "gestion",
       status: "implementada",
@@ -182,7 +182,7 @@ const SIALCatalog = (() => {
     },
     {
       module: "empresas",
-      moduleLabel: "Gestion de Empresas",
+      moduleLabel: "Empresa",
       title: "Registro de empresa",
       family: "registro",
       status: "implementada",
@@ -192,7 +192,7 @@ const SIALCatalog = (() => {
     },
     {
       module: "empresas",
-      moduleLabel: "Gestion de Empresas",
+      moduleLabel: "Empresa",
       title: "Roles por empresa",
       family: "relacion",
       status: "implementada",
@@ -223,7 +223,7 @@ const SIALCatalog = (() => {
     {
       module: "transporte",
       moduleLabel: "Gestion de Transporte",
-      title: "Categorias de licencia",
+      title: "Gestion de licencias",
       family: "gestion",
       status: "implementada",
       href: "Gestion%20de%20Transporte/gestion-categorias-licencia.html",
@@ -263,7 +263,7 @@ const SIALCatalog = (() => {
     {
       module: "transporte",
       moduleLabel: "Gestion de Transporte",
-      title: "Tipos de vehiculo",
+      title: "Tipos de vehiculos",
       family: "gestion",
       status: "implementada",
       href: "Gestion%20de%20Transporte/gestion-tipos-vehiculo.html",
@@ -271,9 +271,9 @@ const SIALCatalog = (() => {
       tags: ["Maestra corta", "Transporte"]
     },
     {
-      module: "transporte",
-      moduleLabel: "Gestion de Transporte",
-      title: "Tipos de empresa",
+      module: "empresas",
+      moduleLabel: "Empresa",
+      title: "Tipos de empresas",
       family: "gestion",
       status: "implementada",
       href: "Gestion%20de%20Transporte/gestion-tipos-empresa.html",
@@ -281,8 +281,8 @@ const SIALCatalog = (() => {
       tags: ["Maestra corta", "Empresa"]
     },
     {
-      module: "transporte",
-      moduleLabel: "Gestion de Transporte",
+      module: "empresas",
+      moduleLabel: "Empresa",
       title: "Relacion empresa tipo",
       family: "relacion",
       status: "implementada",
@@ -341,8 +341,8 @@ const SIALCatalog = (() => {
       tags: ["Formulario grande", "Productor"]
     },
     {
-      module: "fincas",
-      moduleLabel: "Gestion de Fincas",
+      module: "referencias",
+      moduleLabel: "Referencias",
       title: "Gestion de referencias",
       family: "gestion",
       status: "implementada",
@@ -351,8 +351,8 @@ const SIALCatalog = (() => {
       tags: ["Referencias", "Versionamiento"]
     },
     {
-      module: "fincas",
-      moduleLabel: "Gestion de Fincas",
+      module: "referencias",
+      moduleLabel: "Referencias",
       title: "Registro de referencia",
       family: "registro",
       status: "implementada",
@@ -381,9 +381,9 @@ const SIALCatalog = (() => {
       tags: ["Maestra corta", "Sectores"]
     },
     {
-      module: "fincas",
-      moduleLabel: "Gestion de Fincas",
-      title: "Clases de referencia",
+      module: "referencias",
+      moduleLabel: "Referencias",
+      title: "Clases de referencias",
       family: "gestion",
       status: "implementada",
       href: "Gestion%20de%20Fincas/gestion-clases-referencia.html",

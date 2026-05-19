@@ -3,21 +3,26 @@ const SIAL = (() => {
   const qsa = (selector, root = document) => Array.from(root.querySelectorAll(selector));
 
   function applyShell(activeKey) {
+    const companyViews = ["tiposEmpresa", "empresaTipo"];
+    const moduleId = companyViews.includes(activeKey) ? "empresas" : "transporte";
     if (window.SIALCore?.initShell) {
-      window.SIALCore.initShell({ area: "gestion", module: "transporte", view: activeKey || "gestion" });
+      window.SIALCore.initShell({ area: "gestion", module: moduleId, view: activeKey || "gestion" });
       return;
     }
     window.SIALCore?.initThemeToggle?.();
     const nav = qs("[data-nav]");
     if (!nav) return;
-    const items = [
+    const items = moduleId === "empresas" ? [
+      ["empresas", "../Gestion%20de%20Empresas/gestion-empresas.html", "Gestion de empresas"],
+      ["roles", "../Gestion%20de%20Empresas/roles-empresa.html", "Roles por empresas"],
+      ["tiposEmpresa", "gestion-tipos-empresa.html", "Tipos de empresas"],
+      ["empresaTipo", "relacion-empresa-tipo.html", "Empresa + tipo"]
+    ] : [
       ["gestion", "gestion-conductores.html", "Gestion de conductores"],
-      ["licencias", "gestion-categorias-licencia.html", "Categorias de licencia"],
+      ["licencias", "gestion-categorias-licencia.html", "Gestion de licencias"],
       ["relacion", "relacion-conductor-licencia.html", "Conductor + licencia"],
       ["vehiculos", "gestion-vehiculos.html", "Gestion de vehiculos"],
-      ["tiposVehiculo", "gestion-tipos-vehiculo.html", "Tipos de vehiculo"],
-      ["tiposEmpresa", "gestion-tipos-empresa.html", "Tipos de empresa"],
-      ["empresaTipo", "relacion-empresa-tipo.html", "Empresa + tipo"],
+      ["tiposVehiculo", "gestion-tipos-vehiculo.html", "Tipos de vehiculos"],
       ["dashboard", "dashboard-transporte.html", "Dashboard transporte"],
       ["documental", "matriz-documental-vehiculos.html", "Matriz documental"],
       ["disponibilidad", "disponibilidad-operativa.html", "Disponibilidad"]

@@ -23,6 +23,7 @@ const SIALCore = (() => {
     empresas: '<path d="M3 21h18"></path><path d="M5 21V7l8-4v18"></path><path d="M19 21V11l-6-4"></path>',
     transporte: '<path d="M3 7h11v10H3z"></path><path d="M14 11h4l3 3v3h-7z"></path><circle cx="7" cy="18" r="2"></circle><circle cx="18" cy="18" r="2"></circle>',
     fincas: '<path d="M4 20V9l8-5 8 5v11"></path><path d="M8 20v-7h8v7"></path>',
+    referencias: '<path d="M5 4h14v16H5z"></path><path d="M9 8h6"></path><path d="M9 12h6"></path><path d="M9 16h4"></path>',
     planeacion: '<rect x="4" y="5" width="16" height="16" rx="2"></rect><path d="M16 3v4"></path><path d="M8 3v4"></path><path d="M4 11h16"></path>',
     puerto: '<path d="M4 20h16"></path><path d="M7 20V9l5-4 5 4v11"></path><path d="M9 13h6"></path>',
     indicadores: '<path d="M4 19V5"></path><path d="M4 19h16"></path><path d="M8 15l3-4 3 2 5-7"></path>',
@@ -35,46 +36,14 @@ const SIALCore = (() => {
       label: "Gestion",
       modules: [
         {
-          id: "usuarios",
-          label: "Usuarios",
-          icon: "usuarios",
-          folder: "Gestion de Usuarios",
-          localFolder: "sial-usuarios-propuesta",
+          id: "referencias",
+          label: "Referencias",
+          icon: "referencias",
+          folder: "Gestion de Fincas",
+          localFolder: "sial-fincas-propuesta",
           views: [
-            { id: "usuarios", label: "Gestion de usuarios", href: "gestion-usuarios.html" },
-            { id: "registro", label: "Registro de usuario", href: "registro-usuario.html" },
-            { id: "edicion", label: "Editar usuario", href: "editar-usuario.html" }
-          ]
-        },
-        {
-          id: "empresas",
-          label: "Empresas",
-          icon: "empresas",
-          folder: "Gestion de Empresas",
-          localFolder: "sial-empresas-propuesta",
-          views: [
-            { id: "empresas", label: "Gestion de empresas", href: "gestion-empresas.html" },
-            { id: "registro", label: "Registro de empresa", href: "registro-empresa.html" },
-            { id: "roles", label: "Roles por empresa", href: "roles-empresa.html" }
-          ]
-        },
-        {
-          id: "transporte",
-          label: "Transporte",
-          icon: "transporte",
-          folder: "Gestion de Transporte",
-          localFolder: "sial-conductores-propuesta",
-          views: [
-            { id: "gestion", label: "Gestion de conductores", href: "gestion-conductores.html" },
-            { id: "licencias", label: "Categorias de licencia", href: "gestion-categorias-licencia.html" },
-            { id: "relacion", label: "Conductor + licencia", href: "relacion-conductor-licencia.html" },
-            { id: "vehiculos", label: "Gestion de vehiculos", href: "gestion-vehiculos.html" },
-            { id: "tiposVehiculo", label: "Tipos de vehiculo", href: "gestion-tipos-vehiculo.html" },
-            { id: "tiposEmpresa", label: "Tipos de empresa", href: "gestion-tipos-empresa.html" },
-            { id: "empresaTipo", label: "Empresa + tipo", href: "relacion-empresa-tipo.html" },
-            { id: "dashboard", label: "Dashboard transporte", href: "dashboard-transporte.html" },
-            { id: "documental", label: "Matriz documental", href: "matriz-documental-vehiculos.html" },
-            { id: "disponibilidad", label: "Disponibilidad", href: "disponibilidad-operativa.html" }
+            { id: "referencias", label: "Gestion de referencias", href: "gestion-referencias.html" },
+            { id: "clases", label: "Clases de referencias", href: "gestion-clases-referencia.html" }
           ]
         },
         {
@@ -85,10 +54,50 @@ const SIALCore = (() => {
           localFolder: "sial-fincas-propuesta",
           views: [
             { id: "fincas", label: "Gestion de fincas", href: "gestion-fincas.html" },
-            { id: "grupos", label: "Gestion de grupos", href: "gestion-grupos.html" },
             { id: "sectores", label: "Gestion de sectores", href: "gestion-sectores.html" },
-            { id: "referencias", label: "Gestion de referencias", href: "gestion-referencias.html" },
-            { id: "clases", label: "Clases de referencia", href: "gestion-clases-referencia.html" }
+            { id: "grupos", label: "Gestion de grupos", href: "gestion-grupos.html" }
+          ]
+        },
+        {
+          id: "transporte",
+          label: "Transporte",
+          icon: "transporte",
+          folder: "Gestion de Transporte",
+          localFolder: "sial-conductores-propuesta",
+          views: [
+            { id: "gestion", label: "Gestion de conductores", href: "gestion-conductores.html" },
+            { id: "licencias", label: "Gestion de licencias", href: "gestion-categorias-licencia.html" },
+            { id: "relacion", label: "Conductor + licencia", href: "relacion-conductor-licencia.html" },
+            { id: "vehiculos", label: "Gestion de vehiculos", href: "gestion-vehiculos.html" },
+            { id: "tiposVehiculo", label: "Tipos de vehiculos", href: "gestion-tipos-vehiculo.html" },
+            { id: "dashboard", label: "Dashboard transporte", href: "dashboard-transporte.html" },
+            { id: "documental", label: "Matriz documental", href: "matriz-documental-vehiculos.html" },
+            { id: "disponibilidad", label: "Disponibilidad", href: "disponibilidad-operativa.html" }
+          ]
+        },
+        {
+          id: "empresas",
+          label: "Empresa",
+          icon: "empresas",
+          folder: "Gestion de Empresas",
+          localFolder: "sial-empresas-propuesta",
+          views: [
+            { id: "empresas", label: "Gestion de empresas", href: "gestion-empresas.html" },
+            { id: "roles", label: "Roles por empresas", href: "roles-empresa.html" },
+            { id: "tiposEmpresa", label: "Tipos de empresas", href: "gestion-tipos-empresa.html", folder: "Gestion de Transporte", localFolder: "sial-conductores-propuesta" },
+            { id: "empresaTipo", label: "Empresa + tipo", href: "relacion-empresa-tipo.html", folder: "Gestion de Transporte", localFolder: "sial-conductores-propuesta" }
+          ]
+        },
+        {
+          id: "usuarios",
+          label: "Usuarios",
+          icon: "usuarios",
+          folder: "Gestion de Usuarios",
+          localFolder: "sial-usuarios-propuesta",
+          views: [
+            { id: "usuarios", label: "Gestion de usuarios", href: "gestion-usuarios.html" },
+            { id: "registro", label: "Registro de usuario", href: "registro-usuario.html" },
+            { id: "edicion", label: "Editar usuario", href: "editar-usuario.html" }
           ]
         },
         {
@@ -144,11 +153,26 @@ const SIALCore = (() => {
     return pathSegments.some((segment) => localFolders.includes(segment));
   }
 
-  function resolveNavigationHref(targetModule, href, activeModuleId) {
+  function getCurrentNavigationFolder() {
+    const segments = window.location.pathname
+      .split(/[\\/]+/)
+      .map((segment) => decodeURIComponent(segment))
+      .filter(Boolean);
+    return segments.length > 1 ? segments[segments.length - 2] : "";
+  }
+
+  function getNavigationFolder(targetModule, targetView) {
+    if (isLocalPrototypePath()) return targetView?.localFolder || targetModule.localFolder || targetView?.folder || targetModule.folder;
+    return targetView?.folder || targetModule.folder || targetView?.localFolder || targetModule.localFolder;
+  }
+
+  function resolveNavigationHref(targetModule, targetView) {
+    const view = typeof targetView === "object" ? targetView : { href: targetView };
+    const href = view?.href;
     if (!href) return "#";
     if (href.startsWith("#") || /^https?:\/\//i.test(href)) return href;
-    if (targetModule.id === activeModuleId) return href;
-    const folder = isLocalPrototypePath() ? targetModule.localFolder : targetModule.folder;
+    const folder = getNavigationFolder(targetModule, view);
+    if (!folder || normalize(folder) === normalize(getCurrentNavigationFolder())) return href;
     return `../${encodeURI(folder)}/${href}`;
   }
 
@@ -253,13 +277,13 @@ const SIALCore = (() => {
     nav.innerHTML = group.modules.map((module) => {
       const isActiveModule = module.id === activeModule.id;
       const firstView = module.views[0];
-      const moduleHref = resolveNavigationHref(module, firstView?.href, activeModule.id);
+      const moduleHref = resolveNavigationHref(module, firstView);
       const sublistId = `nav-${areaId}-${module.id}-views`;
       const sublist = isActiveModule ? `
         <div class="nav-sublist" id="${escapeHtml(sublistId)}" aria-label="Vistas de ${escapeHtml(module.label)}" ${activeViewsExpanded ? "" : "hidden"}>
           ${module.views.map((view) => {
             const isActiveView = view.id === activeViewId;
-            return `<a class="nav-link nav-sub-link ${isActiveView ? "active" : ""}" href="${escapeHtml(resolveNavigationHref(module, view.href, activeModule.id))}" ${isActiveView ? 'aria-current="page"' : ""}><span>${escapeHtml(view.label)}</span></a>`;
+            return `<a class="nav-link nav-sub-link ${isActiveView ? "active" : ""}" href="${escapeHtml(resolveNavigationHref(module, view))}" ${isActiveView ? 'aria-current="page"' : ""}><span>${escapeHtml(view.label)}</span></a>`;
           }).join("")}
         </div>
       ` : "";

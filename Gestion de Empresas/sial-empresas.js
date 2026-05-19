@@ -12,8 +12,9 @@ const SIAL = (() => {
     if (!nav) return;
     const items = [
       ["empresas", "gestion-empresas.html", "Gestion de empresas"],
-      ["registro", "registro-empresa.html", "Registro de empresa"],
-      ["roles", "roles-empresa.html", "Roles por empresa"]
+      ["roles", "roles-empresa.html", "Roles por empresas"],
+      ["tiposEmpresa", "../Gestion%20de%20Transporte/gestion-tipos-empresa.html", "Tipos de empresas"],
+      ["empresaTipo", "../Gestion%20de%20Transporte/relacion-empresa-tipo.html", "Empresa + tipo"]
     ];
     nav.innerHTML = items.map(([key, href, label]) =>
       `<a class="nav-link ${key === activeKey ? "active" : ""}" href="${href}"><svg class="icon" viewBox="0 0 24 24"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg><span>${label}</span></a>`

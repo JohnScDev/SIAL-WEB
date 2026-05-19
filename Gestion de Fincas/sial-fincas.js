@@ -7,19 +7,22 @@ const SIAL = (() => {
   };
 
   function applyShell(activeKey) {
+    const referenceViews = ["referencias", "clases"];
+    const moduleId = referenceViews.includes(activeKey) ? "referencias" : "fincas";
     if (window.SIALCore?.initShell) {
-      window.SIALCore.initShell({ area: "gestion", module: "fincas", view: activeKey || "fincas" });
+      window.SIALCore.initShell({ area: "gestion", module: moduleId, view: activeKey || "fincas" });
       return;
     }
     window.SIALCore?.initThemeToggle?.();
     const nav = qs("[data-nav]");
     if (!nav) return;
-    const items = [
-      ["fincas", "gestion-fincas.html", "Gestion de fincas"],
-      ["grupos", "gestion-grupos.html", "Gestion de grupos"],
-      ["sectores", "gestion-sectores.html", "Gestion de sectores"],
+    const items = moduleId === "referencias" ? [
       ["referencias", "gestion-referencias.html", "Gestion de referencias"],
-      ["clases", "gestion-clases-referencia.html", "Clases de referencia"]
+      ["clases", "gestion-clases-referencia.html", "Clases de referencias"]
+    ] : [
+      ["fincas", "gestion-fincas.html", "Gestion de fincas"],
+      ["sectores", "gestion-sectores.html", "Gestion de sectores"],
+      ["grupos", "gestion-grupos.html", "Gestion de grupos"]
     ];
     nav.innerHTML = items.map(([key, href, label]) =>
       `<a class="nav-link ${key === activeKey ? "active" : ""}" href="${href}"><svg class="icon" viewBox="0 0 24 24"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg><span>${label}</span></a>`

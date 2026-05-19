@@ -9,17 +9,17 @@ Archivos:
 - `registro-finca.html`: formulario dedicado de registro/edicion de finca.
 - `gestion-grupos.html`: tabla maestra y formulario de grupos.
 - `gestion-sectores.html`: tabla maestra y formulario de sectores.
-- `gestion-referencias.html`: vista principal de gestion de referencias de producto.
-- `registro-referencia.html`: formulario dedicado para crear, copiar o versionar referencias.
-- `gestion-clases-referencia.html`: tabla maestra y formulario de clases de referencia.
+- `gestion-referencias.html`: archivo fisico conservado en esta carpeta; funcionalmente se expone en el modulo Referencias.
+- `registro-referencia.html`: formulario dedicado para crear, copiar o versionar referencias; no se muestra como seccion del menu.
+- `gestion-clases-referencia.html`: archivo fisico conservado en esta carpeta; funcionalmente se expone en el modulo Referencias.
 - `sial-fincas.css`: tokens, layout, componentes y responsive.
 - `sial-fincas.js`: navegacion, filtros, validacion local y estados de prototipo.
 
 Criterios aplicados:
 
 - Fincas: `Listado Maestro` como prioridad + formulario administrativo extenso en vista dedicada.
-- Grupos, sectores y clases: `Configuracion` con listado maestro como prioridad y formulario corto embebido dentro de la card de gestion.
-- Referencias: `Listado Maestro` como prioridad + formulario dedicado por versionado, copia y datos tecnicos.
+- Grupos y sectores: `Configuracion` con listado maestro como prioridad y formulario corto embebido dentro de la card de gestion.
+- Referencias y clases de referencia se separan como modulo funcional propio dentro del menu, sin mover aun los archivos fisicos.
 - No se modela eliminacion fisica; se usa activar/inactivar.
 - Auditoria visible en listados.
 - Las tablas de gestion con registros incluyen accion de visualizar que abre drawer lateral derecho con detalle y auditoria, sin cubrir el menu principal.
