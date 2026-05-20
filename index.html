@@ -39,21 +39,25 @@
           <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="3" width="16" height="18" rx="2"></rect><path d="M8 8h8"></path><path d="M8 12h8"></path><path d="M8 16h5"></path></svg>
           <span>Changelog</span>
         </a>
-        <a class="nav-link" href="#transporte" data-section-link="transporte">
-          <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 7h11v10H3z"></path><path d="M14 11h4l3 3v3h-7z"></path><circle cx="7" cy="18" r="2"></circle><circle cx="18" cy="18" r="2"></circle></svg>
-          <span>Transporte</span>
-        </a>
-        <a class="nav-link" href="#usuarios" data-section-link="usuarios">
-          <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M22 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
-          <span>Usuarios</span>
-        </a>
-        <a class="nav-link" href="#empresas" data-section-link="empresas">
-          <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 21h18"></path><path d="M5 21V7l8-4v18"></path><path d="M19 21V11l-6-4"></path><path d="M9 9h1"></path><path d="M9 13h1"></path><path d="M9 17h1"></path></svg>
-          <span>Empresas</span>
+        <a class="nav-link" href="#referencias" data-section-link="referencias">
+          <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 4h9l3 3v13H6z"></path><path d="M15 4v4h4"></path><path d="M9 12h6"></path><path d="M9 16h4"></path></svg>
+          <span>Referencias</span>
         </a>
         <a class="nav-link" href="#fincas" data-section-link="fincas">
           <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V9l8-5 8 5v11"></path><path d="M8 20v-7h8v7"></path></svg>
           <span>Fincas</span>
+        </a>
+        <a class="nav-link" href="#transporte" data-section-link="transporte">
+          <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 7h11v10H3z"></path><path d="M14 11h4l3 3v3h-7z"></path><circle cx="7" cy="18" r="2"></circle><circle cx="18" cy="18" r="2"></circle></svg>
+          <span>Transporte</span>
+        </a>
+        <a class="nav-link" href="#empresas" data-section-link="empresas">
+          <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 21h18"></path><path d="M5 21V7l8-4v18"></path><path d="M19 21V11l-6-4"></path><path d="M9 9h1"></path><path d="M9 13h1"></path><path d="M9 17h1"></path></svg>
+          <span>Empresa</span>
+        </a>
+        <a class="nav-link" href="#usuarios" data-section-link="usuarios">
+          <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M22 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+          <span>Usuarios</span>
         </a>
         <a class="nav-link" href="#aviso-corte" data-section-link="aviso-corte">
           <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="5" width="16" height="16" rx="2"></rect><path d="M16 3v4"></path><path d="M8 3v4"></path><path d="M4 11h16"></path><path d="M8 15h2"></path><path d="M13 15h3"></path></svg>
@@ -101,8 +105,8 @@
         <section class="stats" aria-label="Resumen del catalogo">
           <article class="stat">
             <label>Modulos publicados</label>
-            <strong>9</strong>
-            <span>Login, Changelog, Indicadores, Usuarios, Empresas, Transporte, Fincas, Planeacion y Puerto.</span>
+            <strong>10</strong>
+            <span>Login, Changelog, Indicadores, Usuarios, Empresa, Transporte, Fincas, Referencias, Planeacion y Puerto.</span>
           </article>
           <article class="stat">
             <label>Vistas enlazadas</label>
@@ -142,10 +146,11 @@
                 <option value="libreria">Libreria UI</option>
                 <option value="indicadores">Indicadores</option>
                 <option value="changelog">Changelog</option>
-                <option value="transporte">Transporte</option>
-                <option value="usuarios">Usuarios</option>
-                <option value="empresas">Empresas</option>
+                <option value="referencias">Referencias</option>
                 <option value="fincas">Fincas</option>
+                <option value="transporte">Transporte</option>
+                <option value="empresas">Empresa</option>
+                <option value="usuarios">Usuarios</option>
                 <option value="aviso-corte">Planeacion Aviso de Corte</option>
                 <option value="puerto">Operaciones Puerto</option>
               </select>
@@ -223,12 +228,24 @@
           <div class="catalog-grid" data-module-group="autenticacion"></div>
         </section>
 
+        <section class="catalog-section" id="referencias" aria-labelledby="referencesTitle">
+          <div class="section-heading">
+            <div>
+              <p class="section-kicker">Modulo</p>
+              <h2 id="referencesTitle">Referencias</h2>
+              <p>Gestion de referencias y clases de referencias. Los archivos se conservan fisicamente en Fincas, pero se exponen como familia funcional propia.</p>
+            </div>
+            <a class="btn btn-primary" href="Gestion%20de%20Fincas/gestion-referencias.html">Abrir referencias</a>
+          </div>
+          <div class="catalog-grid" data-module-group="referencias"></div>
+        </section>
+
         <section class="catalog-section" id="transporte" aria-labelledby="transportTitle">
           <div class="section-heading">
             <div>
               <p class="section-kicker">Modulo</p>
-              <h2 id="transportTitle">Gestion de Transporte</h2>
-              <p>Conductores, licencias, vehiculos, tipos de empresa y vistas analiticas de transporte.</p>
+              <h2 id="transportTitle">Transporte</h2>
+              <p>Conductores, licencias, vehiculos, tipos de vehiculos y vistas analiticas de transporte.</p>
             </div>
             <a class="btn btn-primary" href="Gestion%20de%20Transporte/index.html">Abrir modulo</a>
           </div>
@@ -251,8 +268,8 @@
           <div class="section-heading">
             <div>
               <p class="section-kicker">Modulo</p>
-              <h2 id="companiesTitle">Gestion de Empresas</h2>
-              <p>Empresas, registro administrativo y gestion de roles disponibles por empresa.</p>
+              <h2 id="companiesTitle">Empresa</h2>
+              <p>Empresas, roles por empresas, tipos de empresas y relacion empresa + tipo.</p>
             </div>
             <a class="btn btn-primary" href="Gestion%20de%20Empresas/index.html">Abrir modulo</a>
           </div>
@@ -263,8 +280,8 @@
           <div class="section-heading">
             <div>
               <p class="section-kicker">Modulo</p>
-              <h2 id="farmsTitle">Gestion de Fincas</h2>
-              <p>Fincas, grupos, sectores, referencias y clases de referencia.</p>
+              <h2 id="farmsTitle">Fincas</h2>
+              <p>Gestion de fincas, gestion de sectores y gestion de grupos.</p>
             </div>
             <a class="btn btn-primary" href="Gestion%20de%20Fincas/index.html">Abrir modulo</a>
           </div>

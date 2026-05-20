@@ -2,6 +2,13 @@ const SIAL = (() => {
   const qs = (selector, root = document) => root.querySelector(selector);
   const qsa = (selector, root = document) => Array.from(root.querySelectorAll(selector));
 
+  const companyTypes = [
+    ["transportadora", "Transportadora", "Opera flota, conductores o servicios logisticos."],
+    ["productor", "Productor", "Asocia fincas, grupos o informacion productiva."],
+    ["exportador", "Exportador", "Participa en procesos comerciales y de despacho."],
+    ["cliente", "Cliente", "Recibe servicios o informacion administrativa."]
+  ];
+
   function applyShell(activeKey) {
     if (window.SIALCore?.initShell) {
       window.SIALCore.initShell({ area: "gestion", module: "empresas", view: activeKey || "empresas" });
@@ -144,8 +151,100 @@ const SIAL = (() => {
           fail = true;
         }
       });
+      const companyTypeNote = qs("#companyTypeAssignmentNote", form);
+      if (companyTypeNote) {
+        const assignments = qsa("[data-company-type-assignment]", form).length;
+        companyTypeNote.classList.toggle("error", assignments < 1);
+        companyTypeNote.classList.toggle("success", assignments >= 1);
+        companyTypeNote.textContent = assignments < 1 ? "Agrega al menos un tipo de empresa antes de guardar." : "Tipos de empresa listos para guardar.";
+        if (assignments < 1) fail = true;
+      }
       qs("#formOk")?.classList.toggle("is-hidden", fail);
     });
+  }
+
+  function initCompanyTypeAssignment() {
+    const form = qs("[data-company-form]");
+    const typeGrid = qs("#companyTypeDraftGrid");
+    const typeNote = qs("#companyTypeNote");
+    const assignmentNote = qs("#companyTypeAssignmentNote");
+    const assignmentList = qs("#companyTypeAssignmentList");
+    const addButton = qs("#addCompanyTypeAssignment");
+    if (!form || !typeGrid || !assignmentList) return;
+
+    let assignments = [];
+
+    const typeLabel = (value) => companyTypes.find(([typeValue]) => typeValue === value)?.[1] || value;
+    const selectedTypes = () => qsa("input[type='checkbox']:checked", typeGrid).map((input) => input.value);
+
+    const renderDraft = () => {
+      typeGrid.innerHTML = companyTypes.map(([value, label, description]) => `
+        <label class="role-option">
+          <input type="checkbox" value="${value}">
+          <span><strong>${label}</strong><span>${description}</span></span>
+        </label>
+      `).join("");
+    };
+
+    const renderAssignments = () => {
+      if (!assignments.length) {
+        assignmentList.innerHTML = `<div class="empty-state show">Aun no hay tipos de empresa asignados.</div>`;
+        assignmentNote?.classList.remove("success");
+        if (assignmentNote) assignmentNote.textContent = "Agrega al menos un tipo de empresa antes de guardar.";
+        return;
+      }
+      assignmentList.innerHTML = assignments.map((value) => `
+        <div class="assignment-item" data-company-type-assignment="${value}">
+          <input type="hidden" name="companyTypes[]" value="${value}">
+          <div>
+            <strong>${typeLabel(value)}</strong>
+            <div class="muted">Tipo de empresa agregado al registro.</div>
+          </div>
+          <div class="assignment-actions">
+            <button class="btn btn-secondary" type="button" data-remove-company-type="${value}">Quitar</button>
+          </div>
+        </div>
+      `).join("");
+      assignmentNote?.classList.remove("error");
+      assignmentNote?.classList.add("success");
+      if (assignmentNote) assignmentNote.textContent = `${assignments.length} tipo${assignments.length === 1 ? "" : "s"} de empresa asignado${assignments.length === 1 ? "" : "s"}.`;
+      qsa("[data-remove-company-type]", assignmentList).forEach((button) => {
+        button.addEventListener("click", () => {
+          assignments = assignments.filter((value) => value !== button.dataset.removeCompanyType);
+          renderAssignments();
+        });
+      });
+    };
+
+    addButton?.addEventListener("click", () => {
+      const selected = selectedTypes();
+      if (!selected.length) {
+        typeNote?.classList.add("error");
+        if (typeNote) typeNote.textContent = "Selecciona al menos un tipo para agregarlo.";
+        return;
+      }
+      assignments = Array.from(new Set([...assignments, ...selected]));
+      qsa("input[type='checkbox']", typeGrid).forEach((input) => { input.checked = false; });
+      typeNote?.classList.remove("error");
+      typeNote?.classList.add("success");
+      if (typeNote) typeNote.textContent = "Tipos agregados al resumen inferior.";
+      renderAssignments();
+    });
+
+    form.addEventListener("reset", () => {
+      assignments = [];
+      window.setTimeout(() => {
+        renderDraft();
+        renderAssignments();
+        typeNote?.classList.remove("error", "success");
+        if (typeNote) typeNote.textContent = "Selecciona uno o mas tipos y agregalos a la asignacion.";
+        assignmentNote?.classList.remove("error", "success");
+        if (assignmentNote) assignmentNote.textContent = "Agrega al menos un tipo de empresa antes de guardar.";
+      }, 0);
+    });
+
+    renderDraft();
+    renderAssignments();
   }
 
   function initCompanyRoleTransfer() {
@@ -183,5 +282,5 @@ const SIAL = (() => {
     });
   }
 
-  return { applyShell, initTableFilters, initDrawer, initBasicFormValidation, initCompanyRoleTransfer };
+  return { applyShell, initTableFilters, initDrawer, initBasicFormValidation, initCompanyRoleTransfer, initCompanyTypeAssignment };
 })();

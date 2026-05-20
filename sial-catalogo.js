@@ -183,16 +183,6 @@ const SIALCatalog = (() => {
     {
       module: "empresas",
       moduleLabel: "Empresa",
-      title: "Registro de empresa",
-      family: "registro",
-      status: "implementada",
-      href: "Gestion%20de%20Empresas/registro-empresa.html",
-      description: "Formulario administrativo para datos base, NIT, tipo principal, alcance y estado.",
-      tags: ["Formulario", "NIT"]
-    },
-    {
-      module: "empresas",
-      moduleLabel: "Empresa",
       title: "Roles por empresa",
       family: "relacion",
       status: "implementada",
@@ -202,7 +192,7 @@ const SIALCatalog = (() => {
     },
     {
       module: "transporte",
-      moduleLabel: "Gestion de Transporte",
+      moduleLabel: "Transporte",
       title: "Gestion de conductores",
       family: "gestion",
       status: "implementada",
@@ -212,17 +202,7 @@ const SIALCatalog = (() => {
     },
     {
       module: "transporte",
-      moduleLabel: "Gestion de Transporte",
-      title: "Registro de conductor",
-      family: "registro",
-      status: "implementada",
-      href: "Gestion%20de%20Transporte/registro-conductor.html",
-      description: "Formulario dedicado para conductor por cantidad de campos, FK y reglas de negocio.",
-      tags: ["Formulario grande", "Validaciones", "Licencias"]
-    },
-    {
-      module: "transporte",
-      moduleLabel: "Gestion de Transporte",
+      moduleLabel: "Transporte",
       title: "Gestion de licencias",
       family: "gestion",
       status: "implementada",
@@ -232,8 +212,8 @@ const SIALCatalog = (() => {
     },
     {
       module: "transporte",
-      moduleLabel: "Gestion de Transporte",
-      title: "Relacion conductor licencia",
+      moduleLabel: "Transporte",
+      title: "Conductor + licencia",
       family: "relacion",
       status: "implementada",
       href: "Gestion%20de%20Transporte/relacion-conductor-licencia.html",
@@ -242,7 +222,7 @@ const SIALCatalog = (() => {
     },
     {
       module: "transporte",
-      moduleLabel: "Gestion de Transporte",
+      moduleLabel: "Transporte",
       title: "Gestion de vehiculos",
       family: "gestion",
       status: "implementada",
@@ -252,17 +232,7 @@ const SIALCatalog = (() => {
     },
     {
       module: "transporte",
-      moduleLabel: "Gestion de Transporte",
-      title: "Registro de vehiculo",
-      family: "registro",
-      status: "implementada",
-      href: "Gestion%20de%20Transporte/registro-vehiculo.html",
-      description: "Formulario dedicado para documentos, empresas, fechas y disponibilidad del vehiculo.",
-      tags: ["Formulario grande", "Fechas", "Empresas"]
-    },
-    {
-      module: "transporte",
-      moduleLabel: "Gestion de Transporte",
+      moduleLabel: "Transporte",
       title: "Tipos de vehiculos",
       family: "gestion",
       status: "implementada",
@@ -292,7 +262,7 @@ const SIALCatalog = (() => {
     },
     {
       module: "transporte",
-      moduleLabel: "Gestion de Transporte",
+      moduleLabel: "Transporte",
       title: "Dashboard transporte",
       family: "analitica",
       status: "implementada",
@@ -302,7 +272,7 @@ const SIALCatalog = (() => {
     },
     {
       module: "transporte",
-      moduleLabel: "Gestion de Transporte",
+      moduleLabel: "Transporte",
       title: "Matriz documental vehiculos",
       family: "analitica",
       status: "implementada",
@@ -312,7 +282,7 @@ const SIALCatalog = (() => {
     },
     {
       module: "transporte",
-      moduleLabel: "Gestion de Transporte",
+      moduleLabel: "Transporte",
       title: "Disponibilidad operativa",
       family: "analitica",
       status: "implementada",
@@ -322,23 +292,13 @@ const SIALCatalog = (() => {
     },
     {
       module: "fincas",
-      moduleLabel: "Gestion de Fincas",
+      moduleLabel: "Fincas",
       title: "Gestion de fincas",
       family: "gestion",
       status: "implementada",
       href: "Gestion%20de%20Fincas/gestion-fincas.html",
       description: "Gestion principal de fincas con acceso a registro dedicado por estructura grande.",
       tags: ["Fincas", "Maestra grande", "FK"]
-    },
-    {
-      module: "fincas",
-      moduleLabel: "Gestion de Fincas",
-      title: "Registro de finca",
-      family: "registro",
-      status: "implementada",
-      href: "Gestion%20de%20Fincas/registro-finca.html",
-      description: "Formulario dedicado para datos de finca, productor, grupo, sector y geolocalizacion.",
-      tags: ["Formulario grande", "Productor"]
     },
     {
       module: "referencias",
@@ -351,18 +311,8 @@ const SIALCatalog = (() => {
       tags: ["Referencias", "Versionamiento"]
     },
     {
-      module: "referencias",
-      moduleLabel: "Referencias",
-      title: "Registro de referencia",
-      family: "registro",
-      status: "implementada",
-      href: "Gestion%20de%20Fincas/registro-referencia.html",
-      description: "Formulario dedicado para pesos, clase, fruta, conversion y version de referencia.",
-      tags: ["Formulario grande", "Pesos"]
-    },
-    {
       module: "fincas",
-      moduleLabel: "Gestion de Fincas",
+      moduleLabel: "Fincas",
       title: "Gestion de grupos",
       family: "gestion",
       status: "implementada",
@@ -372,7 +322,7 @@ const SIALCatalog = (() => {
     },
     {
       module: "fincas",
-      moduleLabel: "Gestion de Fincas",
+      moduleLabel: "Fincas",
       title: "Gestion de sectores",
       family: "gestion",
       status: "implementada",
@@ -515,7 +465,7 @@ const SIALCatalog = (() => {
   }
 
   function render() {
-    ["libreria", "indicadores", "changelog", "autenticacion", "usuarios", "empresas", "transporte", "fincas", "puerto", "aviso-corte"].forEach((module) => {
+    ["libreria", "indicadores", "changelog", "autenticacion", "referencias", "fincas", "transporte", "empresas", "usuarios", "aviso-corte", "puerto"].forEach((module) => {
       const group = qs(`[data-module-group="${module}"]`);
       if (!group) return;
       group.innerHTML = views.filter((view) => view.module === module).map(cardTemplate).join("");
