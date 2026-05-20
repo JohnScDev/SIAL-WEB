@@ -345,6 +345,7 @@ const SIALCore = (() => {
     initThemeToggle();
     initSidebarToggle();
     initStateActionConfirm();
+    initTableExport();
   }
 
   function initShell(config = {}) {
@@ -659,6 +660,102 @@ const SIALCore = (() => {
       filterRows();
     });
     filterRows();
+  }
+
+  function cleanExportText(node) {
+    return String(node?.textContent || "").replace(/\s+/g, " ").trim();
+  }
+
+  function csvCell(value) {
+    const text = String(value || "");
+    return /[",;\n]/.test(text) ? `"${text.replaceAll('"', '""')}"` : text;
+  }
+
+  function exportFileName(value) {
+    return normalize(value || "sial-export")
+      .replace(/[^a-z0-9-_]+/g, "-")
+      .replace(/-+/g, "-")
+      .replace(/^-|-$/g, "") || "sial-export";
+  }
+
+  function exportableColumns(table) {
+    const headers = qsa("thead th", table);
+    if (!headers.length) {
+      const cells = qsa("tbody tr:first-child td, tbody tr:first-child th", table);
+      return cells.map((_, index) => index);
+    }
+    return headers
+      .map((header, index) => ({ header: cleanExportText(header).toLowerCase(), index }))
+      .filter((item) => item.header !== "acciones")
+      .map((item) => item.index);
+  }
+
+  function rowsForExport(table) {
+    const rows = qsa("tbody tr", table);
+    const hasFilterState = rows.some((row) => row.dataset.filterMatch !== undefined);
+    return rows.filter((row) => {
+      if (row.classList.contains("empty-state")) return false;
+      if (hasFilterState) return row.dataset.filterMatch === "true";
+      return !row.classList.contains("is-hidden");
+    });
+  }
+
+  function exportTableTitle(table) {
+    const monthTitle = table.closest(".month-card")?.querySelector(".month-title");
+    const cardTitle = table.closest(".card")?.querySelector(".card-title");
+    return cleanExportText(monthTitle || cardTitle);
+  }
+
+  function tablesForExport(button) {
+    const targetSelector = button.dataset.exportTarget;
+    const target = targetSelector ? qs(targetSelector) : (button.closest(".card") || document);
+    if (target?.matches?.("table")) return [target];
+    const tables = target ? qsa("table", target) : [];
+    if (tables.length) return tables;
+    const fallback = qs("table");
+    return fallback ? [fallback] : [];
+  }
+
+  function buildTableCsv(tables) {
+    const lines = [];
+    tables.forEach((table, tableIndex) => {
+      const columns = exportableColumns(table);
+      const headers = qsa("thead th", table);
+      const title = exportTableTitle(table);
+      if (tables.length > 1 && title) lines.push(csvCell(title));
+      if (headers.length) lines.push(columns.map((index) => csvCell(cleanExportText(headers[index]))).join(";"));
+      rowsForExport(table).forEach((row) => {
+        const cells = qsa("td, th", row);
+        lines.push(columns.map((index) => csvCell(cleanExportText(cells[index]))).join(";"));
+      });
+      if (tableIndex < tables.length - 1) lines.push("");
+    });
+    return `\uFEFF${lines.join("\n")}`;
+  }
+
+  function downloadCsv(filename, content) {
+    const blob = new Blob([content], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = `${exportFileName(filename)}.csv`;
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 0);
+  }
+
+  function initTableExport(config = {}) {
+    const buttons = qsa(config.selector || "[data-export-table]").filter((button) => button.dataset.exportReady !== "true");
+    buttons.forEach((button) => {
+      button.dataset.exportReady = "true";
+      button.addEventListener("click", () => {
+        const tables = tablesForExport(button);
+        if (!tables.length) return;
+        const fallbackName = cleanExportText(button.closest(".card")?.querySelector(".card-title")) || document.title || "sial-export";
+        downloadCsv(button.dataset.exportFilename || fallbackName, buildTableCsv(tables));
+      });
+    });
   }
 
   function initDrawer() {
@@ -1017,6 +1114,7 @@ const SIALCore = (() => {
     navigationRegistry,
     setFieldState,
     initTableFilters,
+    initTableExport,
     initDrawer,
     initStateActionConfirm,
     initEmbeddedForm,

@@ -36,3 +36,8 @@ Cuando se agregue una nueva vista, se debe incluir una entrada en el arreglo `vi
 - `tags`
 
 El catalogo no reemplaza el documento base SIAL. Solo centraliza las propuestas navegables para revision.
+
+## Exportacion de tablas
+
+Las vistas que requieren salida operativa usan el patron compartido `data-export-table`, resuelto desde `shared/sial-core.js`.
+El exportador genera CSV con las filas filtradas por la vista y omite la columna `Acciones`.
