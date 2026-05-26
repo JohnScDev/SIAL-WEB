@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SIAL | Mantenimiento 503</title>
+  <script>
+    (function () {
+      const savedTheme = localStorage.getItem("sial-theme");
+      const systemDark = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
+      document.documentElement.dataset.theme = savedTheme || (systemDark ? "dark" : "light");
+    })();
+  </script>
+  <link rel="stylesheet" href="../shared/sial-core.css?v=20260515-motion1" />
+</head>
+<body data-view-family="sistema">
+  <main class="error-shell" id="error-503">
+    <section class="page error-page" aria-labelledby="errorTitle">
+      <div class="public-changelog-topbar error-topbar">
+        <a class="brand public-changelog-brand" href="../index.html" aria-label="Volver al catalogo SIAL"><span class="brand-badge">S</span><span>SIAL</span></a>
+        <button class="icon-btn theme-toggle" type="button" data-theme-toggle aria-label="Cambiar a modo oscuro" aria-pressed="false" title="Cambiar a modo oscuro">
+          <svg class="icon theme-icon theme-icon-moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12.8A8.5 8.5 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"></path></svg>
+          <svg class="icon theme-icon theme-icon-sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2"></path><path d="M12 20v2"></path><path d="m4.93 4.93 1.41 1.41"></path><path d="m17.66 17.66 1.41 1.41"></path><path d="M2 12h2"></path><path d="M20 12h2"></path><path d="m6.34 17.66-1.41 1.41"></path><path d="m19.07 4.93-1.41 1.41"></path></svg>
+        </button>
+      </div>
+
+      <article class="error-panel error-panel-maintenance" aria-describedby="errorDescription">
+        <div class="error-main">
+          <p class="page-eyebrow">SIAL / Estado del sistema</p>
+          <span class="error-code" aria-label="Codigo de mantenimiento 503">503</span>
+          <h1 class="error-title" id="errorTitle">Mantenimiento programado</h1>
+          <p class="error-description" id="errorDescription">Esta vista o servicio se encuentra temporalmente detenido por una ventana de mantenimiento. La informacion queda protegida y podras continuar cuando finalice la intervencion.</p>
+          <div class="error-actions">
+            <button class="btn btn-primary" type="button" onclick="window.location.reload()">Reintentar</button>
+            <a class="btn btn-secondary" href="../index.html">Volver al catalogo</a>
+          </div>
+        </div>
+        <aside class="error-support" aria-label="Detalle de mantenimiento">
+          <span class="tag tag-warning">Mantenimiento</span>
+          <h2>Estado operativo</h2>
+          <ul class="error-list">
+            <li>Espera la finalizacion de la ventana programada antes de registrar cambios.</li>
+            <li>Evita reenviar formularios o repetir operaciones mientras el servicio este detenido.</li>
+            <li>Si la ventana ya termino, reporta el codigo 503 con modulo, fecha y hora.</li>
+          </ul>
+          <p class="error-meta">Codigo 503 - Servicio temporalmente no disponible</p>
+        </aside>
+      </article>
+    </section>
+  </main>
+
+  <script src="../shared/sial-core.js?v=20260515-motion1"></script>
+  <script>window.SIALCore?.initThemeToggle?.();</script>
+</body>
+</html>

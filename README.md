@@ -13,6 +13,7 @@ Interfaz raiz para publicar en Netlify las propuestas HTML del entorno web SIAL.
 
 - `Login`
 - `Changelog`
+- `Errores`
 - `shared/componentes.html`
 - `Gestion de Transporte`
 - `Gestion de Usuarios`

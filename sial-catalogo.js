@@ -51,6 +51,56 @@ const SIALCatalog = (() => {
       tags: ["Gestion", "Auditoria", "Publicacion"]
     },
     {
+      module: "errores",
+      moduleLabel: "Errores del sistema",
+      title: "Error 401 - Acceso no autenticado",
+      family: "sistema",
+      status: "implementada",
+      href: "Errores/401.html",
+      description: "Estado completo para sesiones no autenticadas o vencidas, con retorno seguro al login.",
+      tags: ["401", "Sesion", "Acceso"]
+    },
+    {
+      module: "errores",
+      moduleLabel: "Errores del sistema",
+      title: "Error 403 - Sin permisos",
+      family: "sistema",
+      status: "implementada",
+      href: "Errores/403.html",
+      description: "Estado completo para operaciones no autorizadas o usuarios sin permisos suficientes.",
+      tags: ["403", "Permisos", "Seguridad"]
+    },
+    {
+      module: "errores",
+      moduleLabel: "Errores del sistema",
+      title: "Error 404 - Vista no encontrada",
+      family: "sistema",
+      status: "implementada",
+      href: "Errores/404.html",
+      description: "Estado completo para rutas inexistentes, vistas movidas o recursos aun no publicados.",
+      tags: ["404", "Ruta", "Navegacion"]
+    },
+    {
+      module: "errores",
+      moduleLabel: "Errores del sistema",
+      title: "Error 500 - Falla de servicio",
+      family: "sistema",
+      status: "implementada",
+      href: "Errores/500.html",
+      description: "Estado completo para fallas internas, con accion de reintento y retorno al catalogo.",
+      tags: ["500", "Servicio", "Reintento"]
+    },
+    {
+      module: "errores",
+      moduleLabel: "Errores del sistema",
+      title: "Mantenimiento 503",
+      family: "sistema",
+      status: "implementada",
+      href: "Errores/503.html",
+      description: "Estado completo para mantenimiento programado o servicio temporalmente no disponible.",
+      tags: ["503", "Mantenimiento", "Sistema"]
+    },
+    {
       module: "autenticacion",
       moduleLabel: "Login y Autenticacion",
       title: "Login institucional",
@@ -465,7 +515,7 @@ const SIALCatalog = (() => {
   }
 
   function render() {
-    ["libreria", "indicadores", "changelog", "autenticacion", "referencias", "fincas", "transporte", "empresas", "usuarios", "aviso-corte", "puerto"].forEach((module) => {
+    ["libreria", "indicadores", "changelog", "errores", "autenticacion", "referencias", "fincas", "transporte", "empresas", "usuarios", "aviso-corte", "puerto"].forEach((module) => {
       const group = qs(`[data-module-group="${module}"]`);
       if (!group) return;
       group.innerHTML = views.filter((view) => view.module === module).map(cardTemplate).join("");

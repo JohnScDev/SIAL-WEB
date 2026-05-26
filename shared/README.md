@@ -33,7 +33,7 @@ La base actual concentra:
 - Botones primary, secondary, ghost, destructive e icon-only, incluyendo estado `is-loading` para operaciones async.
 - Cards, headers de card, stats, grids y layouts responsivos.
 - Alertas `notice-info`, `notice-warning`, `notice-error`, `notice-success` con fondo, texto y borde semantico.
-- Sistema de errores compartido: paginas dedicadas para `401`, `403`, `404`, `500` y componente embebido `error-state` para fallas dentro de modulos o tablas.
+- Sistema de errores compartido: paginas dedicadas para `401`, `403`, `404`, `500`, `503` y componente embebido `error-state` para fallas dentro de modulos o tablas.
 - Inputs, selects, textarea, field-note, validacion error/success y read-only.
 - Componentes de autenticacion: stepper OTP, campo de contrasena con accion embebida, medidor de fortaleza, loading de submit y acceso a novedades.
 - Tablas, toolbar, paginacion 10/30/50, empty state, badges, chips y estados.
@@ -61,8 +61,9 @@ Las paginas completas de error viven en `Errores/` y usan la misma marca, modo o
 - `403`: usuario sin permisos; accion principal de retorno seguro.
 - `404`: ruta o vista no encontrada; existe tambien `404.html` en la raiz para GitHub Pages.
 - `500`: falla interna de servicio; accion principal de reintento.
+- `503`: servicio o modulo en mantenimiento temporal; accion principal de reintento y retorno seguro.
 
-Cuando el error ocurre dentro de una tabla, card o consulta, usar `error-state` en lugar de sacar al usuario de la vista.
+Cuando el error o mantenimiento ocurre dentro de una tabla, card o consulta, usar `error-state` en lugar de sacar al usuario de la vista.
 
 ## SIAL View Motion
 
@@ -117,3 +118,10 @@ Antes de copiar cambios al catalogo o a Drive, validar:
 - Existencia de `view-motion-overlay` y texto `Cargando vista`.
 - Escaneo SIAL UI de los modulos modificados.
 - Que las vistas de login con `.brand-mark` usen el isotipo compartido y no una marca local dibujada.
+
+
+## Migracion centralizada completada
+
+La libreria `shared/sial-core.css` concentra tambien los estilos de autenticacion, cover flow, indicadores fuertes, calendario de planeacion, cintas oficiales y monitoreo de calendarios.
+
+Los archivos CSS locales de `Login`, `Indicadores` y `Gestion de Planeacion` se conservan como capas de compatibilidad para no romper rutas existentes. No deben recibir nuevos componentes visuales; cualquier nuevo patron reutilizable debe agregarse en `shared/sial-core.css`.

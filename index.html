@@ -39,6 +39,10 @@
           <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="3" width="16" height="18" rx="2"></rect><path d="M8 8h8"></path><path d="M8 12h8"></path><path d="M8 16h5"></path></svg>
           <span>Changelog</span>
         </a>
+        <a class="nav-link" href="#errores" data-section-link="errores">
+          <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M12 8v5"></path><path d="M12 16h.01"></path></svg>
+          <span>Errores</span>
+        </a>
         <a class="nav-link" href="#referencias" data-section-link="referencias">
           <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 4h9l3 3v13H6z"></path><path d="M15 4v4h4"></path><path d="M9 12h6"></path><path d="M9 16h4"></path></svg>
           <span>Referencias</span>
@@ -105,8 +109,8 @@
         <section class="stats" aria-label="Resumen del catalogo">
           <article class="stat">
             <label>Modulos publicados</label>
-            <strong>10</strong>
-            <span>Login, Changelog, Indicadores, Usuarios, Empresa, Transporte, Fincas, Referencias, Planeacion y Puerto.</span>
+            <strong>11</strong>
+            <span>Login, Changelog, Errores, Indicadores, Usuarios, Empresa, Transporte, Fincas, Referencias, Planeacion y Puerto.</span>
           </article>
           <article class="stat">
             <label>Vistas enlazadas</label>
@@ -146,6 +150,7 @@
                 <option value="libreria">Libreria UI</option>
                 <option value="indicadores">Indicadores</option>
                 <option value="changelog">Changelog</option>
+                <option value="errores">Errores del sistema</option>
                 <option value="referencias">Referencias</option>
                 <option value="fincas">Fincas</option>
                 <option value="transporte">Transporte</option>
@@ -163,6 +168,7 @@
                 <option value="analitica">Analitica</option>
                 <option value="documentacion">Documentacion</option>
                 <option value="comunicacion">Comunicacion</option>
+                <option value="sistema">Sistema</option>
               </select>
               <select class="select" id="statusFilter" aria-label="Filtrar por estado">
                 <option value="all">Todos los estados</option>
@@ -214,6 +220,21 @@
             </div>
           </div>
           <div class="catalog-grid" data-module-group="changelog"></div>
+        </section>
+
+        <section class="catalog-section" id="errores" aria-labelledby="errorsTitle">
+          <div class="section-heading">
+            <div>
+              <p class="section-kicker">Sistema</p>
+              <h2 id="errorsTitle">Errores y estados del sistema</h2>
+              <p>Paginas completas para validar accesos, permisos, rutas no encontradas, fallas internas y mantenimiento programado.</p>
+            </div>
+            <div class="card-actions">
+              <a class="btn btn-primary" href="Errores/404.html">Abrir 404</a>
+              <a class="btn btn-secondary" href="Errores/503.html">Abrir mantenimiento</a>
+            </div>
+          </div>
+          <div class="catalog-grid" data-module-group="errores"></div>
         </section>
 
         <section class="catalog-section" id="autenticacion" aria-labelledby="authTitle">

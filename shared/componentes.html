@@ -51,6 +51,10 @@
           <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v18"></path><path d="M5 8h14"></path><path d="M5 16h14"></path></svg>
           <span>Estados</span>
         </a>
+        <a class="nav-link" href="#mantenimiento">
+          <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 6v6l4 2"></path><circle cx="12" cy="12" r="9"></circle></svg>
+          <span>Mantenimiento</span>
+        </a>
         <a class="nav-link" href="#view-motion">
           <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h16"></path><path d="M13 5l7 7-7 7"></path><path d="M4 5h4"></path><path d="M4 19h4"></path></svg>
           <span>Motion</span>
@@ -566,6 +570,30 @@
                 <a class="btn btn-secondary" href="../Errores/500.html">Ver pagina 500</a>
               </div>
               <span class="error-state-meta">Codigo 500 · Error interno del servicio</span>
+            </div>
+          </div>
+        </section>
+
+        <section class="card" id="mantenimiento" aria-labelledby="maintenanceTitle">
+          <div class="card-header">
+            <div>
+              <h2 class="card-title" id="maintenanceTitle">Mantenimiento</h2>
+              <p class="card-subtitle">Estado visual para ventanas programadas o servicios temporalmente detenidos.</p>
+            </div>
+            <span class="tag tag-warning">503</span>
+          </div>
+          <div class="card-body">
+            <div class="error-state error-state-warning" role="status" aria-label="Servicio en mantenimiento">
+              <span class="error-state-icon" aria-hidden="true"><svg class="icon" viewBox="0 0 24 24"><path d="M12 6v6l4 2"></path><circle cx="12" cy="12" r="9"></circle></svg></span>
+              <div>
+                <strong class="error-state-title">Servicio en mantenimiento</strong>
+                <p>Usar cuando una seccion, consulta o modulo este temporalmente detenido por una ventana operativa.</p>
+              </div>
+              <div class="error-state-actions">
+                <button class="btn btn-primary" type="button">Reintentar</button>
+                <a class="btn btn-secondary" href="../Errores/503.html">Ver pagina 503</a>
+              </div>
+              <span class="error-state-meta">Codigo 503 - Servicio temporalmente no disponible</span>
             </div>
           </div>
         </section>
