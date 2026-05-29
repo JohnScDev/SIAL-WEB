@@ -20,6 +20,7 @@ const SIAL = (() => {
     const items = [
       ["empresas", "gestion-empresas.html", "Gestion de empresas"],
       ["roles", "roles-empresa.html", "Roles por empresas"],
+      ["paramRoles", "parametrizacion-roles.html", "Parametrizacion de roles"],
       ["tiposEmpresa", "../Gestion%20de%20Transporte/gestion-tipos-empresa.html", "Tipos de empresas"],
       ["empresaTipo", "../Gestion%20de%20Transporte/relacion-empresa-tipo.html", "Empresa + tipo"]
     ];
@@ -282,5 +283,41 @@ const SIAL = (() => {
     });
   }
 
-  return { applyShell, initTableFilters, initDrawer, initBasicFormValidation, initCompanyRoleTransfer, initCompanyTypeAssignment };
+  function initRolePermissionMatrix() {
+    const form = qs("[data-role-permission-form]");
+    const note = qs("#permissionSummaryNote");
+    const checkboxes = qsa("[data-permission-check]", form || document);
+    if (!form || !checkboxes.length) return;
+
+    const updateSummary = () => {
+      const total = checkboxes.filter((input) => input.checked).length;
+      note?.classList.toggle("error", total === 0);
+      note?.classList.toggle("success", total > 0);
+      if (note) note.textContent = total === 0 ? "Selecciona al menos un permiso para guardar el rol." : `${total} permiso${total === 1 ? "" : "s"} seleccionado${total === 1 ? "" : "s"}.`;
+      return total;
+    };
+
+    checkboxes.forEach((input) => {
+      input.addEventListener("change", updateSummary);
+    });
+
+    form.addEventListener("submit", (event) => {
+      event.preventDefault();
+      let fail = false;
+      qsa("[data-required]", form).forEach((input) => {
+        const noteTarget = qs(`#${input.getAttribute("aria-describedby")}`);
+        if (noteTarget && !noteTarget.dataset.base) noteTarget.dataset.base = noteTarget.textContent;
+        const empty = !String(input.value || "").trim();
+        setFieldState(input, noteTarget, empty ? "Este campo es obligatorio." : "");
+        if (empty) fail = true;
+      });
+      if (updateSummary() === 0) fail = true;
+      qs("#formOk")?.classList.toggle("is-hidden", fail);
+    });
+    form.addEventListener("reset", () => window.setTimeout(updateSummary, 0));
+
+    updateSummary();
+  }
+
+  return { applyShell, initTableFilters, initDrawer, initBasicFormValidation, initCompanyRoleTransfer, initCompanyTypeAssignment, initRolePermissionMatrix };
 })();

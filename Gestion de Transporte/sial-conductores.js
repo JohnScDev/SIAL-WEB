@@ -15,6 +15,7 @@ const SIAL = (() => {
     const items = moduleId === "empresas" ? [
       ["empresas", "../Gestion%20de%20Empresas/gestion-empresas.html", "Gestion de empresas"],
       ["roles", "../Gestion%20de%20Empresas/roles-empresa.html", "Roles por empresas"],
+      ["paramRoles", "../Gestion%20de%20Empresas/parametrizacion-roles.html", "Parametrizacion de roles"],
       ["tiposEmpresa", "gestion-tipos-empresa.html", "Tipos de empresas"],
       ["empresaTipo", "relacion-empresa-tipo.html", "Empresa + tipo"]
     ] : [

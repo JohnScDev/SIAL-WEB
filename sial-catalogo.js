@@ -241,6 +241,16 @@ const SIALCatalog = (() => {
       tags: ["Relacion", "Transfer"]
     },
     {
+      module: "empresas",
+      moduleLabel: "Empresa",
+      title: "Parametrizacion de roles",
+      family: "configuracion",
+      status: "implementada",
+      href: "Gestion%20de%20Empresas/parametrizacion-roles.html",
+      description: "Catalogo maestro de roles con matriz de permisos por modulo, criticidad, estado y auditoria.",
+      tags: ["Roles", "Permisos", "Seguridad"]
+    },
+    {
       module: "transporte",
       moduleLabel: "Transporte",
       title: "Gestion de conductores",
