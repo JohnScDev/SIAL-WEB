@@ -1,3 +1,207 @@
 @import url("../shared/sial-core.css");
 
 /* Estilos especificos del modulo. Mantener aqui solo excepciones justificadas al core SIAL. */
+
+.role-admin-card,
+.role-admin-card .card-body { min-width: 0; }
+
+.role-admin-card .card-body { padding: 0; }
+
+.role-admin-layout {
+  display: grid;
+  grid-template-columns: minmax(260px, 340px) minmax(0, 1fr);
+  min-height: 620px;
+  min-width: 0;
+}
+
+.role-admin-sidebar {
+  min-width: 0;
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  gap: 12px;
+  padding: 18px;
+  border-right: 1px solid var(--color-border-subtle);
+  background: var(--color-empty-bg);
+}
+
+.role-admin-tools {
+  display: grid;
+  gap: 10px;
+}
+
+.role-admin-list {
+  display: grid;
+  align-content: start;
+  gap: 10px;
+  overflow: auto;
+  padding-right: 2px;
+}
+
+.role-admin-item {
+  min-width: 0;
+  width: 100%;
+  display: grid;
+  gap: 6px;
+  padding: 14px;
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-control);
+  background: var(--color-surface);
+  color: var(--color-text-2);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition: border-color var(--motion-duration-fast) ease, background-color var(--motion-duration-fast) ease, box-shadow var(--motion-duration-fast) ease;
+}
+
+.role-admin-item:hover,
+.role-admin-item:focus-visible,
+.role-admin-item.is-selected {
+  border-color: var(--color-primary-500);
+  background: var(--color-primary-50);
+  outline: 0;
+}
+
+.role-admin-item.is-selected { box-shadow: inset 3px 0 0 var(--color-primary-500); }
+
+.role-admin-item-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.role-admin-item strong { color: var(--color-text); }
+.role-admin-item small { color: var(--color-text-3); }
+
+.role-admin-workspace {
+  min-width: 0;
+  display: grid;
+  gap: 18px;
+  align-content: start;
+  padding: 22px;
+}
+
+.role-admin-current {
+  min-width: 0;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 18px;
+  padding-bottom: 18px;
+  border-bottom: 1px solid var(--color-border-subtle);
+}
+
+.role-admin-current h3 {
+  margin: 4px 0 6px;
+  font-size: 22px;
+}
+
+.role-admin-current .eyebrow {
+  color: var(--color-text-3);
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.role-admin-current p { margin: 0; color: var(--color-text-2); }
+
+.role-admin-current-grid {
+  min-width: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 10px;
+}
+
+.role-admin-current-grid div,
+.role-assignment-summary {
+  min-width: 0;
+  padding: 12px;
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-control);
+  background: var(--color-surface);
+}
+
+.role-admin-current-grid span,
+.role-assignment-summary span {
+  display: block;
+  margin-bottom: 4px;
+  color: var(--color-text-3);
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.role-admin-current-grid strong,
+.role-assignment-summary strong {
+  display: block;
+  color: var(--color-text);
+  font-size: 14px;
+  overflow-wrap: anywhere;
+}
+
+.role-assignment-summary {
+  display: grid;
+  gap: 8px;
+  border-left: 4px solid var(--color-primary-500);
+}
+
+.role-assignment-summary p {
+  margin: 0;
+  color: var(--color-text-2);
+}
+
+.role-admin-form,
+.role-admin-workspace .section,
+.role-admin-workspace .table-wrap {
+  min-width: 0;
+  max-width: 100%;
+}
+
+.permission-matrix {
+  min-width: 720px;
+}
+
+.permission-matrix th:not(:first-child),
+.permission-matrix td:not(:first-child) {
+  text-align: center;
+}
+
+.permission-matrix th,
+.permission-matrix td {
+  white-space: nowrap;
+}
+
+.permission-matrix input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--color-primary-500);
+}
+
+@media (max-width: 980px) {
+  .role-admin-layout,
+  .role-admin-current {
+    grid-template-columns: 1fr;
+  }
+
+  .role-admin-sidebar {
+    border-right: 0;
+    border-bottom: 1px solid var(--color-border-subtle);
+  }
+}
+
+@media (max-width: 720px) {
+  .role-admin-card .card-header,
+  .role-admin-card .card-actions {
+    align-items: stretch;
+  }
+
+  .role-admin-card .card-actions,
+  .role-admin-tools,
+  .role-admin-current-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .role-admin-workspace,
+  .role-admin-sidebar {
+    padding: 16px;
+  }
+}

@@ -243,11 +243,11 @@ const SIALCatalog = (() => {
     {
       module: "empresas",
       moduleLabel: "Empresa",
-      title: "Parametrizacion de roles",
+      title: "Creacion de roles",
       family: "configuracion",
       status: "implementada",
       href: "Gestion%20de%20Empresas/parametrizacion-roles.html",
-      description: "Catalogo maestro de roles con matriz de permisos por modulo, criticidad, estado y auditoria.",
+      description: "Panel administrativo para crear o editar roles, asignarlos a una empresa activa y parametrizar permisos en el mismo flujo.",
       tags: ["Roles", "Permisos", "Seguridad"]
     },
     {

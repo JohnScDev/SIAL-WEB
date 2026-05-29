@@ -84,7 +84,7 @@ const SIALCore = (() => {
           views: [
             { id: "empresas", label: "Gestion de empresas", href: "gestion-empresas.html" },
             { id: "roles", label: "Roles por empresas", href: "roles-empresa.html" },
-            { id: "paramRoles", label: "Parametrizacion de roles", href: "parametrizacion-roles.html" },
+            { id: "paramRoles", label: "Creacion de roles", href: "parametrizacion-roles.html" },
             { id: "tiposEmpresa", label: "Tipos de empresas", href: "gestion-tipos-empresa.html", folder: "Gestion de Transporte", localFolder: "sial-conductores-propuesta" },
             { id: "empresaTipo", label: "Empresa + tipo", href: "relacion-empresa-tipo.html", folder: "Gestion de Transporte", localFolder: "sial-conductores-propuesta" }
           ]

@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>SIAL | Parametrizacion de roles</title>
+  <title>SIAL | Creacion de roles</title>
   <script>
     (function () {
       const savedTheme = localStorage.getItem("sial-theme");
@@ -22,13 +22,13 @@
         <p class="page-eyebrow">Empresa / Roles</p>
         <div class="page-header">
           <div>
-            <h1 class="page-title">Parametrizacion de roles</h1>
-            <p class="page-subtitle">Catalogo maestro para definir roles, alcance funcional y permisos antes de asignarlos a empresas o usuarios.</p>
+            <h1 class="page-title">Creacion y administracion de roles</h1>
+            <p class="page-subtitle">Panel para crear, revisar y ajustar roles. Todo rol nuevo debe nacer asignado a una empresa activa.</p>
           </div>
           <a class="btn btn-secondary" href="roles-empresa.html">Roles por empresa</a>
         </div>
 
-        <div class="notice notice-info"><svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"></circle><path d="M12 8v5"></path><path d="M12 16h.01"></path></svg><span>La parametrizacion define que puede hacer cada rol. La asignacion por empresa solo debe consumir roles activos y permisos vigentes.</span></div>
+        <div class="notice notice-info"><svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"></circle><path d="M12 8v5"></path><path d="M12 16h.01"></path></svg><span>La creacion del rol, sus permisos y la asignacion inicial a empresa deben guardarse como una misma operacion auditable.</span></div>
 
         <div class="stats">
           <article class="stat"><label>Roles parametrizados</label><strong>4</strong><span>Catalogo total creado para permisos.</span></article>
@@ -37,30 +37,80 @@
           <article class="stat"><label>Roles sin uso</label><strong>1</strong><span>Sin empresas ni usuarios asociados.</span></article>
         </div>
 
-        <article class="card">
+        <article class="card role-admin-card">
           <div class="card-header">
             <div>
-              <h2 class="card-title">Roles parametrizados</h2>
-              <p class="card-subtitle">Consulta de roles, permisos asociados, criticidad, estado y auditoria.</p>
+              <h2 class="card-title">Panel de administracion de roles</h2>
+              <p class="card-subtitle">Gestiona roles existentes y crea nuevos roles atados a empresa desde el mismo flujo.</p>
             </div>
             <div class="card-actions">
-              <span class="chip" id="roleParamCount">0 registros visibles</span>
-              <button class="btn btn-secondary" type="button" data-export-table data-export-target="#roleParamTable" data-export-filename="roles-parametrizados" aria-label="Exportar roles parametrizados"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 3h18v4H3zM7 7v13h10V7"></path></svg><span>Exportar</span></button>
-              <button class="btn btn-primary" type="button" data-open-inline-form aria-expanded="false" aria-controls="roleParamInlineForm">Nuevo rol</button>
+              <span class="chip" id="roleAdminCount">0 roles visibles</span>
+              <button class="btn btn-primary" type="button" id="newRoleMode">Nuevo rol</button>
             </div>
           </div>
-          <div class="card-body"><div class="toolbar compact"><input class="input" id="roleParamSearch" type="search" aria-label="Buscar rol o permiso" placeholder="Buscar rol o permiso" /><select class="select" id="roleParamStatus"><option value="all">Todos los estados</option><option value="active">Activo</option><option value="warning">Revision</option><option value="inactive">Inactivo</option></select><select class="select" id="roleParamContext"><option value="all">Todos los tipos</option><option value="admin">Administrativo</option><option value="operativo">Operativo</option><option value="consulta">Consulta</option></select></div></div>
 
-          <div class="inline-form-panel is-hidden" id="roleParamInlineForm" data-inline-form-panel>
-            <div class="form-heading"><h2 data-inline-form-title>Nuevo rol</h2><p>El codigo se genera al guardar. La vista solo captura nombre, alcance y permisos funcionales.</p></div>
-            <div class="form-body"><div class="notice notice-success is-hidden" id="formOk">Rol listo para guardar.</div>
-              <form data-role-permission-form novalidate>
-                <section class="section"><div class="grid">
-                  <div class="field span-4"><label class="label" for="roleName">Nombre del rol <span class="required">*</span></label><input class="input" id="roleName" aria-describedby="roleNameNote" data-required placeholder="Supervisor operativo" /><div class="field-note" id="roleNameNote">Debe ser unico y claro para el usuario final.</div></div>
-                  <div class="field span-4"><label class="label" for="roleScope">Tipo de rol <span class="required">*</span></label><select class="select" id="roleScope" aria-describedby="roleScopeNote" data-required><option value="">Selecciona tipo</option><option>Administrativo</option><option>Operativo</option><option>Consulta</option></select><div class="field-note" id="roleScopeNote">Define agrupacion para filtros y auditoria.</div></div>
-                  <div class="field span-4"><label class="label" for="roleRisk">Criticidad</label><select class="select" id="roleRisk"><option>Baja</option><option>Media</option><option>Alta</option></select><div class="field-note">Los roles criticos requieren revision antes de publicar.</div></div>
-                  <div class="field span-12"><label class="label" for="roleDescription">Descripcion funcional</label><textarea class="textarea" id="roleDescription" rows="3" placeholder="Describe que responsabilidades cubre el rol."></textarea></div>
-                </div></section>
+          <div class="card-body role-admin-layout">
+            <aside class="role-admin-sidebar" aria-label="Roles existentes">
+              <div class="role-admin-tools">
+                <input class="input" id="roleAdminSearch" type="search" aria-label="Buscar rol existente" placeholder="Buscar rol o empresa" />
+                <select class="select" id="roleAdminStatus" aria-label="Filtrar roles por estado">
+                  <option value="all">Todos</option>
+                  <option value="active">Activo</option>
+                  <option value="warning">Revision</option>
+                  <option value="inactive">Inactivo</option>
+                </select>
+              </div>
+              <div class="role-admin-list" id="roleAdminList">
+                <button class="role-admin-item is-selected" type="button" data-role-card data-status="active" data-role-code="ROL-001" data-role-name="Administrador general" data-company-code="EMP-0012" data-company-name="SIAL Central" data-role-type="Administrativo" data-role-risk="Alta" data-permissions-count="18" data-summary="Acceso administrativo transversal." data-audit="Actualizacion de permisos - seguridad.sial 22/04/2026">
+                  <span class="role-admin-item-head"><strong>Administrador general</strong><span class="status status-active">Activo</span></span>
+                  <span>SIAL Central</span>
+                  <small>18 permisos - Administrativo</small>
+                </button>
+                <button class="role-admin-item" type="button" data-role-card data-status="warning" data-role-code="ROL-014" data-role-name="Supervisor operativo" data-company-code="EMP-0034" data-company-name="Banapalma" data-role-type="Operativo" data-role-risk="Media" data-permissions-count="9" data-summary="Gestion y seguimiento regional." data-audit="Pendiente aprobacion - seguridad.sial 21/04/2026">
+                  <span class="role-admin-item-head"><strong>Supervisor operativo</strong><span class="status status-warning">Revision</span></span>
+                  <span>Banapalma</span>
+                  <small>9 permisos - Operativo</small>
+                </button>
+                <button class="role-admin-item" type="button" data-role-card data-status="active" data-role-code="ROL-021" data-role-name="Consulta auditoria" data-company-code="EMP-0012" data-company-name="SIAL Central" data-role-type="Consulta" data-role-risk="Baja" data-permissions-count="7" data-summary="Lectura de trazabilidad y reportes." data-audit="Creacion de rol - auditor.master 18/04/2026">
+                  <span class="role-admin-item-head"><strong>Consulta auditoria</strong><span class="status status-active">Activo</span></span>
+                  <span>SIAL Central</span>
+                  <small>7 permisos - Consulta</small>
+                </button>
+                <button class="role-admin-item" type="button" data-role-card data-status="inactive" data-role-code="ROL-004" data-role-name="Consulta historica" data-company-code="EMP-0007" data-company-name="AgroCeiba" data-role-type="Consulta" data-role-risk="Baja" data-permissions-count="3" data-summary="Rol legado sin nuevas asignaciones." data-audit="Inactivacion por reemplazo - seguridad.sial 15/04/2026">
+                  <span class="role-admin-item-head"><strong>Consulta historica</strong><span class="status status-inactive">Inactivo</span></span>
+                  <span>AgroCeiba</span>
+                  <small>3 permisos - Consulta</small>
+                </button>
+              </div>
+              <div class="empty-state" id="roleAdminEmpty">No hay roles que coincidan con los filtros.</div>
+            </aside>
+
+            <section class="role-admin-workspace" aria-label="Administracion del rol seleccionado">
+              <div class="role-admin-current">
+                <div>
+                  <span class="eyebrow">Rol seleccionado</span>
+                  <h3 id="selectedRoleName">Administrador general</h3>
+                  <p id="selectedRoleSummary">Acceso administrativo transversal.</p>
+                </div>
+                <div class="role-admin-current-grid">
+                  <div><span>Empresa</span><strong id="selectedRoleCompany">SIAL Central</strong></div>
+                  <div><span>Permisos</span><strong id="selectedRolePermissions">18</strong></div>
+                  <div><span>Auditoria</span><strong id="selectedRoleAudit">seguridad.sial</strong></div>
+                </div>
+              </div>
+
+              <form class="role-admin-form" data-role-admin-form novalidate>
+                <section class="section">
+                  <h3 class="section-title">Datos y asignacion inicial</h3>
+                  <div class="grid">
+                    <div class="field span-4"><label class="label" for="roleName">Nombre del rol <span class="required">*</span></label><input class="input" id="roleName" aria-describedby="roleNameNote" data-required placeholder="Supervisor operativo" /><div class="field-note" id="roleNameNote">Debe ser unico y claro para el usuario final.</div></div>
+                    <div class="field span-4"><label class="label" for="roleScope">Tipo de rol <span class="required">*</span></label><select class="select" id="roleScope" aria-describedby="roleScopeNote" data-required><option value="">Selecciona tipo</option><option>Administrativo</option><option>Operativo</option><option>Consulta</option></select><div class="field-note" id="roleScopeNote">Agrupa el rol para filtros, auditoria y seguridad.</div></div>
+                    <div class="field span-4"><label class="label" for="roleRisk">Criticidad</label><select class="select" id="roleRisk"><option>Baja</option><option>Media</option><option>Alta</option></select><div class="field-note">Los roles criticos requieren revision antes de publicar.</div></div>
+                    <div class="field span-6"><label class="label" for="roleCompanyAssignment">Empresa asignada <span class="required">*</span></label><select class="select" id="roleCompanyAssignment" aria-describedby="roleCompanyNote" data-required data-role-company-required><option value="">Selecciona empresa activa</option><option value="EMP-0012">SIAL Central</option><option value="EMP-0034">Banapalma</option><option value="EMP-0007">AgroCeiba</option></select><div class="field-note" id="roleCompanyNote">Obligatorio: el rol debe quedar asociado a una empresa al crearse.</div></div>
+                    <div class="field span-6"><label class="label" for="roleDescription">Descripcion funcional</label><textarea class="textarea" id="roleDescription" rows="3" placeholder="Describe que responsabilidades cubre el rol."></textarea></div>
+                  </div>
+                </section>
+
                 <section class="section">
                   <h3 class="section-title">Matriz de permisos</h3>
                   <div class="table-wrap">
@@ -77,29 +127,28 @@
                   </div>
                   <div class="field-note" id="permissionSummaryNote">3 permisos seleccionados.</div>
                 </section>
-                <div class="form-actions"><button class="btn btn-secondary" type="button" data-cancel-inline-form>Cancelar</button><button class="btn btn-primary" type="submit">Guardar rol</button></div>
-              </form>
-            </div>
-          </div>
 
-          <div class="table-wrap"><table id="roleParamTable"><thead><tr><th>Codigo</th><th>Rol</th><th>Tipo</th><th>Permisos</th><th>Criticidad</th><th>Estado</th><th>Auditoria</th><th>Acciones</th></tr></thead><tbody>
-            <tr data-role-param-row data-status="active" data-context="admin" data-code="ROL-001" data-name="Administrador general" data-type="Administrativo" data-permissions="Empresa, Usuarios, Transporte, Fincas e Indicadores" data-risk="Alta" data-state="Activo" data-audit="Actualizacion de permisos|seguridad.sial - 22/04/2026 10:15;Revision critica|auditor.master - 20/04/2026 16:20"><td>ROL-001</td><td>Administrador general<br><span class="muted">Acceso administrativo transversal.</span></td><td>Administrativo</td><td>18 permisos<br><span class="muted">Consultar, crear, editar, inactivar y exportar.</span></td><td><span class="status status-warning">Alta</span></td><td><span class="status status-active">Activo</span></td><td class="muted">22/04/2026 10:15</td><td><div class="row-actions"><button class="icon-btn" data-open-detail aria-label="Visualizar rol administrador"><svg class="icon" viewBox="0 0 24 24"><path d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6S2 12 2 12Z"></path><circle cx="12" cy="12" r="3"></circle></svg></button><button class="icon-btn" data-edit-inline aria-label="Editar rol administrador"><svg class="icon" viewBox="0 0 24 24"><path d="M12 20h9"></path><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"></path></svg></button><button class="icon-btn" aria-label="Inactivar rol administrador"><svg class="icon" viewBox="0 0 24 24"><path d="m18 6-12 12"></path><path d="m6 6 12 12"></path></svg></button></div></td></tr>
-            <tr data-role-param-row data-status="warning" data-context="operativo" data-code="ROL-014" data-name="Supervisor operativo" data-type="Operativo" data-permissions="Transporte, Planeacion y Fincas" data-risk="Media" data-state="Revision" data-audit="Solicitud de ajuste|coord.operativo - 21/04/2026 14:08;Pendiente aprobacion|seguridad.sial - 21/04/2026 15:30"><td>ROL-014</td><td>Supervisor operativo<br><span class="muted">Gestion y seguimiento regional.</span></td><td>Operativo</td><td>9 permisos<br><span class="muted">Consultar, editar y exportar operacion.</span></td><td><span class="status status-warning">Media</span></td><td><span class="status status-warning">Revision</span></td><td class="muted">21/04/2026 15:30</td><td><div class="row-actions"><button class="icon-btn" data-open-detail aria-label="Visualizar rol supervisor"><svg class="icon" viewBox="0 0 24 24"><path d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6S2 12 2 12Z"></path><circle cx="12" cy="12" r="3"></circle></svg></button><button class="icon-btn" data-edit-inline aria-label="Editar rol supervisor"><svg class="icon" viewBox="0 0 24 24"><path d="M12 20h9"></path><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"></path></svg></button><button class="icon-btn" aria-label="Inactivar rol supervisor"><svg class="icon" viewBox="0 0 24 24"><path d="m18 6-12 12"></path><path d="m6 6 12 12"></path></svg></button></div></td></tr>
-            <tr data-role-param-row data-status="active" data-context="consulta" data-code="ROL-021" data-name="Consulta auditoria" data-type="Consulta" data-permissions="Empresa, Usuarios e Indicadores" data-risk="Baja" data-state="Activo" data-audit="Creacion de rol|auditor.master - 18/04/2026 09:45"><td>ROL-021</td><td>Consulta auditoria<br><span class="muted">Lectura de trazabilidad y reportes.</span></td><td>Consulta</td><td>7 permisos<br><span class="muted">Consulta y exportacion controlada.</span></td><td><span class="status status-active">Baja</span></td><td><span class="status status-active">Activo</span></td><td class="muted">18/04/2026 09:45</td><td><div class="row-actions"><button class="icon-btn" data-open-detail aria-label="Visualizar rol auditoria"><svg class="icon" viewBox="0 0 24 24"><path d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6S2 12 2 12Z"></path><circle cx="12" cy="12" r="3"></circle></svg></button><button class="icon-btn" data-edit-inline aria-label="Editar rol auditoria"><svg class="icon" viewBox="0 0 24 24"><path d="M12 20h9"></path><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"></path></svg></button><button class="icon-btn" aria-label="Inactivar rol auditoria"><svg class="icon" viewBox="0 0 24 24"><path d="m18 6-12 12"></path><path d="m6 6 12 12"></path></svg></button></div></td></tr>
-            <tr data-role-param-row data-status="inactive" data-context="consulta" data-code="ROL-004" data-name="Consulta historica" data-type="Consulta" data-permissions="Empresa historica" data-risk="Baja" data-state="Inactivo" data-audit="Inactivacion por reemplazo|seguridad.sial - 15/04/2026 11:22"><td>ROL-004</td><td>Consulta historica<br><span class="muted">Rol legado sin nuevas asignaciones.</span></td><td>Consulta</td><td>3 permisos<br><span class="muted">Solo lectura historica.</span></td><td><span class="status status-active">Baja</span></td><td><span class="status status-inactive">Inactivo</span></td><td class="muted">15/04/2026 11:22</td><td><div class="row-actions"><button class="icon-btn" data-open-detail aria-label="Visualizar rol historico"><svg class="icon" viewBox="0 0 24 24"><path d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6S2 12 2 12Z"></path><circle cx="12" cy="12" r="3"></circle></svg></button><button class="icon-btn" data-edit-inline aria-label="Editar rol historico"><svg class="icon" viewBox="0 0 24 24"><path d="M12 20h9"></path><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"></path></svg></button><button class="icon-btn" aria-label="Activar rol historico"><svg class="icon" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"></path></svg></button></div></td></tr>
-          </tbody></table></div>
-          <div class="card-body"><div class="empty-state" id="roleParamEmpty">No hay roles que coincidan con los filtros.</div></div>
+                <section class="section">
+                  <div class="role-assignment-summary" id="roleAssignmentSummary">
+                    <div><span>Resumen de guardado</span><strong id="roleSummaryText">Administrador general para SIAL Central</strong></div>
+                    <p>Al guardar se crearia o actualizaria el rol, sus permisos y la relacion empresa + rol en una misma transaccion.</p>
+                  </div>
+                  <div class="notice notice-success is-hidden" id="formOk">Rol, permisos y empresa listos para guardar.</div>
+                </section>
+
+                <div class="form-actions">
+                  <button class="btn btn-secondary" type="reset">Limpiar</button>
+                  <button class="btn btn-primary" type="submit">Guardar rol y asignacion</button>
+                </div>
+              </form>
+            </section>
+          </div>
         </article>
       </section>
     </main>
   </div>
-  <div class="drawer-backdrop" id="detailBackdrop"></div>
-  <aside class="drawer" id="detailDrawer" aria-label="Detalle rol">
-    <div class="drawer-head"><div><h3>Detalle rol</h3><p>Consulta de alcance, permisos, estado y auditoria.</p></div><button class="icon-btn" id="closeDetail" aria-label="Cerrar detalle"><svg class="icon" viewBox="0 0 24 24"><path d="m18 6-12 12"></path><path d="m6 6 12 12"></path></svg></button></div>
-    <div class="drawer-body"><div class="detail-group"><span class="detail-label">Codigo</span><div class="detail-value" data-detail-target="code">-</div></div><div class="detail-group"><span class="detail-label">Rol</span><div class="detail-value" data-detail-target="name">-</div></div><div class="detail-group"><span class="detail-label">Tipo</span><div class="detail-value" data-detail-target="type">-</div></div><div class="detail-group"><span class="detail-label">Permisos</span><div class="detail-value" data-detail-target="permissions">-</div></div><div class="detail-group"><span class="detail-label">Criticidad</span><div class="detail-value" data-detail-target="risk">-</div></div><div class="detail-group"><span class="detail-label">Estado</span><div class="detail-value" data-detail-target="state">-</div></div><div class="detail-group"><span class="detail-label">Auditoria</span><div class="stack" id="detailAudit"></div></div></div>
-  </aside>
   <script src="../shared/sial-core.js"></script>
   <script src="sial-empresas.js"></script>
-  <script>SIAL.applyShell("paramRoles"); SIAL.initDrawer(); window.SIALCore?.initEmbeddedForm?.({ newTitle: "Nuevo rol", editTitle: "Editar rol" }); SIAL.initRolePermissionMatrix(); SIAL.initTableFilters({ rowSelector: "[data-role-param-row]", search: "#roleParamSearch", status: "#roleParamStatus", context: "#roleParamContext", empty: "#roleParamEmpty", count: "#roleParamCount" });</script>
+  <script>SIAL.applyShell("paramRoles"); SIAL.initRoleAdminPanel();</script>
 </body>
 </html>
