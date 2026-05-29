@@ -261,6 +261,7 @@ const SIALCore = (() => {
       initThemeToggle();
       initSidebarToggle();
       initStateActionConfirm();
+      initProfileMenu();
       return;
     }
 
@@ -346,6 +347,7 @@ const SIALCore = (() => {
     initSidebarToggle();
     initStateActionConfirm();
     initTableExport();
+    initProfileMenu();
   }
 
   function initShell(config = {}) {
@@ -381,6 +383,144 @@ const SIALCore = (() => {
       });
     });
     initSidebarToggle();
+  }
+
+  function getLoginUrl() {
+    const coreScript = getCoreScript();
+    if (!coreScript?.src) return "Login/index.html";
+    return new URL("../Login/index.html", coreScript.src).href;
+  }
+
+  function closeProfileMenu(menu) {
+    if (!menu) return;
+    menu.classList.remove("is-open");
+    const trigger = qs(".profile-trigger", menu);
+    const panel = qs(".profile-panel", menu);
+    trigger?.setAttribute("aria-expanded", "false");
+    if (panel) panel.hidden = true;
+  }
+
+  function closeProfileMenus(exceptMenu = null) {
+    qsa("[data-profile-menu].is-open").forEach((menu) => {
+      if (menu !== exceptMenu) closeProfileMenu(menu);
+    });
+  }
+
+  function setProfileMenuOpen(menu, open) {
+    if (!menu) return;
+    closeProfileMenus(open ? menu : null);
+    const trigger = qs(".profile-trigger", menu);
+    const panel = qs(".profile-panel", menu);
+    menu.classList.toggle("is-open", open);
+    trigger?.setAttribute("aria-expanded", String(open));
+    if (panel) panel.hidden = !open;
+  }
+
+  function focusProfileItem(panel, direction = 1) {
+    if (!panel) return;
+    const items = qsa("[data-profile-action]", panel);
+    if (!items.length) return;
+    const currentIndex = items.indexOf(document.activeElement);
+    const nextIndex = currentIndex < 0 ? 0 : (currentIndex + direction + items.length) % items.length;
+    items[nextIndex]?.focus();
+  }
+
+  function profileActionIcon(action) {
+    const icons = {
+      view: '<path d="M16 21v-2a4 4 0 0 0-8 0v2"></path><circle cx="12" cy="8" r="4"></circle>',
+      settings: '<circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.9l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.9-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1-1.5 1.7 1.7 0 0 0-1.9.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.9 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1 1.7 1.7 0 0 0-.3-1.9l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.9.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.9-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.9v.1a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1Z"></path>',
+      logout: '<path d="M10 17l5-5-5-5"></path><path d="M15 12H3"></path><path d="M21 19V5a2 2 0 0 0-2-2h-6"></path>'
+    };
+    return `<svg class="icon" viewBox="0 0 24 24" aria-hidden="true">${icons[action] || icons.view}</svg>`;
+  }
+
+  function initProfileMenu(config = {}) {
+    const selector = config.selector || ".app-shell > .header .header-right > .avatar";
+    const avatars = qsa(selector).filter((avatar) => avatar.dataset.profileReady !== "true");
+    if (!avatars.length) return;
+
+    avatars.forEach((avatar) => {
+      const initials = avatar.textContent.trim() || "QA";
+      const userName = avatar.dataset.profileName || "Usuario SIAL";
+      const userRole = avatar.dataset.profileRole || "Sesion activa";
+      const menu = document.createElement("div");
+      menu.className = "profile-menu";
+      menu.dataset.profileMenu = "true";
+      menu.innerHTML = `
+        <button class="profile-trigger" type="button" aria-haspopup="menu" aria-expanded="false" aria-label="Abrir menu de perfil">
+          <span class="avatar" aria-hidden="true">${escapeHtml(initials)}</span>
+          <svg class="profile-chevron" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"></path></svg>
+        </button>
+        <div class="profile-panel" role="menu" aria-label="Menu de perfil" hidden>
+          <div class="profile-summary">
+            <strong class="profile-user">${escapeHtml(userName)}</strong>
+            <span class="profile-role">${escapeHtml(userRole)}</span>
+          </div>
+          <div class="profile-menu-list">
+            <button class="profile-menu-item" type="button" role="menuitem" data-profile-action="view">
+              ${profileActionIcon("view")}
+              <span>Ver perfil</span>
+            </button>
+            <button class="profile-menu-item" type="button" role="menuitem" data-profile-action="settings">
+              ${profileActionIcon("settings")}
+              <span>Configurar</span>
+            </button>
+            <a class="profile-menu-item profile-menu-item-danger" role="menuitem" href="${escapeHtml(getLoginUrl())}" data-profile-action="logout">
+              ${profileActionIcon("logout")}
+              <span>Cerrar sesion</span>
+            </a>
+          </div>
+        </div>
+      `;
+      avatar.dataset.profileReady = "true";
+      avatar.replaceWith(menu);
+
+      const trigger = qs(".profile-trigger", menu);
+      const panel = qs(".profile-panel", menu);
+      trigger?.addEventListener("click", (event) => {
+        event.stopPropagation();
+        setProfileMenuOpen(menu, !menu.classList.contains("is-open"));
+      });
+      trigger?.addEventListener("keydown", (event) => {
+        if (event.key !== "ArrowDown") return;
+        event.preventDefault();
+        setProfileMenuOpen(menu, true);
+        focusProfileItem(panel);
+      });
+      panel?.addEventListener("keydown", (event) => {
+        if (event.key === "Escape") {
+          closeProfileMenu(menu);
+          trigger?.focus();
+        }
+        if (event.key === "ArrowDown" || event.key === "ArrowUp") {
+          event.preventDefault();
+          focusProfileItem(panel, event.key === "ArrowDown" ? 1 : -1);
+        }
+      });
+      panel?.addEventListener("click", (event) => {
+        const actionControl = event.target?.closest?.("[data-profile-action]");
+        if (!actionControl) return;
+        const action = actionControl.dataset.profileAction;
+        trigger?.dispatchEvent(new CustomEvent("sial:profile-action", {
+          bubbles: true,
+          detail: { action }
+        }));
+        closeProfileMenu(menu);
+        if (action === "logout") {
+          event.preventDefault();
+          window.location.href = actionControl.getAttribute("href") || getLoginUrl();
+        }
+      });
+    });
+
+    if (document.documentElement.dataset.profileMenuEvents === "true") return;
+    document.documentElement.dataset.profileMenuEvents = "true";
+    document.addEventListener("click", (event) => {
+      if (!event.target.closest("[data-profile-menu]")) closeProfileMenus();
+    });
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape") closeProfileMenus();
+    });
   }
 
   function ensureFavicon() {
@@ -1111,6 +1251,7 @@ const SIALCore = (() => {
     initSidebarToggle,
     initNavigation,
     initShell,
+    initProfileMenu,
     navigationRegistry,
     setFieldState,
     initTableFilters,
@@ -1128,8 +1269,12 @@ SIALCore.ensureFavicon();
 
 /* === SIAL View Motion START (reversible hook) === */
 if (document.readyState === "loading") {
-  document.addEventListener("DOMContentLoaded", () => SIALCore.initPageTransitions(), { once: true });
+  document.addEventListener("DOMContentLoaded", () => {
+    SIALCore.initPageTransitions();
+    SIALCore.initProfileMenu();
+  }, { once: true });
 } else {
   SIALCore.initPageTransitions();
+  SIALCore.initProfileMenu();
 }
 /* === SIAL View Motion END (reversible hook) === */

@@ -26,6 +26,7 @@ Las reglas locales solo deben agregarse si el modulo necesita una variante espec
 La base actual concentra:
 
 - Shell, sidebar expandido/colapsado, navegacion por area/modulo/vista, vistas de modulo contraibles, header, busqueda, avatar y boton de tema.
+- Menu de perfil del header, generado desde el avatar existente con acciones `Ver perfil`, `Configurar` y `Cerrar sesion`, mediante `SIALCore.initProfileMenu`.
 - Marca del shell mediante `brand-badge`, usando el isotipo SIAL compartido sin duplicar el texto de marca en cada vista. El texto `SIAL` conserva la escala, peso y familia tipografica del login institucional.
 - Microinteracciones del sidebar: hover operativo, indicador activo animado, acordeon suave de submenus, transicion al contraer/desplegar el menu y marca estable con aparicion lateral del texto, respetando `prefers-reduced-motion`.
 - SIAL View Motion: capa estetica reversible para transicion entre paginas/vistas con barra superior, salida suave, entrada de contenido y overlay institucional diferido.

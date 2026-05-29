@@ -520,6 +520,17 @@ html[data-sidebar-state="collapsed"] .nav-link.active::before {
   100% { transform: scale(1); }
 }
 
+@keyframes profileMenuIn {
+  from {
+    opacity: 0;
+    transform: translateY(-6px) scale(.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
 .header {
   grid-area: header;
   height: var(--header-height);
@@ -577,6 +588,132 @@ html[data-theme="dark"] .theme-icon-sun { opacity: 1; transform: scale(1); }
   background: var(--color-avatar-bg);
   color: var(--color-text-2);
   font-weight: 600;
+}
+.profile-menu {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+}
+.profile-trigger {
+  min-width: 52px;
+  height: 40px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  padding: 0 6px 0 0;
+  border: 0;
+  border-radius: var(--radius-pill);
+  background: transparent;
+  color: var(--color-text);
+  cursor: pointer;
+  transition: background-color var(--motion-duration-fast) ease, box-shadow var(--motion-duration-fast) ease;
+}
+.profile-trigger:hover,
+.profile-menu.is-open .profile-trigger { background: var(--color-hover-surface); }
+.profile-trigger:focus-visible {
+  outline: 2px solid var(--color-focus-ring);
+  outline-offset: 2px;
+}
+.profile-trigger .avatar { flex: 0 0 auto; }
+.profile-chevron {
+  width: 16px;
+  height: 16px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  color: var(--color-text-3);
+  transition: transform var(--motion-duration-fast) ease, color var(--motion-duration-fast) ease;
+}
+.profile-menu.is-open .profile-chevron {
+  transform: rotate(180deg);
+  color: var(--color-primary-500);
+}
+.profile-panel {
+  position: absolute;
+  top: calc(100% + 10px);
+  right: 0;
+  z-index: 1200;
+  width: min(260px, calc(100vw - 32px));
+  padding: 8px;
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-surface);
+  background: var(--color-surface-overlay);
+  box-shadow: var(--shadow-overlay);
+  transform-origin: top right;
+  animation: profileMenuIn var(--motion-duration-fast) ease;
+}
+.profile-panel[hidden] { display: none; }
+.profile-panel::before {
+  content: "";
+  position: absolute;
+  top: -6px;
+  right: 20px;
+  width: 10px;
+  height: 10px;
+  border-top: 1px solid var(--color-border-subtle);
+  border-left: 1px solid var(--color-border-subtle);
+  background: var(--color-surface-overlay);
+  transform: rotate(45deg);
+}
+.profile-summary {
+  display: grid;
+  gap: 3px;
+  padding: 10px 12px 12px;
+  border-bottom: 1px solid var(--color-border-subtle);
+}
+.profile-user {
+  color: var(--color-text);
+  font-size: 14px;
+  font-weight: 600;
+}
+.profile-role {
+  color: var(--color-text-3);
+  font-size: 12px;
+}
+.profile-menu-list {
+  display: grid;
+  gap: 4px;
+  padding-top: 8px;
+}
+.profile-menu-item {
+  min-height: 40px;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0 10px;
+  border: 0;
+  border-radius: var(--radius-control);
+  background: transparent;
+  color: var(--color-text-2);
+  font: inherit;
+  font-size: 14px;
+  line-height: 1.2;
+  text-align: left;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background-color var(--motion-duration-fast) ease, color var(--motion-duration-fast) ease;
+}
+.profile-menu-item .icon {
+  width: 18px;
+  height: 18px;
+  flex: 0 0 auto;
+}
+.profile-menu-item:hover,
+.profile-menu-item:focus-visible {
+  background: var(--color-hover-surface);
+  color: var(--color-primary-600);
+  outline: 0;
+}
+.profile-menu-item:focus-visible { box-shadow: inset 0 0 0 2px var(--color-focus-ring); }
+.profile-menu-item-danger { color: var(--color-error-main); }
+.profile-menu-item-danger:hover,
+.profile-menu-item-danger:focus-visible {
+  background: var(--color-error-bg);
+  color: var(--color-error-main);
 }
 
 .main { grid-area: main; min-width: 0; padding: 24px; }
@@ -3020,6 +3157,10 @@ html[data-view-motion-overlay="visible"] .view-motion-overlay {
   .nav-module-toggle .icon,
   .nav-sublist,
   .nav-sub-link,
+  .profile-trigger,
+  .profile-chevron,
+  .profile-panel,
+  .profile-menu-item,
   .view-motion-bar,
   .view-motion-overlay,
   .view-motion-card,
