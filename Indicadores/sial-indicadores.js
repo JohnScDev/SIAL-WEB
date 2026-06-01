@@ -287,6 +287,7 @@ const SIALIndicadores = (() => {
     renderColumnChart(qs("[data-wait-chart]"), data.wait, "wait");
     renderStackedChart(data);
     renderColumnChart(qs("[data-hold-chart]"), data.hold, "hold");
+    renderChartAtlas(data);
     renderRiskMatrix(data);
     renderVisuals(data);
     renderRanking(data);
@@ -441,7 +442,7 @@ const SIALIndicadores = (() => {
       const action = value > (type === "wait" ? 18 : 8)
         ? "Revisar causa operativa y responsable de turno."
         : "Mantener monitoreo de comportamiento horario.";
-      return `<span class="interactive-bar interactive-metric" style="--h: ${height}%" data-value="${value}" data-label="${hour}:00" ${metricAttrs(metricId(type, hour), title, `${value} min`, `Lectura horaria para ${title.toLowerCase()}.`, action)}><strong>${value}</strong><em>${hour}</em></span>`;
+      return `<span class="interactive-bar interactive-metric" style="--h: ${height}%; --i: ${index}" data-value="${value}" data-label="${hour}:00" ${metricAttrs(metricId(type, hour), title, `${value} min`, `Lectura horaria para ${title.toLowerCase()}.`, action)}><strong>${value}</strong><em>${hour}</em></span>`;
     }).join("");
     const peak = values.reduce((acc, value, index) => value > acc.value ? { value, index } : acc, { value: values[0], index: 0 });
     const prefix = type === "wait" ? "wait" : "hold";
@@ -462,13 +463,282 @@ const SIALIndicadores = (() => {
       const hour = index + 8;
       const total = value + pending[index];
       const action = pending[index] > value * .25 ? "Redistribuir atencion para reducir cola pendiente." : "Mantener ritmo de atencion.";
-      return `<span class="interactive-bar interactive-metric" style="height: ${totalHeight}%; --answered: ${answeredRatio}%; --pending: ${pendingRatio}%" data-value="${total}" data-label="${hour}:00" ${metricAttrs(metricId("stacked", hour), `Atencion ${hour}:00`, `${total} registros`, `${value} procesadas y ${pending[index]} pendientes.`, action)}><strong>${value}</strong><em>${hour}</em></span>`;
+      return `<span class="interactive-bar interactive-metric" style="height: ${totalHeight}%; --answered: ${answeredRatio}%; --pending: ${pendingRatio}%; --i: ${index}" data-value="${total}" data-label="${hour}:00" ${metricAttrs(metricId("stacked", hour), `Atencion ${hour}:00`, `${total} registros`, `${value} procesadas y ${pending[index]} pendientes.`, action)}><strong>${value}</strong><em>${hour}</em></span>`;
     }).join("");
     const pendingTotal = pending.reduce((sum, item) => sum + item, 0);
     qs("[data-stacked-reading]").textContent = `${pendingTotal} pendientes acumulados.`;
     qs("[data-stacked-action]").textContent = pendingTotal > data.throughput * .15
       ? "La cola pendiente puede afectar cierre y requiere redistribucion."
       : "Pendientes dentro de tolerancia del periodo.";
+  }
+
+  function renderChartAtlas(data) {
+    const items = buildChartAtlas(data);
+    const atlas = qs("[data-chart-atlas]");
+    if (!atlas) return;
+    qs("[data-chart-count]").textContent = `${items.length} graficas`;
+    atlas.innerHTML = items.map((item) => `
+      <article class="atlas-card interactive-metric" ${metricAttrs(metricId("atlas", item.id), item.title, item.value, item.copy, item.action)}>
+        <div class="atlas-card-head">
+          <span>${esc(item.family)}</span>
+          <strong>${esc(item.title)}</strong>
+        </div>
+        <div class="atlas-visual atlas-${esc(item.kind)}" aria-hidden="true">${item.visual}</div>
+        <p>${esc(item.copy)}</p>
+      </article>
+    `).join("");
+  }
+
+  function buildChartAtlas(data) {
+    const base = [
+      ["Disponible", data.availability],
+      ["Riesgo", data.risk],
+      ["Calidad", data.quality],
+      ["Capacidad", data.capacity],
+      ["Meta", data.target],
+      ["Actual", data.current]
+    ];
+    const compact = data.series.slice(-6).map((value, index) => [`S${index + 1}`, value]);
+    const longBars = data.wait.map((value, index) => [`${index + 6}:00`, value]);
+    const split = [
+      ["Activo", data.distribution[0]],
+      ["Revision", data.distribution[1]],
+      ["Transito", data.distribution[2]],
+      ["Bloqueado", data.distribution[3]]
+    ];
+    const signedBars = [
+      ["Ene", data.gap],
+      ["Feb", data.availability - data.base.availability],
+      ["Mar", data.quality - data.base.quality],
+      ["Abr", data.current - data.target],
+      ["May", data.projection - data.target],
+      ["Jun", data.capacity - 78]
+    ];
+    const scatter = data.series.slice(0, 10).map((value, index) => [index * 10 + 8, value]);
+    const classes = ["Transporte", "Fincas", "Empresa", "Puerto", "Planeacion", "Usuarios"];
+    return [
+      chartItem("horizontal-bars", "Barras horizontales", "Barras", "Comparacion simple por componente operativo.", horizontalBars(base)),
+      chartItem("horizontal-value-bars", "Barras con valor alineado", "Barras", "Lectura rapida con valor visible al final.", horizontalBars(base.slice(0, 5), { valuesRight: true })),
+      chartItem("gradient-bars", "Barras con intensidad", "Barras", "Misma metrica con énfasis visual por magnitud.", horizontalBars(base.slice(0, 5), { gradient: true })),
+      chartItem("breakdown", "Breakdown de estados", "Barras", "Distribucion proporcional de estados operativos.", breakdownBars(split)),
+      chartItem("thin-breakdown", "Breakdown compacto", "Barras", "Version delgada para espacios de resumen.", breakdownBars(split, true)),
+      chartItem("thin-horizontal", "Barras horizontales delgadas", "Barras", "Volumen horario en formato compacto.", horizontalBars(longBars, { thin: true, limit: 12 })),
+      chartItem("icon-bars", "Barras con identificador", "Barras", "Comparativo con iniciales o icono operativo.", iconBars(base.slice(0, 5))),
+      chartItem("connected-dots", "Puntos conectados", "Barras", "Secuencia compacta para comparar puntos discretos.", connectedDots(compact)),
+      chartItem("vertical-bars", "Barras verticales", "Barras", "Comportamiento por cortes de tiempo.", verticalBars(compact)),
+      chartItem("stacked-vertical", "Barras apiladas", "Barras", "Procesadas y pendientes en una misma columna.", stackedBars(data.processed.slice(0, 6), data.pending.slice(0, 6))),
+      chartItem("multi-bars", "Barras multiples", "Barras", "Actual frente a referencia por periodo.", multiBars(data.pairedA.slice(0, 6), data.pairedB.slice(0, 6))),
+      chartItem("benchmark", "Benchmark destacado", "Barras", "Un referente frente al resto de indicadores.", benchmarkBars(base)),
+      chartItem("positive-negative", "Positivo y negativo", "Barras", "Brechas sobre y bajo meta.", positiveNegativeBars(signedBars)),
+      chartItem("bar-line", "Barras y linea", "Mixta", "Volumen con tendencia superpuesta.", comboBarLine(compact)),
+      chartItem("line", "Linea simple", "Lineas", "Tendencia operativa continua.", lineSvg(data.series.slice(0, 10))),
+      chartItem("area", "Area", "Areas", "Tendencia con volumen acumulado visual.", areaSvg(data.series.slice(0, 10))),
+      chartItem("stacked-area", "Area apilada", "Areas", "Dos series acumuladas en una lectura.", stackedAreaSvg(data.processed.slice(0, 8), data.pending.slice(0, 8))),
+      chartItem("normalized-area", "Area normalizada", "Areas", "Participacion relativa por periodo.", normalizedAreaSvg(data.processed.slice(0, 8), data.pending.slice(0, 8))),
+      chartItem("pie", "Pie", "Circular", "Distribucion de estados principales.", pieVisual(split)),
+      chartItem("donut", "Donut", "Circular", "Distribucion con valor central accionable.", donutVisual(split, data.distribution[0])),
+      chartItem("scatter-lines", "Dispersion con guias", "Dispersion", "Puntos con lineas de referencia.", scatterSvg(scatter, { guides: true })),
+      chartItem("scatter-circles", "Dispersion por circulos", "Dispersion", "Puntos dimensionados por criticidad.", scatterSvg(scatter, { bubbles: true })),
+      chartItem("linear-scatter", "Dispersion lineal", "Dispersion", "Tendencia lineal estimada.", scatterSvg(scatter, { trend: "linear" })),
+      chartItem("fitted-scatter", "Dispersion ajustada", "Dispersion", "Curva de ajuste para comportamiento no lineal.", scatterSvg(scatter, { trend: "curve" })),
+      chartItem("multiclass-scatter", "Dispersion multiclase", "Dispersion", "Puntos por modulo o categoria.", scatterSvg(scatter, { classes })),
+      chartItem("custom-scatter", "Dispersion con etiquetas", "Dispersion", "Puntos clave con etiqueta operacional.", scatterSvg(scatter.slice(0, 6), { labels: true })),
+      chartItem("treemap", "Treemap", "Otros", "Participacion por bloque funcional.", treemapVisual(base)),
+      chartItem("icon-treemap", "Treemap con identificador", "Otros", "Bloques con inicial de modulo o entidad.", treemapVisual(base, { icons: true })),
+      chartItem("gradient-treemap", "Treemap por intensidad", "Otros", "Bloques con lectura por intensidad relativa.", treemapVisual(base, { gradient: true })),
+      chartItem("bubble", "Bubble chart", "Otros", "Magnitud por burbujas posicionadas.", bubbleVisual(base.concat(compact.slice(0, 4)))),
+      chartItem("funnel", "Funnel", "Otros", "Reduccion por etapas del proceso.", funnelVisual([["Creados", data.throughput], ["Validos", data.quality], ["Asignables", data.availability], ["Cierre", data.projection], ["Meta", data.target]])),
+      chartItem("radar", "Radar", "Radar", "Perfil operativo por dimensiones.", radarVisual(base.slice(0, 5))),
+      chartItem("multi-radar", "Radar multiple", "Radar", "Perfil actual frente a referencia.", radarVisual(base.slice(0, 5), { secondary: data.pairedB.slice(0, 5) })),
+      chartItem("rounded-radar", "Radar redondeado con etiquetas", "Radar", "Lectura radial rotulada por dimension.", radarVisual(base.slice(0, 5), { labels: true, rounded: true })),
+      chartItem("multi-rounded-radar", "Radar multiple redondeado", "Radar", "Comparativo radial con dos capas.", radarVisual(base.slice(0, 5), { secondary: data.pairedA.slice(0, 5), labels: true, rounded: true })),
+      chartItem("heatmap", "Heatmap", "Otros", "Actividad por dia o periodo operativo.", heatmapVisual(data.series.concat(data.wait, data.pending)))
+    ];
+  }
+
+  function chartItem(id, title, family, copy, visual) {
+    return { id, title, family, copy, visual, kind: id, value: family, action: "Usar como patron visual segun la lectura requerida del modulo." };
+  }
+
+  function horizontalBars(rows, options = {}) {
+    const data = rows.slice(0, options.limit || rows.length);
+    const max = Math.max(...data.map(([, value]) => Math.abs(value)), 1);
+    return `<div class="atlas-horizontal ${options.thin ? "is-thin" : ""} ${options.gradient ? "is-gradient" : ""}">${data.map(([label, value], index) => `
+      <div class="atlas-h-row" style="--v: ${Math.round(Math.abs(value) / max * 100)}%; --i: ${index}">
+        <span>${esc(label)}</span>
+        <i></i>
+        ${options.valuesRight ? `<strong>${Math.round(value)}</strong>` : ""}
+      </div>
+    `).join("")}</div>`;
+  }
+
+  function iconBars(rows) {
+    return `<div class="atlas-horizontal has-icons">${rows.map(([label, value], index) => `
+      <div class="atlas-h-row" style="--v: ${clamp(value)}%; --i: ${index}">
+        <b>${esc(label.slice(0, 2).toUpperCase())}</b><span>${esc(label)}</span><i></i><strong>${Math.round(value)}</strong>
+      </div>
+    `).join("")}</div>`;
+  }
+
+  function breakdownBars(rows, thin = false) {
+    const total = rows.reduce((sum, [, value]) => sum + value, 0) || 1;
+    return `<div class="atlas-breakdown ${thin ? "is-thin" : ""}">
+      <div>${rows.map(([, value], index) => `<span style="--v: ${value / total * 100}%; --i: ${index}"></span>`).join("")}</div>
+      <ol>${rows.map(([label, value]) => `<li><span>${esc(label)}</span><strong>${Math.round(value)}%</strong></li>`).join("")}</ol>
+    </div>`;
+  }
+
+  function verticalBars(rows) {
+    const max = Math.max(...rows.map(([, value]) => value), 1);
+    return `<div class="atlas-vertical">${rows.map(([label, value], index) => `<span style="--h: ${Math.max(8, Math.round(value / max * 100))}%; --i: ${index}"><strong>${Math.round(value)}</strong><em>${esc(label)}</em></span>`).join("")}</div>`;
+  }
+
+  function stackedBars(a, b) {
+    const max = Math.max(...a.map((value, index) => value + b[index]), 1);
+    return `<div class="atlas-vertical is-stacked">${a.map((value, index) => `<span style="--h: ${Math.round((value + b[index]) / max * 100)}%; --a: ${Math.round(value / Math.max(1, value + b[index]) * 100)}%; --i: ${index}"><strong>${value}</strong><em>${index + 1}</em></span>`).join("")}</div>`;
+  }
+
+  function multiBars(a, b) {
+    const max = Math.max(...a, ...b, 1);
+    return `<div class="atlas-vertical is-multi">${a.map((value, index) => `<span style="--a: ${Math.round(value / max * 100)}%; --b: ${Math.round(b[index] / max * 100)}%; --i: ${index}"><em>${index + 1}</em></span>`).join("")}</div>`;
+  }
+
+  function benchmarkBars(rows) {
+    const max = Math.max(...rows.map(([, value]) => value), 1);
+    return `<div class="atlas-horizontal is-benchmark">${rows.map(([label, value], index) => `<div class="atlas-h-row ${index === 0 ? "is-main" : ""}" style="--v: ${Math.round(value / max * 100)}%; --i: ${index}"><span>${esc(label)}</span><i></i><strong>${Math.round(value)}</strong></div>`).join("")}</div>`;
+  }
+
+  function positiveNegativeBars(rows) {
+    const max = Math.max(...rows.map(([, value]) => Math.abs(value)), 1);
+    return `<div class="atlas-positive-negative">${rows.map(([label, value], index) => `<span class="${value < 0 ? "is-negative" : "is-positive"}" style="--v: ${Math.round(Math.abs(value) / max * 48)}%; --i: ${index}"><em>${esc(label)}</em></span>`).join("")}</div>`;
+  }
+
+  function comboBarLine(rows) {
+    return `<div class="atlas-combo">${verticalBars(rows)}${lineSvg(rows.map(([, value]) => value), "is-overlay")}</div>`;
+  }
+
+  function connectedDots(rows) {
+    return lineSvg(rows.map(([, value]) => value), "is-dots");
+  }
+
+  function lineSvg(values, className = "") {
+    const points = svgPoints(values, 180, 92, 10, 10);
+    return `<svg class="atlas-svg ${className}" viewBox="0 0 200 112" role="img" aria-hidden="true">
+      <line class="atlas-grid-line" x1="10" y1="92" x2="190" y2="92"></line>
+      <polyline class="atlas-line" points="${points.text}"></polyline>
+      ${points.items.map(([x, y]) => `<circle class="atlas-dot" cx="${x}" cy="${y}" r="3"></circle>`).join("")}
+    </svg>`;
+  }
+
+  function areaSvg(values) {
+    const points = svgPoints(values, 180, 92, 10, 10);
+    return `<svg class="atlas-svg" viewBox="0 0 200 112" role="img" aria-hidden="true">
+      <polygon class="atlas-area" points="${points.text} 190,96 10,96"></polygon>
+      <polyline class="atlas-line" points="${points.text}"></polyline>
+    </svg>`;
+  }
+
+  function stackedAreaSvg(a, b) {
+    const top = a.map((value, index) => value + b[index]);
+    return `<div class="atlas-area-stack">${areaSvg(top)}${areaSvg(b)}</div>`;
+  }
+
+  function normalizedAreaSvg(a, b) {
+    const normalized = a.map((value, index) => Math.round(value / Math.max(1, value + b[index]) * 100));
+    return areaSvg(normalized);
+  }
+
+  function pieVisual(rows) {
+    return `<div class="atlas-pie" style="${conicStops(rows)}"></div>`;
+  }
+
+  function donutVisual(rows, value) {
+    return `<div class="atlas-pie is-donut" style="${conicStops(rows)}"><span>${Math.round(value)}%</span></div>`;
+  }
+
+  function scatterSvg(points, options = {}) {
+    const maxX = Math.max(...points.map(([x]) => x), 1);
+    const maxY = Math.max(...points.map(([, y]) => y), 1);
+    const nodes = points.map(([x, y], index) => [12 + x / maxX * 176, 92 - y / maxY * 78, index]);
+    const line = nodes.map(([x, y]) => `${Math.round(x)},${Math.round(y)}`).join(" ");
+    return `<svg class="atlas-svg atlas-scatter" viewBox="0 0 200 112" role="img" aria-hidden="true">
+      <line class="atlas-grid-line" x1="12" y1="92" x2="188" y2="92"></line>
+      <line class="atlas-grid-line" x1="12" y1="14" x2="12" y2="92"></line>
+      ${options.guides ? `<line class="atlas-guide" x1="12" y1="54" x2="188" y2="54"></line><line class="atlas-guide" x1="94" y1="14" x2="94" y2="92"></line>` : ""}
+      ${options.trend === "linear" ? `<polyline class="atlas-line is-soft" points="12,84 188,24"></polyline>` : ""}
+      ${options.trend === "curve" ? `<path class="atlas-line is-soft" d="M12 84 C60 24 118 98 188 30"></path>` : ""}
+      ${options.guides ? `<polyline class="atlas-line is-soft" points="${line}"></polyline>` : ""}
+      ${nodes.map(([x, y, index]) => `<circle class="atlas-dot atlas-class-${options.classes ? index % 4 : 0}" cx="${Math.round(x)}" cy="${Math.round(y)}" r="${options.bubbles ? 3 + (index % 4) : 3.5}"></circle>${options.labels && index < 3 ? `<text x="${Math.round(x + 5)}" y="${Math.round(y - 4)}">P${index + 1}</text>` : ""}`).join("")}
+    </svg>`;
+  }
+
+  function treemapVisual(rows, options = {}) {
+    return `<div class="atlas-treemap ${options.icons ? "has-icons" : ""} ${options.gradient ? "is-gradient" : ""}">${rows.map(([label, value], index) => `<span style="--v: ${clamp(value)}%; --i: ${index}"><strong>${options.icons ? esc(label.slice(0, 2).toUpperCase()) : esc(label)}</strong><small>${Math.round(value)}</small></span>`).join("")}</div>`;
+  }
+
+  function bubbleVisual(rows) {
+    const max = Math.max(...rows.map(([, value]) => value), 1);
+    return `<div class="atlas-bubble">${rows.slice(0, 10).map(([label, value], index) => `<span style="--s: ${34 + value / max * 48}px; --x: ${8 + (index * 17) % 78}%; --y: ${10 + (index * 23) % 64}%; --i: ${index}">${esc(label.slice(0, 2))}</span>`).join("")}</div>`;
+  }
+
+  function funnelVisual(rows) {
+    const max = Math.max(...rows.map(([, value]) => value), 1);
+    return `<div class="atlas-funnel">${rows.map(([label, value], index) => `<span style="--w: ${Math.max(34, Math.round(value / max * 100))}%; --i: ${index}"><strong>${esc(label)}</strong><em>${Math.round(value)}</em></span>`).join("")}</div>`;
+  }
+
+  function radarVisual(rows, options = {}) {
+    const primary = radarPoints(rows.map(([, value]) => value));
+    const secondary = options.secondary ? radarPoints(options.secondary) : "";
+    return `<svg class="atlas-svg atlas-radar ${options.rounded ? "is-rounded" : ""}" viewBox="0 0 200 150" role="img" aria-hidden="true">
+      <polygon class="atlas-radar-grid" points="${radarPoints([100, 100, 100, 100, 100])}"></polygon>
+      <polygon class="atlas-radar-fill" points="${primary}"></polygon>
+      <polyline class="atlas-radar-line" points="${primary} ${primary.split(" ")[0]}"></polyline>
+      ${secondary ? `<polygon class="atlas-radar-fill is-secondary" points="${secondary}"></polygon><polyline class="atlas-radar-line is-secondary" points="${secondary} ${secondary.split(" ")[0]}"></polyline>` : ""}
+      ${options.labels ? rows.map(([label], index) => `<text x="${radarLabelPoint(index, rows.length).x}" y="${radarLabelPoint(index, rows.length).y}">${esc(label.slice(0, 3))}</text>`).join("") : ""}
+    </svg>`;
+  }
+
+  function heatmapVisual(values) {
+    return `<div class="atlas-heatmap">${values.slice(0, 84).map((value, index) => `<span class="level-${Math.min(4, Math.floor(value / Math.max(...values, 1) * 5))}" title="Periodo ${index + 1}: ${value}"></span>`).join("")}</div>`;
+  }
+
+  function svgPoints(values, width, height, offsetX, offsetY) {
+    const max = Math.max(...values, 1);
+    const min = Math.min(...values);
+    const items = values.map((value, index) => {
+      const x = offsetX + index * (width / Math.max(1, values.length - 1));
+      const y = offsetY + height - ((value - min) / Math.max(1, max - min)) * height;
+      return [Math.round(x), Math.round(y)];
+    });
+    return { items, text: items.map(([x, y]) => `${x},${y}`).join(" ") };
+  }
+
+  function conicStops(rows) {
+    const colors = ["var(--color-primary-500)", "var(--color-warning-main)", "var(--color-info-main)", "var(--color-error-main)", "var(--color-success-main)"];
+    const total = rows.reduce((sum, [, value]) => sum + value, 0) || 1;
+    let start = 0;
+    const stops = rows.map(([, value], index) => {
+      const end = start + value / total * 100;
+      const stop = `${colors[index % colors.length]} ${start}% ${end}%`;
+      start = end;
+      return stop;
+    }).join(", ");
+    return `--pie: conic-gradient(${stops})`;
+  }
+
+  function radarPoints(values) {
+    const center = 100;
+    const radius = 54;
+    return values.map((value, index) => {
+      const angle = (-90 + index * 360 / values.length) * Math.PI / 180;
+      const distance = radius * clamp(value) / 100;
+      return `${Math.round(center + Math.cos(angle) * distance)},${Math.round(75 + Math.sin(angle) * distance)}`;
+    }).join(" ");
+  }
+
+  function radarLabelPoint(index, total) {
+    const angle = (-90 + index * 360 / total) * Math.PI / 180;
+    return { x: Math.round(100 + Math.cos(angle) * 76), y: Math.round(78 + Math.sin(angle) * 68) };
   }
 
   function renderRiskMatrix(data) {

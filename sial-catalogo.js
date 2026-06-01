@@ -93,11 +93,11 @@ const SIALCatalog = (() => {
     {
       module: "errores",
       moduleLabel: "Errores del sistema",
-      title: "Mantenimiento 503",
+      title: "Mantenimiento programado",
       family: "sistema",
       status: "implementada",
       href: "Errores/503.html",
-      description: "Estado completo para mantenimiento programado o servicio temporalmente no disponible.",
+      description: "Vista completa para mantenimiento programado, servicio temporalmente detenido o modulo no disponible.",
       tags: ["503", "Mantenimiento", "Sistema"]
     },
     {

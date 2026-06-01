@@ -41,6 +41,7 @@ La base actual concentra:
 - Drawers, backdrop, detalle, auditoria y contenedores relacionales.
 - Confirmacion centralizada para activar o inactivar registros desde tablas mediante `SIALCore.initStateActionConfirm`, sin eliminacion fisica y con actualizacion visual de auditoria.
 - Patrones de transfer, roles, licencias, metricas, indicadores ejecutivos, KPIs, medidores de proyeccion, capacidad, riesgo, visualizaciones analiticas, timeline y calendario.
+- SIAL Chart Atlas: galeria de tipos de graficas para indicadores, basada en HTML/SVG/CSS propio y adaptada a tokens SIAL. Incluye barras, lineas, areas, circular, dispersion, treemap, bubble, funnel, radar y heatmap.
 - Patrones de changelog externo, changelog interno y administracion de publicaciones.
 - Topbar publico sin menu para vistas externas que conservan marca y modo claro/oscuro.
 - Renderizado reutilizable de changelog mediante `SIALCore.initReleaseChangelog`.

@@ -8,7 +8,7 @@ Vistas estaticas para estados de sistema y navegacion del catalogo SIAL.
 - `403.html`: usuario sin permisos para la operacion.
 - `404.html`: vista o recurso no encontrado dentro del catalogo.
 - `500.html`: error interno o falla de servicio.
-- `503.html`: servicio o modulo en mantenimiento temporal.
+- `503.html`: vista de mantenimiento programado para servicio o modulo temporalmente detenido.
 
 La raiz del proyecto tambien incluye `404.html` para que GitHub Pages muestre el mismo patron visual cuando una ruta no existe.
 

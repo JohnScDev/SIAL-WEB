@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>SIAL | Mantenimiento 503</title>
+  <title>SIAL | Mantenimiento programado</title>
   <script>
     (function () {
       const savedTheme = localStorage.getItem("sial-theme");
@@ -26,21 +26,28 @@
 
       <article class="error-panel error-panel-maintenance" aria-describedby="errorDescription">
         <div class="error-main">
-          <p class="page-eyebrow">SIAL / Estado del sistema</p>
+          <p class="page-eyebrow">SIAL / Mantenimiento</p>
           <span class="error-code" aria-label="Codigo de mantenimiento 503">503</span>
           <h1 class="error-title" id="errorTitle">Mantenimiento programado</h1>
           <p class="error-description" id="errorDescription">Esta vista o servicio se encuentra temporalmente detenido por una ventana de mantenimiento. La informacion queda protegida y podras continuar cuando finalice la intervencion.</p>
+          <div class="maintenance-summary" aria-label="Resumen de mantenimiento">
+            <div class="metric-box"><label>Estado</label><strong>En mantenimiento</strong></div>
+            <div class="metric-box"><label>Modulo</label><strong>SIAL Web</strong></div>
+            <div class="metric-box"><label>Inicio</label><strong>Ventana programada</strong></div>
+            <div class="metric-box"><label>Retorno</label><strong>Al finalizar validacion</strong></div>
+          </div>
           <div class="error-actions">
             <button class="btn btn-primary" type="button" onclick="window.location.reload()">Reintentar</button>
             <a class="btn btn-secondary" href="../index.html">Volver al catalogo</a>
           </div>
         </div>
         <aside class="error-support" aria-label="Detalle de mantenimiento">
-          <span class="tag tag-warning">Mantenimiento</span>
+          <span class="tag tag-warning">Mantenimiento activo</span>
           <h2>Estado operativo</h2>
           <ul class="error-list">
             <li>Espera la finalizacion de la ventana programada antes de registrar cambios.</li>
             <li>Evita reenviar formularios o repetir operaciones mientras el servicio este detenido.</li>
+            <li>Conserva los datos diligenciados en origen cuando el navegador lo permita.</li>
             <li>Si la ventana ya termino, reporta el codigo 503 con modulo, fecha y hora.</li>
           </ul>
           <p class="error-meta">Codigo 503 - Servicio temporalmente no disponible</p>
