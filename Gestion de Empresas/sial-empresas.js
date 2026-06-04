@@ -285,95 +285,136 @@ const SIAL = (() => {
 
   function initRoleAdminPanel() {
     const form = qs("[data-role-admin-form]");
-    const cards = qsa("[data-role-card]");
-    const checkboxes = qsa("[data-permission-check]", form || document);
+    const inlinePanel = qs("#roleInlineForm");
+    const openButton = qs("#newRoleMode");
+    const cancelButton = qs("#cancelRoleMode");
+    const formTitle = qs("#roleFormTitle");
+    const rows = qsa("[data-role-row]");
     const search = qs("#roleAdminSearch");
     const status = qs("#roleAdminStatus");
     const empty = qs("#roleAdminEmpty");
     const count = qs("#roleAdminCount");
-    const newButton = qs("#newRoleMode");
     const permissionNote = qs("#permissionSummaryNote");
-    const companySelect = qs("#roleCompanyAssignment");
+    const roleSummaryText = qs("#roleSummaryText");
     const roleName = qs("#roleName");
     const roleScope = qs("#roleScope");
     const roleRisk = qs("#roleRisk");
+    const roleCompanyAssignment = qs("#roleCompanyAssignment");
     const roleDescription = qs("#roleDescription");
-    const summaryText = qs("#roleSummaryText");
     const formOk = qs("#formOk");
-    if (!form || !cards.length) return;
+    const checkboxes = qsa("[data-permission-check]", form || document);
+    if (!form) return;
 
-    const companyLabel = () => companySelect?.selectedOptions?.[0]?.textContent || "";
+    const companyLabel = () => roleCompanyAssignment?.selectedOptions?.[0]?.textContent || "";
+    let currentMode = "new";
 
-    const updatePermissionSummary = () => {
-      const total = checkboxes.filter((input) => input.checked).length;
-      permissionNote?.classList.toggle("error", total === 0);
-      permissionNote?.classList.toggle("success", total > 0);
-      if (permissionNote) permissionNote.textContent = total === 0 ? "Selecciona al menos un permiso para guardar el rol." : `${total} permiso${total === 1 ? "" : "s"} seleccionado${total === 1 ? "" : "s"}.`;
+    const selectedPermissions = () => qsa("[data-permission-check]:checked", form).map((input) => input.value);
+
+    const updateSummary = () => {
+      const total = selectedPermissions().length;
+      if (permissionNote) {
+        permissionNote.classList.toggle("error", total === 0);
+        permissionNote.classList.toggle("success", total > 0);
+        permissionNote.textContent = total === 0 ? "Selecciona al menos un permiso." : `${total} permiso${total === 1 ? "" : "s"} seleccionado${total === 1 ? "" : "s"}.`;
+      }
+      if (roleSummaryText) {
+        const role = roleName?.value?.trim() || "Nuevo rol";
+        const company = roleCompanyAssignment?.value ? companyLabel() : "empresa pendiente";
+        roleSummaryText.textContent = `${role} para ${company} - ${total} permiso${total === 1 ? "" : "s"}`;
+      }
       return total;
     };
 
-    const updateAssignmentSummary = () => {
-      const role = roleName?.value?.trim() || "Nuevo rol";
-      const company = companySelect?.value ? companyLabel() : "empresa pendiente";
-      const permissions = updatePermissionSummary();
-      if (summaryText) summaryText.textContent = `${role} para ${company} - ${permissions} permiso${permissions === 1 ? "" : "s"}`;
+    const clearNotes = () => {
+      qsa("[data-required]", form).forEach((input) => {
+        const note = qs(`#${input.getAttribute("aria-describedby")}`);
+        if (!note) return;
+        if (note.dataset.base) note.textContent = note.dataset.base;
+        note.classList.remove("error", "success");
+        input.classList.remove("is-error");
+        input.setAttribute("aria-invalid", "false");
+      });
+      if (permissionNote) {
+        permissionNote.classList.remove("error", "success");
+      }
     };
 
-    const setDetail = (card) => {
-      qs("#selectedRoleName").textContent = card.dataset.roleName || "Rol";
-      qs("#selectedRoleSummary").textContent = card.dataset.summary || "-";
-      qs("#selectedRoleCompany").textContent = card.dataset.companyName || "-";
-      qs("#selectedRolePermissions").textContent = card.dataset.permissionsCount || "0";
-      qs("#selectedRoleAudit").textContent = card.dataset.audit || "-";
+    const openPanel = () => {
+      inlinePanel?.classList.remove("is-hidden");
+      formTitle.textContent = currentMode === "new" ? "Nuevo rol" : "Editar rol";
+      window.setTimeout(() => roleName?.focus(), 0);
     };
 
-    const fillFormFromCard = (card) => {
-      cards.forEach((item) => item.classList.toggle("is-selected", item === card));
-      setDetail(card);
-      if (roleName) roleName.value = card.dataset.roleName || "";
-      if (roleScope) roleScope.value = card.dataset.roleType || "";
-      if (roleRisk) roleRisk.value = card.dataset.roleRisk || "Baja";
-      if (roleDescription) roleDescription.value = card.dataset.summary || "";
-      if (companySelect) companySelect.value = card.dataset.companyCode || "";
+    const closePanel = () => {
+      inlinePanel?.classList.add("is-hidden");
+      clearNotes();
       formOk?.classList.add("is-hidden");
-      updateAssignmentSummary();
+      currentMode = "new";
+      form?.reset();
+    };
+
+    const setMode = (mode) => {
+      currentMode = mode;
+      form.dataset.roleMode = mode;
+      form.setAttribute("data-role-mode", mode);
+      const isEdit = mode === "edit";
+      const code = form.dataset.roleCode;
+      if (roleSummaryText) {
+        roleSummaryText.textContent = `${isEdit && code ? code : "Nuevo rol"} listo para actualizar.`;
+      }
+      openPanel();
+    };
+
+    const fillFormFromRow = (row) => {
+      if (!row) return;
+      const allowedPermissions = new Set((row.dataset.permissions || "").split("|").map((item) => item.trim()).filter(Boolean));
+      checkboxes.forEach((input) => {
+        input.checked = allowedPermissions.has(input.value);
+      });
+      if (roleName) roleName.value = row.dataset.roleName || "";
+      if (roleScope) roleScope.value = row.dataset.roleType || "";
+      if (roleRisk) roleRisk.value = row.dataset.roleRisk || "Baja";
+      if (roleCompanyAssignment) roleCompanyAssignment.value = row.dataset.companyCode || "";
+      if (roleDescription) roleDescription.value = row.dataset.summary || "";
+      form.dataset.roleCode = row.dataset.roleCode || "";
+      setMode("edit");
+      if (roleSummaryText) {
+        roleSummaryText.textContent = `${row.dataset.roleName || "Rol"} para ${row.dataset.companyName || "empresa"} - ${allowedPermissions.size} permiso${allowedPermissions.size === 1 ? "" : "s"}.`;
+      }
+      updateSummary();
     };
 
     const setNewMode = () => {
-      cards.forEach((item) => item.classList.remove("is-selected"));
+      form.dataset.roleCode = "";
       form.reset();
-      qsa("[data-required]", form).forEach((input) => {
-        const note = qs(`#${input.getAttribute("aria-describedby")}`);
-        if (note?.dataset.base) note.textContent = note.dataset.base;
-        input.classList.remove("is-error");
-        input.setAttribute("aria-invalid", "false");
-        note?.classList.remove("error", "success");
+      checkboxes.forEach((input) => {
+        input.checked = false;
       });
-      qs("#selectedRoleName").textContent = "Nuevo rol";
-      qs("#selectedRoleSummary").textContent = "Completa datos, empresa y permisos para crear el rol.";
-      qs("#selectedRoleCompany").textContent = "Pendiente";
-      qs("#selectedRolePermissions").textContent = "0";
-      qs("#selectedRoleAudit").textContent = "Sin auditoria";
-      formOk?.classList.add("is-hidden");
-      updateAssignmentSummary();
-      roleName?.focus();
+      setMode("new");
+      clearNotes();
+      if (permissionNote) permissionNote.textContent = "Selecciona al menos un permiso para guardar.";
+      if (roleSummaryText) roleSummaryText.textContent = "Nuevo rol para SIAL Central - 0 permisos";
+      if (formOk) formOk.classList.add("is-hidden");
+      updateSummary();
     };
 
-    const filterCards = () => {
+    const filterRows = () => {
       const term = String(search?.value || "").trim().toLowerCase();
       const selectedStatus = status?.value || "all";
       let visible = 0;
-      cards.forEach((card) => {
-        const text = card.textContent.toLowerCase();
-        const show = (!term || text.includes(term)) && (selectedStatus === "all" || card.dataset.status === selectedStatus);
-        card.classList.toggle("is-hidden", !show);
+      rows.forEach((row) => {
+        const text = row.textContent.toLowerCase();
+        const statusMatch = selectedStatus === "all" || row.dataset.status === selectedStatus;
+        const searchMatch = !term || text.includes(term);
+        const show = statusMatch && searchMatch;
+        row.classList.toggle("is-hidden", !show);
         if (show) visible += 1;
       });
       empty?.classList.toggle("show", visible === 0);
       if (count) count.textContent = `${visible} rol${visible === 1 ? "" : "es"} visibles`;
     };
 
-    const validateForm = () => {
+    const validate = () => {
       let fail = false;
       qsa("[data-required]", form).forEach((input) => {
         const note = qs(`#${input.getAttribute("aria-describedby")}`);
@@ -382,29 +423,59 @@ const SIAL = (() => {
         setFieldState(input, note, empty ? "Este campo es obligatorio." : "");
         if (empty) fail = true;
       });
-      if (updatePermissionSummary() === 0) fail = true;
+      const permissionTotal = updateSummary();
+      if (permissionTotal === 0) {
+        permissionNote?.classList.add("error");
+        fail = true;
+      }
+      if (!fail) {
+        formOk?.classList.remove("is-hidden");
+      } else {
+        formOk?.classList.add("is-hidden");
+      }
       return !fail;
     };
 
-    cards.forEach((card) => card.addEventListener("click", () => fillFormFromCard(card)));
-    [search, status].filter(Boolean).forEach((control) => {
-      control.addEventListener(control.tagName === "INPUT" ? "input" : "change", filterCards);
-    });
-    [roleName, roleScope, roleRisk, roleDescription, companySelect].filter(Boolean).forEach((control) => {
-      control.addEventListener("input", updateAssignmentSummary);
-      control.addEventListener("change", updateAssignmentSummary);
-    });
-    checkboxes.forEach((input) => input.addEventListener("change", updateAssignmentSummary));
-    newButton?.addEventListener("click", setNewMode);
-    form.addEventListener("reset", () => window.setTimeout(setNewMode, 0));
-    form.addEventListener("submit", (event) => {
-      event.preventDefault();
-      formOk?.classList.toggle("is-hidden", !validateForm());
-      updateAssignmentSummary();
+    rows.forEach((row) => {
+      const editButton = row.querySelector("[data-edit-inline]");
+      if (!editButton) return;
+      editButton.addEventListener("click", (event) => {
+        event.preventDefault();
+        fillFormFromRow(row);
+      });
     });
 
-    fillFormFromCard(cards[0]);
-    filterCards();
+    [search, status].filter(Boolean).forEach((control) => {
+      control.addEventListener(control.tagName === "INPUT" ? "input" : "change", filterRows);
+    });
+    [roleName, roleScope, roleRisk, roleDescription, roleCompanyAssignment].filter(Boolean).forEach((control) => {
+      control.addEventListener("input", updateSummary);
+      control.addEventListener("change", updateSummary);
+    });
+    checkboxes.forEach((input) => input.addEventListener("change", updateSummary));
+    openButton?.addEventListener("click", setNewMode);
+    cancelButton?.addEventListener("click", closePanel);
+    form.addEventListener("submit", (event) => {
+      event.preventDefault();
+      if (!validate()) return;
+      if (formOk) {
+        formOk.classList.remove("is-hidden");
+        if (currentMode === "edit" && form.dataset.roleCode) {
+          formOk.textContent = `Rol ${form.dataset.roleCode} actualizado (vista previa de alta).`;
+        } else {
+          formOk.textContent = "Rol y asignacion listos para guardar.";
+        }
+      }
+      updateSummary();
+    });
+    form.addEventListener("reset", () => {
+      window.setTimeout(() => {
+        closePanel();
+      }, 0);
+    });
+
+    filterRows();
+    setNewMode();
   }
 
   const initRolePermissionMatrix = initRoleAdminPanel;
