@@ -1435,10 +1435,77 @@ tbody tr.state-updated {
   background: var(--color-field-bg);
 }
 .license-option { grid-template-columns: 24px minmax(0, 1fr) 170px; }
-.role-option { display: flex; align-items: flex-start; gap: 10px; margin-bottom: 10px; }
-.license-option input[type="checkbox"], .role-option input { width: 18px; height: 18px; margin-top: 2px; accent-color: var(--color-primary-500); }
-.license-option strong, .role-option strong { display: block; margin-bottom: 4px; }
+.role-option {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  margin-bottom: 10px;
+  color: var(--color-text-2);
+  cursor: pointer;
+  transition: border-color var(--motion-duration-fast) ease, background-color var(--motion-duration-fast) ease, box-shadow var(--motion-duration-fast) ease;
+}
+.role-grid .role-option {
+  min-height: 84px;
+  display: grid;
+  grid-template-columns: 22px minmax(0, 1fr);
+  align-items: start;
+  margin-bottom: 0;
+}
+.license-option input[type="checkbox"], .role-option input[type="checkbox"] {
+  box-sizing: border-box;
+  width: 18px;
+  min-width: 18px;
+  max-width: 18px;
+  height: 18px;
+  min-height: 18px;
+  max-height: 18px;
+  flex: 0 0 auto;
+  margin: 2px 0 0;
+  padding: 0;
+  accent-color: var(--color-primary-500);
+  cursor: pointer;
+}
+.role-option input[type="checkbox"] {
+  appearance: none;
+  display: grid;
+  place-content: center;
+  border: 1.5px solid var(--color-border);
+  border-radius: 5px;
+  background: var(--color-surface);
+}
+.role-option input[type="checkbox"]::before {
+  content: "";
+  width: 10px;
+  height: 10px;
+  transform: scale(0);
+  transform-origin: center;
+  transition: transform var(--motion-duration-fast) ease;
+  clip-path: polygon(14% 52%, 0 66%, 38% 100%, 100% 18%, 84% 4%, 35% 66%);
+  background: var(--color-on-primary);
+}
+.role-option input[type="checkbox"]:checked {
+  border-color: var(--color-primary-500);
+  background: var(--color-primary-500);
+}
+.role-option input[type="checkbox"]:checked::before { transform: scale(1); }
+.role-option input[type="checkbox"]:focus-visible {
+  outline: 0;
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--color-primary-500) 20%, transparent);
+}
+.role-option:hover,
+.role-option:has(input[type="checkbox"]:checked) {
+  border-color: color-mix(in srgb, var(--color-primary-500) 44%, var(--color-border-subtle));
+  background: color-mix(in srgb, var(--color-primary-50) 62%, var(--color-field-bg));
+}
+.license-option strong, .role-option strong {
+  display: block;
+  margin-bottom: 4px;
+  color: var(--color-text);
+  font-size: 13px;
+  line-height: 1.35;
+}
 .license-option span, .role-option span { color: var(--color-text-2); font-size: 12px; line-height: 1.45; }
+.role-option > span { min-width: 0; }
 .assignment-summary { margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--color-border-subtle); }
 .assignment-list { display: grid; gap: 12px; }
 .assignment-item { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 12px; align-items: center; }
@@ -3758,7 +3825,7 @@ html[data-theme="dark"] {
   font-weight: 600;
 }
 
-.field label span {
+.field > label span {
   color: var(--color-error-main);
 }
 

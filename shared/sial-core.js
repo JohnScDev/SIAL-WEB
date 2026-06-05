@@ -85,8 +85,8 @@
             { id: "empresas", label: "Gestion de empresas", href: "gestion-empresas.html" },
             { id: "roles", label: "Roles por empresas", href: "roles-empresa.html" },
             { id: "paramRoles", label: "Creacion de roles", href: "parametrizacion-roles.html" },
-            { id: "tiposEmpresa", label: "Tipos de empresas", href: "gestion-tipos-empresa.html", folder: "Gestion de Empresas", localFolder: "Gestion de Empresas" },
-            { id: "empresaTipo", label: "Empresa + tipo", href: "relacion-empresa-tipo.html", folder: "Gestion de Empresas", localFolder: "Gestion de Empresas" }
+            { id: "tiposEmpresa", label: "Tipos de empresas", href: "gestion-tipos-empresa.html", folder: "Gestion de Transporte", localFolder: "Gestion de Transporte" },
+            { id: "empresaTipo", label: "Empresa + tipo", href: "relacion-empresa-tipo.html", folder: "Gestion de Transporte", localFolder: "Gestion de Transporte" }
           ]
         },
         {
