@@ -1,4 +1,4 @@
-const SIALCore = (() => {
+﻿const SIALCore = (() => {
   const qs = (selector, root = document) => root.querySelector(selector);
   const qsa = (selector, root = document) => Array.from(root.querySelectorAll(selector));
   const normalize = (value) => String(value || "").trim().toLowerCase();
@@ -40,7 +40,7 @@ const SIALCore = (() => {
           label: "Referencias",
           icon: "referencias",
           folder: "Gestion de Fincas",
-          localFolder: "sial-fincas-propuesta",
+          localFolder: "Gestion de Fincas",
           views: [
             { id: "referencias", label: "Gestion de referencias", href: "gestion-referencias.html" },
             { id: "clases", label: "Clases de referencias", href: "gestion-clases-referencia.html" }
@@ -63,7 +63,7 @@ const SIALCore = (() => {
           label: "Transporte",
           icon: "transporte",
           folder: "Gestion de Transporte",
-          localFolder: "sial-conductores-propuesta",
+          localFolder: "Gestion de Transporte",
           views: [
             { id: "gestion", label: "Gestion de conductores", href: "gestion-conductores.html" },
             { id: "licencias", label: "Gestion de licencias", href: "gestion-categorias-licencia.html" },
@@ -80,13 +80,13 @@ const SIALCore = (() => {
           label: "Empresa",
           icon: "empresas",
           folder: "Gestion de Empresas",
-          localFolder: "sial-empresas-propuesta",
+          localFolder: "Gestion de Empresas",
           views: [
             { id: "empresas", label: "Gestion de empresas", href: "gestion-empresas.html" },
             { id: "roles", label: "Roles por empresas", href: "roles-empresa.html" },
             { id: "paramRoles", label: "Creacion de roles", href: "parametrizacion-roles.html" },
-            { id: "tiposEmpresa", label: "Tipos de empresas", href: "gestion-tipos-empresa.html", folder: "Gestion de Transporte", localFolder: "sial-conductores-propuesta" },
-            { id: "empresaTipo", label: "Empresa + tipo", href: "relacion-empresa-tipo.html", folder: "Gestion de Transporte", localFolder: "sial-conductores-propuesta" }
+            { id: "tiposEmpresa", label: "Tipos de empresas", href: "gestion-tipos-empresa.html", folder: "Gestion de Empresas", localFolder: "Gestion de Empresas" },
+            { id: "empresaTipo", label: "Empresa + tipo", href: "relacion-empresa-tipo.html", folder: "Gestion de Empresas", localFolder: "Gestion de Empresas" }
           ]
         },
         {
@@ -94,7 +94,7 @@ const SIALCore = (() => {
           label: "Usuarios",
           icon: "usuarios",
           folder: "Gestion de Usuarios",
-          localFolder: "sial-usuarios-propuesta",
+          localFolder: "Gestion de Usuarios",
           views: [
             { id: "usuarios", label: "Gestion de usuarios", href: "gestion-usuarios.html" },
             { id: "registro", label: "Registro de usuario", href: "registro-usuario.html" },
@@ -106,7 +106,7 @@ const SIALCore = (() => {
           label: "Planeacion",
           icon: "planeacion",
           folder: "Gestion de Planeacion",
-          localFolder: "sial-aviso-corte-propuesta",
+          localFolder: "Gestion de Planeacion",
           views: [
             { id: "semanas", label: "Gestion de semanas", href: "gestion-semanas.html" },
             { id: "generacion", label: "Generar semanas", href: "generacion-semanas.html" },
@@ -120,7 +120,7 @@ const SIALCore = (() => {
           label: "Puerto",
           icon: "puerto",
           folder: "Gestion Operaciones Puerto",
-          localFolder: "sial-puerto-propuesta",
+          localFolder: "Gestion Operaciones Puerto",
           views: [
             { id: "contenedores", label: "Gestion de contenedores", href: "gestion-contenedores.html" },
             { id: "tipos", label: "Tipos de contenedor", href: "gestion-tipos-contenedor.html" },
@@ -440,6 +440,306 @@ const SIALCore = (() => {
     const avatars = qsa(selector).filter((avatar) => avatar.dataset.profileReady !== "true");
     if (!avatars.length) return;
 
+    const dialogState = {
+      backdrop: null,
+      dialog: null,
+      lastAction: "view",
+      lastFocusedActionControl: null
+    };
+
+    const setThemeLabel = (button, buttonText) => {
+      if (!button) return;
+      const isDark = document.documentElement.dataset.theme === "dark";
+      button.textContent = buttonText || `Tema ${isDark ? "claro" : "oscuro"}`;
+      button.dataset.profileTheme = isDark ? "light" : "dark";
+      button.setAttribute("aria-label", `Cambiar a tema ${isDark ? "claro" : "oscuro"}`);
+    };
+
+    const getProfileSettingsLabelState = () => {
+      const isDark = document.documentElement.dataset.theme === "dark";
+      const notificationsEnabled = localStorage.getItem("sial-notifications") !== "false";
+      return {
+        isDark,
+        notificationsEnabled
+      };
+    };
+
+    const getProfileSettingsNoticeText = () => {
+      const { isDark, notificationsEnabled } = getProfileSettingsLabelState();
+      return `Tema actual: ${isDark ? "oscuro" : "claro"} | Notificaciones ${notificationsEnabled ? "activas" : "inactivas"}.`;
+    };
+
+    const toggleProfileTheme = (button) => {
+      const toggles = qsa("[data-theme-toggle]");
+      if (toggles.length) {
+        toggles[0].click();
+      } else {
+        const nextTheme = document.documentElement.dataset.theme === "dark" ? "light" : "dark";
+        document.documentElement.dataset.theme = nextTheme;
+        localStorage.setItem("sial-theme", nextTheme);
+      }
+      setThemeLabel(button);
+    };
+
+    const updateProfileSettingsNotice = (notice) => {
+      if (!notice) return;
+      notice.textContent = getProfileSettingsNoticeText();
+    };
+
+    const syncProfileSettingsLabels = (themeNode, notificationNode, notificationSwitchLabel) => {
+      const { isDark, notificationsEnabled } = getProfileSettingsLabelState();
+      if (themeNode) {
+        themeNode.textContent = isDark ? "Oscuro" : "Claro";
+      }
+      if (notificationNode) {
+        notificationNode.textContent = notificationsEnabled ? "Activadas" : "Desactivadas";
+      }
+      if (notificationSwitchLabel) {
+        notificationSwitchLabel.textContent = notificationsEnabled ? "Activadas" : "Desactivadas";
+      }
+    };
+
+    const normalizeProfileSessionDate = () => {
+      return new Date().toLocaleString("es-CO", {
+        weekday: "short",
+        day: "2-digit",
+        month: "short",
+        year: "numeric",
+        hour: "2-digit",
+        minute: "2-digit"
+      });
+    };
+
+    const getProfileActionFocusables = () => {
+      if (!dialogState.dialog) return [];
+      return qsa("button, [href], input, select, textarea, [tabindex]:not([tabindex='-1'])", dialogState.dialog)
+        .filter((node) => node instanceof HTMLElement && !node.disabled && node.tabIndex !== -1 && node.offsetParent !== null);
+    };
+
+    const closeProfileActionDialog = () => {
+      if (!dialogState.backdrop || !dialogState.dialog) return;
+      dialogState.backdrop.hidden = true;
+      dialogState.dialog.hidden = true;
+      const returnFocus = dialogState.lastFocusedActionControl;
+      dialogState.lastFocusedActionControl = null;
+      if (returnFocus instanceof HTMLElement && returnFocus.isConnected) {
+        returnFocus.focus();
+      }
+    };
+
+    const ensureProfileActionDialog = () => {
+      if (dialogState.dialog) return;
+      dialogState.backdrop = document.createElement("div");
+      dialogState.backdrop.className = "confirm-backdrop";
+      dialogState.backdrop.dataset.profileActionBackdrop = "true";
+      dialogState.backdrop.hidden = true;
+
+      dialogState.dialog = document.createElement("section");
+      dialogState.dialog.className = "confirm-dialog profile-action-dialog";
+      dialogState.dialog.dataset.profileActionDialog = "true";
+      dialogState.dialog.hidden = true;
+      dialogState.dialog.setAttribute("role", "dialog");
+      dialogState.dialog.setAttribute("aria-modal", "true");
+      dialogState.dialog.setAttribute("aria-labelledby", "profileActionTitle");
+      dialogState.dialog.setAttribute("aria-describedby", "profileActionDescription");
+      dialogState.dialog.innerHTML = `
+        <div class="confirm-dialog-head">
+          <div>
+            <h2 id="profileActionTitle"></h2>
+            <p id="profileActionDescription"></p>
+          </div>
+          <button class="icon-btn" type="button" data-profile-action-close aria-label="Cerrar">
+            <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m18 6-12 12"></path><path d="m6 6 12 12"></path></svg>
+          </button>
+        </div>
+        <div class="confirm-dialog-body">
+          <div class="notice notice-info" id="profileActionNotice"></div>
+          <div id="profileActionContent"></div>
+        </div>
+        <div class="confirm-dialog-actions">
+          <button class="btn btn-secondary" type="button" data-profile-action-close>Cerrar</button>
+        </div>
+      `;
+
+      document.body.appendChild(dialogState.backdrop);
+      document.body.appendChild(dialogState.dialog);
+
+      const closeButtons = qsa("[data-profile-action-close]", dialogState.dialog);
+      closeButtons.forEach((button) => {
+        button.addEventListener("click", closeProfileActionDialog);
+      });
+      dialogState.backdrop.addEventListener("click", closeProfileActionDialog);
+      dialogState.dialog.addEventListener("keydown", (event) => {
+        if (event.key === "Escape") {
+          event.preventDefault();
+          closeProfileActionDialog();
+          return;
+        }
+        if (event.key === "Tab") {
+          const focusables = getProfileActionFocusables();
+          if (!focusables.length) {
+            event.preventDefault();
+            return;
+          }
+          const currentIndex = focusables.indexOf(document.activeElement);
+          const direction = event.shiftKey ? -1 : 1;
+          const nextIndex = currentIndex < 0 ? 0 : (currentIndex + direction + focusables.length) % focusables.length;
+          focusables[nextIndex]?.focus();
+          event.preventDefault();
+        }
+      });
+    };
+
+    const openProfileActionDialog = ({ title, description, contentHtml, action, showNotice = true }) => {
+      ensureProfileActionDialog();
+      dialogState.lastFocusedActionControl = document.activeElement instanceof HTMLElement ? document.activeElement : null;
+      const titleNode = qs("#profileActionTitle", dialogState.dialog);
+      const descriptionNode = qs("#profileActionDescription", dialogState.dialog);
+      const contentNode = qs("#profileActionContent", dialogState.dialog);
+      const noticeNode = qs("#profileActionNotice", dialogState.dialog);
+      if (!titleNode || !descriptionNode || !contentNode) return;
+
+      dialogState.lastAction = action || "view";
+      titleNode.textContent = title || "Acción de perfil";
+      const safeDescription = String(description || "").trim();
+      descriptionNode.textContent = safeDescription;
+      descriptionNode.hidden = !safeDescription;
+      contentNode.innerHTML = contentHtml || "";
+      if (noticeNode) {
+        noticeNode.hidden = !showNotice;
+        if (showNotice) {
+          updateProfileSettingsNotice(noticeNode);
+        }
+      }
+      dialogState.dialog.dataset.profileActionType = dialogState.lastAction;
+      dialogState.dialog.querySelector(".confirm-dialog-actions").style.display = "flex";
+
+      dialogState.backdrop.hidden = false;
+      dialogState.dialog.hidden = false;
+
+      const firstAction = qsa("[data-profile-theme-toggle], [data-profile-notifications], [data-profile-logout], .confirm-dialog-actions button", dialogState.dialog)[0];
+      firstAction?.focus();
+    };
+
+    const openProfileView = ({ userName, userRole, initials }) => {
+      const sessionAt = normalizeProfileSessionDate();
+      const { isDark, notificationsEnabled } = getProfileSettingsLabelState();
+      openProfileActionDialog({
+        action: "view",
+        title: "Perfil de usuario",
+        description: "",
+        showNotice: false,
+        contentHtml: `
+          <div class="detail-group profile-action-card profile-action-id-card">
+            <div class="detail-label">Perfil activo</div>
+            <div class="profile-action-identity-row">
+              <span class="avatar profile-action-avatar-xl" aria-hidden="true">${escapeHtml(initials || "QA")}</span>
+              <div class="profile-action-identity-content">
+                <strong>${escapeHtml(userName || "Usuario SIAL")}</strong>
+                <p class="muted">${escapeHtml(userRole || "Sin rol definido")}</p>
+              </div>
+            </div>
+          </div>
+          <div class="detail-group profile-action-card">
+            <div class="detail-label">Resumen de sesión</div>
+            <div class="profile-action-meta-kv">
+              <div>
+                <span class="muted">Conexión</span>
+                <strong>Activa</strong>
+              </div>
+              <div>
+                <span class="muted">Tema</span>
+                <strong>${isDark ? "Oscuro" : "Claro"}</strong>
+              </div>
+              <div>
+                <span class="muted">Notificaciones</span>
+                <strong>${notificationsEnabled ? "Sí" : "No"}</strong>
+              </div>
+            </div>
+            <p class="muted">Última revisión: ${escapeHtml(sessionAt)}</p>
+          </div>
+        `
+      });
+    };
+
+    const openProfileSettings = () => {
+      const { isDark, notificationsEnabled } = getProfileSettingsLabelState();
+      openProfileActionDialog({
+        action: "settings",
+        title: "Preferencias de cuenta",
+        description: "",
+        showNotice: false,
+        contentHtml: `
+          <div class="detail-group profile-action-card">
+            <div class="detail-label">Tema visual</div>
+            <div class="profile-action-toggle-row">
+              <div class="profile-action-inline-copy">
+                <span class="muted">Tema en esta sesión</span>
+                <strong data-profile-theme-state></strong>
+              </div>
+              <button class="btn btn-secondary profile-action-theme-btn" type="button" data-profile-theme-toggle></button>
+            </div>
+          </div>
+          <div class="detail-group profile-action-card">
+            <div class="detail-label">Canales de alerta</div>
+            <div class="profile-action-toggle-row">
+              <div class="profile-action-inline-copy">
+                <span class="muted">Notificaciones de sistema</span>
+                <strong data-profile-notification-state></strong>
+              </div>
+              <label class="profile-action-toggle-switch">
+                <input type="checkbox" data-profile-notifications />
+                <span class="profile-action-toggle-slider" aria-hidden="true"></span>
+              </label>
+            </div>
+          </div>
+          <div class="detail-group profile-action-card">
+            <div class="detail-label">Acceso rápido</div>
+            <button class="btn btn-danger profile-action-quick-btn" type="button" data-profile-logout>
+              Cerrar sesión
+            </button>
+          </div>
+        `
+      });
+
+      const themeButton = qs("[data-profile-theme-toggle]", dialogState.dialog);
+      const notifications = qs("[data-profile-notifications]", dialogState.dialog);
+      const notificationsLabel = qs("[data-profile-notification-state]", dialogState.dialog);
+      const logoutButton = qs("[data-profile-logout]", dialogState.dialog);
+      const themeStateLabel = qs("[data-profile-theme-state]", dialogState.dialog);
+      const notificationsStateLabel = qs("[data-profile-notification-state]", dialogState.dialog);
+      if (!themeButton || !notifications || !logoutButton) return;
+      let isThemeDark = isDark;
+      let isNotificationsEnabled = notificationsEnabled;
+      setThemeLabel(themeButton);
+      themeButton.textContent = isThemeDark ? "Cambiar a claro" : "Cambiar a oscuro";
+      notifications.checked = isNotificationsEnabled;
+      syncProfileSettingsLabels(themeStateLabel, notificationsStateLabel, notificationsLabel);
+      if (!themeButton.dataset.profileActionBound) {
+        themeButton.dataset.profileActionBound = "true";
+        themeButton.addEventListener("click", () => {
+          toggleProfileTheme(themeButton);
+          isThemeDark = document.documentElement.dataset.theme === "dark";
+          themeButton.textContent = isThemeDark ? "Cambiar a claro" : "Cambiar a oscuro";
+          syncProfileSettingsLabels(themeStateLabel, notificationsStateLabel, notificationsLabel);
+        });
+      }
+      if (!notifications.dataset.profileActionBound) {
+        notifications.dataset.profileActionBound = "true";
+        notifications.addEventListener("change", () => {
+          isNotificationsEnabled = notifications.checked;
+          localStorage.setItem("sial-notifications", String(isNotificationsEnabled));
+          syncProfileSettingsLabels(themeStateLabel, notificationsStateLabel, notificationsLabel);
+        });
+      }
+      if (!logoutButton.dataset.profileActionBound) {
+        logoutButton.dataset.profileActionBound = "true";
+        logoutButton.addEventListener("click", () => {
+          closeProfileActionDialog();
+          window.location.href = getLoginUrl();
+        });
+      }
+    };
     avatars.forEach((avatar) => {
       const initials = avatar.textContent.trim() || "QA";
       const userName = avatar.dataset.profileName || "Usuario SIAL";
@@ -464,11 +764,11 @@ const SIALCore = (() => {
             </button>
             <button class="profile-menu-item" type="button" role="menuitem" data-profile-action="settings">
               ${profileActionIcon("settings")}
-              <span>Configurar</span>
+              <span>Preferencias</span>
             </button>
             <a class="profile-menu-item profile-menu-item-danger" role="menuitem" href="${escapeHtml(getLoginUrl())}" data-profile-action="logout">
               ${profileActionIcon("logout")}
-              <span>Cerrar sesion</span>
+              <span>Cerrar sesión</span>
             </a>
           </div>
         </div>
@@ -504,12 +804,22 @@ const SIALCore = (() => {
         const action = actionControl.dataset.profileAction;
         trigger?.dispatchEvent(new CustomEvent("sial:profile-action", {
           bubbles: true,
-          detail: { action }
+          detail: { action, userName, userRole, initials }
         }));
         closeProfileMenu(menu);
         if (action === "logout") {
           event.preventDefault();
           window.location.href = actionControl.getAttribute("href") || getLoginUrl();
+          return;
+        }
+        if (action === "view") {
+          event.preventDefault();
+          openProfileView({ userName, userRole, initials });
+          return;
+        }
+        if (action === "settings") {
+          event.preventDefault();
+          openProfileSettings();
         }
       });
     });
@@ -1279,3 +1589,4 @@ if (document.readyState === "loading") {
   SIALCore.initProfileMenu();
 }
 /* === SIAL View Motion END (reversible hook) === */
+
