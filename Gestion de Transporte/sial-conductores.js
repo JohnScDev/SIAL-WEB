@@ -26,7 +26,9 @@ const SIAL = (() => {
       ["tiposVehiculo", "gestion-tipos-vehiculo.html", "Tipos de vehiculos"],
       ["dashboard", "dashboard-transporte.html", "Dashboard transporte"],
       ["documental", "matriz-documental-vehiculos.html", "Matriz documental"],
-      ["disponibilidad", "disponibilidad-operativa.html", "Disponibilidad"]
+      ["disponibilidad", "disponibilidad-operativa.html", "Disponibilidad"],
+      ["operaciones", "gestion-operaciones.html", "Gestion de operaciones"],
+      ["inicioOperacion", "inicio-operacion.html", "Inicio de operacion"]
     ];
     nav.innerHTML = items.map(([key, href, label]) =>
       `<a class="nav-link ${key === activeKey ? "active" : ""}" href="${href}"><svg class="icon" viewBox="0 0 24 24"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg><span>${label}</span></a>`
@@ -87,7 +89,12 @@ const SIAL = (() => {
         const text = row.textContent.toLowerCase();
         const stateOk = state === "all" || row.dataset.status === state;
         const ctxOk = ctx === "all" || row.dataset.context === ctx;
-        const show = (!term || text.includes(term)) && stateOk && ctxOk;
+        let extraOk = true;
+        (config.extraFilters || []).forEach((filter) => {
+          const sel = qs(filter.select);
+          if (sel && sel.value !== "all") extraOk = extraOk && row.dataset[filter.datasetKey] === sel.value;
+        });
+        const show = (!term || text.includes(term)) && stateOk && ctxOk && extraOk;
         row.classList.toggle("is-hidden", !show);
         if (show) visible += 1;
       });
@@ -96,6 +103,10 @@ const SIAL = (() => {
     }
     [search, status, context].filter(Boolean).forEach((control) => {
       control.addEventListener(control.tagName === "INPUT" ? "input" : "change", filterRows);
+    });
+    (config.extraFilters || []).forEach((filter) => {
+      const control = qs(filter.select);
+      if (control) control.addEventListener("change", filterRows);
     });
     filterRows();
   }

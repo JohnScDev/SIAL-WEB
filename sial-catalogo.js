@@ -361,6 +361,26 @@ const SIALCatalog = (() => {
       tags: ["Analitica", "Disponibilidad"]
     },
     {
+      module: "transporte",
+      moduleLabel: "Transporte",
+      title: "Gestion de operaciones",
+      family: "gestion",
+      status: "base",
+      href: "Gestion%20de%20Transporte/gestion-operaciones.html",
+      description: "Listado de operaciones de vehiculos con filtros por estado operativo y destino, trazabilidad por evento y detalle lateral.",
+      tags: ["Operaciones", "Trazabilidad", "Asignacion"]
+    },
+    {
+      module: "transporte",
+      moduleLabel: "Transporte",
+      title: "Inicio de operacion",
+      family: "registro",
+      status: "base",
+      href: "Gestion%20de%20Transporte/inicio-operacion.html",
+      description: "Formulario para iniciar operacion asignando vehiculo disponible, conductor validado (licencia activa y ARL vigente), semana operativa y tipo de destino.",
+      tags: ["Operaciones", "Formulario", "Conductor", "Planificacion"]
+    },
+    {
       module: "fincas",
       moduleLabel: "Fincas",
       title: "Gestion de fincas",

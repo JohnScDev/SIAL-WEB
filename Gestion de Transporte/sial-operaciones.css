@@ -1,0 +1,5 @@
+@import url("../shared/sial-core.css");
+
+.form-card .field-note {
+  min-height: 35px;
+}
