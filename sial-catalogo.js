@@ -521,6 +521,26 @@ const SIALCatalog = (() => {
       tags: ["Maestra corta", "Puertos"]
     },
     {
+      module: "seguridad",
+      moduleLabel: "Seguridad y Trazabilidad",
+      title: "Tipos de inspeccion",
+      family: "configuracion",
+      status: "base",
+      href: "Seguridad%20y%20Trazabilidad/gestion-tipos-inspeccion.html",
+      description: "Catalogo de tipos de inspeccion para control de seguridad de contenedores en finca y puerto. Nombre unico en mayuscula sostenida.",
+      tags: ["Maestra corta", "Inspeccion", "Seguridad"]
+    },
+    {
+      module: "seguridad",
+      moduleLabel: "Seguridad y Trazabilidad",
+      title: "Tipos de evento trazabilidad",
+      family: "configuracion",
+      status: "base",
+      href: "Seguridad%20y%20Trazabilidad/gestion-tipos-evento-trazabilidad.html",
+      description: "Catalogo de eventos del flujo logistico: recepcion, inspeccion, cargue, despacho y exportacion. Incluye orden numerico opcional.",
+      tags: ["Maestra corta", "Trazabilidad", "Eventos"]
+    },
+    {
       module: "aviso-corte",
       moduleLabel: "Planeacion Aviso de Corte",
       title: "Gestion de semanas",
@@ -605,7 +625,7 @@ const SIALCatalog = (() => {
   }
 
   function render() {
-    ["libreria", "indicadores", "changelog", "errores", "autenticacion", "referencias", "fincas", "transporte", "empresas", "usuarios", "aviso-corte", "puerto"].forEach((module) => {
+    ["libreria", "indicadores", "changelog", "errores", "autenticacion", "referencias", "fincas", "transporte", "empresas", "usuarios", "aviso-corte", "puerto", "seguridad"].forEach((module) => {
       const group = qs(`[data-module-group="${module}"]`);
       if (!group) return;
       group.innerHTML = views.filter((view) => view.module === module).map(cardTemplate).join("");

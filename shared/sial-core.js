@@ -133,6 +133,17 @@
             { id: "etapas", label: "Etapas de contenedor", href: "gestion-etapas-contenedor.html" },
             { id: "puertos", label: "Gestion de puertos", href: "gestion-puertos.html" }
           ]
+        },
+        {
+          id: "seguridad",
+          label: "Seguridad y Trazabilidad",
+          icon: "",
+          folder: "Seguridad y Trazabilidad",
+          localFolder: "Seguridad y Trazabilidad",
+          views: [
+            { id: "tiposInspeccion", label: "Tipos de inspeccion", href: "gestion-tipos-inspeccion.html" },
+            { id: "tiposEvento", label: "Tipos de evento trazabilidad", href: "gestion-tipos-evento-trazabilidad.html" }
+          ]
         }
       ]
     }
