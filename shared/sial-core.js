@@ -44,11 +44,9 @@
           views: [
             { id: "referencias", label: "Gestion de referencias", href: "gestion-referencias.html" },
             { id: "clases", label: "Clases de referencias", href: "gestion-clases-referencia.html" },
-            { id: "contactos", label: "Contactos", href: "gestion-contactos.html" },
             { id: "tiposFruta", label: "Tipos de fruta", href: "gestion-tipos-fruta.html" },
             { id: "productos", label: "Productos", href: "gestion-productos.html" },
-            { id: "productosFinca", label: "Productos por finca", href: "gestion-productos-finca.html" },
-            { id: "dependencias", label: "Dependencias", href: "gestion-dependencias.html" }
+            { id: "productosFinca", label: "Productos por finca", href: "gestion-productos-finca.html" }
           ]
         },
         {
@@ -92,7 +90,9 @@
             { id: "roles", label: "Roles por empresas", href: "roles-empresa.html" },
             { id: "paramRoles", label: "Creacion de roles", href: "parametrizacion-roles.html" },
             { id: "tiposEmpresa", label: "Tipos de empresas", href: "gestion-tipos-empresa.html", folder: "Gestion de Transporte", localFolder: "Gestion de Transporte" },
-            { id: "empresaTipo", label: "Empresa + tipo", href: "relacion-empresa-tipo.html", folder: "Gestion de Transporte", localFolder: "Gestion de Transporte" }
+            { id: "empresaTipo", label: "Empresa + tipo", href: "relacion-empresa-tipo.html", folder: "Gestion de Transporte", localFolder: "Gestion de Transporte" },
+            { id: "contactos", label: "Contactos", href: "gestion-contactos.html" },
+            { id: "dependencias", label: "Dependencias", href: "gestion-dependencias.html" }
           ]
         },
         {

@@ -22,7 +22,9 @@ const SIAL = (() => {
       ["roles", "roles-empresa.html", "Roles por empresas"],
       ["paramRoles", "parametrizacion-roles.html", "Creacion de roles"],
       ["tiposEmpresa", "../Gestion%20de%20Transporte/gestion-tipos-empresa.html", "Tipos de empresas"],
-      ["empresaTipo", "../Gestion%20de%20Transporte/relacion-empresa-tipo.html", "Empresa + tipo"]
+      ["empresaTipo", "../Gestion%20de%20Transporte/relacion-empresa-tipo.html", "Empresa + tipo"],
+      ["contactos", "gestion-contactos.html", "Contactos"],
+      ["dependencias", "gestion-dependencias.html", "Dependencias"]
     ];
     nav.innerHTML = items.map(([key, href, label]) =>
       `<a class="nav-link ${key === activeKey ? "active" : ""}" href="${href}"><svg class="icon" viewBox="0 0 24 24"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg><span>${label}</span></a>`
@@ -480,5 +482,113 @@ const SIAL = (() => {
 
   const initRolePermissionMatrix = initRoleAdminPanel;
 
-  return { applyShell, initTableFilters, initDrawer, initBasicFormValidation, initCompanyRoleTransfer, initCompanyTypeAssignment, initRolePermissionMatrix, initRoleAdminPanel };
+  function initGenericForm(formSelector = "[data-generic-form]") {
+    const form = qs(formSelector);
+    if (!form) return;
+    const ok = qs("#formOk");
+    qsa("[data-uppercase]", form).forEach((input) => {
+      input.addEventListener("input", (event) => { event.target.value = event.target.value.toUpperCase(); });
+    });
+    form.addEventListener("submit", (event) => {
+      event.preventDefault();
+      let fail = false;
+      qsa("[data-required]", form).forEach((input) => {
+        const note = qs(`#${input.getAttribute("aria-describedby")}`);
+        if (note && !note.dataset.base) note.dataset.base = note.textContent;
+        const empty = !String(input.value || "").trim();
+        setFieldState(input, note, empty ? "Este campo es obligatorio." : "");
+        if (empty) fail = true;
+      });
+      qsa("[data-unique-list]", form).forEach((input) => {
+        const note = qs(`#${input.getAttribute("aria-describedby")}`);
+        const values = input.dataset.uniqueList.split("|").map((v) => v.trim().toUpperCase());
+        const duplicate = input.value && values.includes(input.value.trim().toUpperCase());
+        if (duplicate) { setFieldState(input, note, "El valor ya existe en la tabla maestra.", ""); fail = true; }
+      });
+      ok?.classList.toggle("is-hidden", fail);
+      if (!fail) {
+        ok.classList.remove("is-hidden", "notice-error");
+        ok.classList.add("notice-success");
+        ok.innerHTML = '<svg class="icon" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"></path></svg><span>Registro guardado correctamente.</span>';
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      }
+    });
+  }
+
+  function initEmbeddedForm(config = {}) {
+    const panel = qs(config.panel || "[data-inline-form-panel]");
+    const openButton = qs(config.openButton || "[data-open-inline-form]");
+    const cancelButton = qs(config.cancelButton || "[data-cancel-inline-form]");
+    const title = qs(config.title || "[data-inline-form-title]");
+    const form = panel?.querySelector("form");
+    if (!panel || !openButton) return;
+    const open = (mode = "new") => {
+      panel.classList.remove("is-hidden");
+      openButton.setAttribute("aria-expanded", "true");
+      if (title) title.textContent = mode === "edit" ? config.editTitle || "Editar registro" : config.newTitle || "Nuevo registro";
+      panel.querySelector("input:not([readonly]), select, textarea")?.focus();
+    };
+    const close = () => {
+      panel.classList.add("is-hidden");
+      openButton.setAttribute("aria-expanded", "false");
+      form?.reset();
+      openButton.focus();
+    };
+    openButton.addEventListener("click", () => open("new"));
+    cancelButton?.addEventListener("click", close);
+    qsa(config.editButtons || "[data-edit-inline]").forEach((button) => {
+      button.addEventListener("click", () => open("edit"));
+    });
+  }
+
+  function initContactForm() {
+    const form = qs("#contactForm");
+    if (!form) return;
+    const ok = qs("#formOk");
+    qsa("[data-uppercase]", form).forEach((input) => {
+      input.addEventListener("input", (event) => { event.target.value = event.target.value.toUpperCase(); });
+    });
+    const fields = [
+      ["idType", "Selecciona el tipo de identificacion.", v => Boolean(v)],
+      ["idNumber", "El numero de identificacion es obligatorio.", v => v.trim().length >= 5],
+      ["firstName", "Los nombres son obligatorios.", v => v.trim().length >= 2],
+      ["lastName", "Los apellidos son obligatorios.", v => v.trim().length >= 2],
+      ["position", "Selecciona el cargo.", v => Boolean(v)],
+      ["companyFarm", "Selecciona la empresa o finca asociada.", v => Boolean(v)],
+      ["email", "Ingresa un correo electronico valido.", v => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.trim())],
+      ["phone", "El telefono principal es obligatorio.", v => v.trim().length >= 7],
+      ["dependency", "Selecciona la dependencia.", v => Boolean(v)]
+    ];
+    form.addEventListener("submit", (event) => {
+      event.preventDefault();
+      let fail = false;
+      fields.forEach(([id, message, rule]) => {
+        const input = qs(`#${id}`);
+        const note = qs(`#${id}Note`);
+        if (note && !note.dataset.base) note.dataset.base = note.textContent;
+        const error = rule(input?.value || "") ? "" : message;
+        setFieldState(input, note, error);
+        if (error) fail = true;
+      });
+      ok?.classList.toggle("is-hidden", fail);
+      if (!fail) {
+        ok.classList.remove("is-hidden", "notice-error");
+        ok.classList.add("notice-success");
+        ok.innerHTML = '<svg class="icon" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"></path></svg><span>Contacto guardado correctamente.</span>';
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      }
+    });
+    form.addEventListener("reset", () => {
+      setTimeout(() => {
+        qsa(".is-error", form).forEach((node) => node.classList.remove("is-error"));
+        qsa(".field-note", form).forEach((note) => {
+          note.classList.remove("error", "success");
+          if (note.dataset.base) note.textContent = note.dataset.base;
+        });
+        ok?.classList.add("is-hidden");
+      }, 0);
+    });
+  }
+
+  return { applyShell, initTableFilters, initDrawer, initBasicFormValidation, initCompanyRoleTransfer, initCompanyTypeAssignment, initRolePermissionMatrix, initRoleAdminPanel, initGenericForm, initEmbeddedForm, initContactForm };
 })();

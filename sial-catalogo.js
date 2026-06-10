@@ -431,12 +431,12 @@ const SIALCatalog = (() => {
       tags: ["Maestra corta", "Clase"]
     },
     {
-      module: "referencias",
-      moduleLabel: "Referencias",
+      module: "empresas",
+      moduleLabel: "Empresa",
       title: "Contactos",
       family: "gestion",
       status: "base",
-      href: "Gestion%20de%20Fincas/gestion-contactos.html",
+      href: "Gestion%20de%20Empresas/gestion-contactos.html",
       description: "Tabla maestra de contactos administrativos y operativos con registro dedicado, validacion de correo unico y trazabilidad.",
       tags: ["Contactos", "Maestra grande", "Notificaciones"]
     },
@@ -471,12 +471,12 @@ const SIALCatalog = (() => {
       tags: ["Relacion", "Fincas", "Productos"]
     },
     {
-      module: "referencias",
-      moduleLabel: "Referencias",
+      module: "empresas",
+      moduleLabel: "Empresa",
       title: "Dependencias",
       family: "configuracion",
       status: "base",
-      href: "Gestion%20de%20Fincas/gestion-dependencias.html",
+      href: "Gestion%20de%20Empresas/gestion-dependencias.html",
       description: "Catalogo de areas o dependencias funcionales con formulario embebido, nombre unico y estado.",
       tags: ["Maestra corta", "Formulario embebido", "Dependencias"]
     },
