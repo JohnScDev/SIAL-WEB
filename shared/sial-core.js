@@ -43,7 +43,12 @@
           localFolder: "Gestion de Fincas",
           views: [
             { id: "referencias", label: "Gestion de referencias", href: "gestion-referencias.html" },
-            { id: "clases", label: "Clases de referencias", href: "gestion-clases-referencia.html" }
+            { id: "clases", label: "Clases de referencias", href: "gestion-clases-referencia.html" },
+            { id: "contactos", label: "Contactos", href: "gestion-contactos.html" },
+            { id: "tiposFruta", label: "Tipos de fruta", href: "gestion-tipos-fruta.html" },
+            { id: "productos", label: "Productos", href: "gestion-productos.html" },
+            { id: "productosFinca", label: "Productos por finca", href: "gestion-productos-finca.html" },
+            { id: "dependencias", label: "Dependencias", href: "gestion-dependencias.html" }
           ]
         },
         {
@@ -74,7 +79,6 @@
             { id: "documental", label: "Matriz documental", href: "matriz-documental-vehiculos.html" },
             { id: "disponibilidad", label: "Disponibilidad", href: "disponibilidad-operativa.html" },
             { id: "operaciones", label: "Gestion de operaciones", href: "gestion-operaciones.html" },
-            { id: "inicioOperacion", label: "Inicio de operacion", href: "inicio-operacion.html" }
           ]
         },
         {

@@ -431,6 +431,56 @@ const SIALCatalog = (() => {
       tags: ["Maestra corta", "Clase"]
     },
     {
+      module: "referencias",
+      moduleLabel: "Referencias",
+      title: "Contactos",
+      family: "gestion",
+      status: "base",
+      href: "Gestion%20de%20Fincas/gestion-contactos.html",
+      description: "Tabla maestra de contactos administrativos y operativos con registro dedicado, validacion de correo unico y trazabilidad.",
+      tags: ["Contactos", "Maestra grande", "Notificaciones"]
+    },
+    {
+      module: "referencias",
+      moduleLabel: "Referencias",
+      title: "Tipos de fruta",
+      family: "configuracion",
+      status: "base",
+      href: "Gestion%20de%20Fincas/gestion-tipos-fruta.html",
+      description: "Catalogo de tipos de fruta con formulario embebido, validacion de nombre unico y mayuscula sostenida.",
+      tags: ["Maestra corta", "Formulario embebido", "Fruta"]
+    },
+    {
+      module: "referencias",
+      moduleLabel: "Referencias",
+      title: "Productos",
+      family: "configuracion",
+      status: "base",
+      href: "Gestion%20de%20Fincas/gestion-productos.html",
+      description: "Catalogo de productos agricolas con formulario embebido, validacion de nombre unico y estado.",
+      tags: ["Maestra corta", "Formulario embebido", "Productos"]
+    },
+    {
+      module: "referencias",
+      moduleLabel: "Referencias",
+      title: "Productos por finca",
+      family: "relacion",
+      status: "base",
+      href: "Gestion%20de%20Fincas/gestion-productos-finca.html",
+      description: "Relacion N:N entre productos y fincas para identificar cultivos por ubicacion con validacion de duplicidad compuesta.",
+      tags: ["Relacion", "Fincas", "Productos"]
+    },
+    {
+      module: "referencias",
+      moduleLabel: "Referencias",
+      title: "Dependencias",
+      family: "configuracion",
+      status: "base",
+      href: "Gestion%20de%20Fincas/gestion-dependencias.html",
+      description: "Catalogo de areas o dependencias funcionales con formulario embebido, nombre unico y estado.",
+      tags: ["Maestra corta", "Formulario embebido", "Dependencias"]
+    },
+    {
       module: "puerto",
       moduleLabel: "Gestion Operaciones Puerto",
       title: "Gestion de contenedores",
