@@ -104,7 +104,8 @@
           views: [
             { id: "usuarios", label: "Gestion de usuarios", href: "gestion-usuarios.html" },
             { id: "registro", label: "Registro de usuario", href: "registro-usuario.html" },
-            { id: "edicion", label: "Editar usuario", href: "editar-usuario.html" }
+            { id: "edicion", label: "Editar usuario", href: "editar-usuario.html" },
+            { id: "permisosRol", label: "Permisos por rol", href: "gestion-permisos-rol.html" }
           ]
         },
         {
@@ -135,11 +136,11 @@
           ]
         },
         {
-          id: "seguridad",
-          label: "Seguridad y Trazabilidad",
+          id: "trazabilidad",
+          label: "Trazabilidad",
           icon: "",
-          folder: "Seguridad y Trazabilidad",
-          localFolder: "Seguridad y Trazabilidad",
+          folder: "Trazabilidad",
+          localFolder: "Trazabilidad",
           views: [
             { id: "tiposInspeccion", label: "Tipos de inspeccion", href: "gestion-tipos-inspeccion.html" },
             { id: "tiposEvento", label: "Tipos de evento trazabilidad", href: "gestion-tipos-evento-trazabilidad.html" }

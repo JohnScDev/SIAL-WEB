@@ -4,7 +4,7 @@ const SIAL = (() => {
 
   function applyShell(activeKey) {
     if (window.SIALCore?.initShell) {
-      window.SIALCore.initShell({ area: "gestion", module: "seguridad", view: activeKey || "tiposInspeccion" });
+      window.SIALCore.initShell({ area: "gestion", module: "trazabilidad", view: activeKey || "tiposInspeccion" });
       return;
     }
     window.SIALCore?.initThemeToggle?.();
