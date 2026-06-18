@@ -1,5 +1,79 @@
-@import url("../shared/sial-core.css");
+﻿@import url("../shared/sial-core.css");
 
 .form-card .field-note {
   min-height: 35px;
+}
+
+.bulk-program-card {
+  overflow: hidden;
+}
+
+.bulk-toolbar {
+  display: grid;
+  grid-template-columns: minmax(220px, 1fr) minmax(180px, .8fr) minmax(200px, .9fr) auto;
+  gap: 14px;
+  align-items: start;
+}
+
+.bulk-add-action {
+  display: flex;
+  align-items: flex-end;
+  min-height: 71px;
+}
+
+.bulk-table-wrap {
+  border-top: 1px solid var(--color-border-subtle);
+}
+
+.bulk-program-table {
+  min-width: 920px;
+}
+
+.bulk-program-table th,
+.bulk-program-table td {
+  vertical-align: middle;
+}
+
+.bulk-program-table th:nth-child(4),
+.bulk-program-table td:nth-child(4) {
+  min-width: 230px;
+}
+
+.compact-control {
+  min-width: 150px;
+}
+
+.bulk-week {
+  display: inline-flex;
+  max-width: 260px;
+  color: var(--color-text-2);
+  font-size: 12px;
+  line-height: 1.35;
+}
+
+.operation-toolbar {
+  grid-template-columns: minmax(220px, 1fr) minmax(180px, 220px) minmax(160px, 200px) minmax(170px, 210px);
+}
+
+@media (max-width: 1100px) {
+  .bulk-toolbar,
+  .operation-toolbar {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .bulk-add-action {
+    min-height: auto;
+  }
+}
+
+@media (max-width: 720px) {
+  .bulk-toolbar,
+  .operation-toolbar {
+    grid-template-columns: 1fr;
+  }
+
+  .bulk-add-action .btn,
+  .bulk-program-card .card-actions .btn {
+    width: 100%;
+  }
 }

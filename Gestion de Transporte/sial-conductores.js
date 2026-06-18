@@ -1,4 +1,4 @@
-const SIAL = (() => {
+﻿const SIAL = (() => {
   const qs = (selector, root = document) => root.querySelector(selector);
   const qsa = (selector, root = document) => Array.from(root.querySelectorAll(selector));
 
@@ -27,7 +27,7 @@ const SIAL = (() => {
       ["dashboard", "dashboard-transporte.html", "Dashboard transporte"],
       ["documental", "matriz-documental-vehiculos.html", "Matriz documental"],
       ["disponibilidad", "disponibilidad-operativa.html", "Disponibilidad"],
-      ["operaciones", "gestion-operaciones.html", "Gestion de operaciones"]
+      ["operaciones", "gestion-operaciones.html", "Programacion de vehiculos"]
     ];
     nav.innerHTML = items.map(([key, href, label]) =>
       `<a class="nav-link ${key === activeKey ? "active" : ""}" href="${href}"><svg class="icon" viewBox="0 0 24 24"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg><span>${label}</span></a>`
@@ -440,3 +440,4 @@ const SIAL = (() => {
 
   return { applyShell, initTableFilters, initDrawer, initDriverForm, initLicenseForm, initRelationForm, initEmbeddedForm, initCatalogForm, initCompanyTypeRelationForm, initVehicleForm };
 })();
+

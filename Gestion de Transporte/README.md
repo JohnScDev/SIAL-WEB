@@ -1,4 +1,4 @@
-# Propuesta UI/UX - HU Conductores
+﻿# Propuesta UI/UX - HU Conductores
 
 Fuente normativa principal: `Documento_Base_Consolidado_UIUX_Web_SIAL.md`.
 
@@ -17,6 +17,8 @@ Archivos:
 - `dashboard-transporte.html`: vista analitica ejecutiva de flota, capacidad y alertas.
 - `matriz-documental-vehiculos.html`: vista operativa de control SOAT y tecnomecanica.
 - `disponibilidad-operativa.html`: vista de monitoreo para elegibilidad y asignacion operativa.
+- `gestion-operaciones.html`: programacion de vehiculos con listado, filtros por semana/destino/estado y panel compacto de parametrizacion masiva.
+- `inicio-operacion.html`: formulario individual para programar vehiculo con fecha futura libre y semana operativa calculada.
 - `sial-conductores.css`: tokens, layout, componentes y responsive.
 - `sial-conductores.js`: interacciones locales, filtros, drawer y validaciones de prototipo.
 
@@ -30,6 +32,8 @@ Criterios aplicados:
 - Dashboard transporte: vista analitica sin formulario, orientada a KPIs, distribucion de flota, alertas y capacidad por empresa.
 - Matriz documental: vista de control operativo con filtros, semaforos de vigencia y acceso a edicion del vehiculo.
 - Disponibilidad operativa: vista de monitoreo para identificar vehiculos elegibles, condicionados o bloqueados antes de asignarlos.
+- Programacion de vehiculos: listado operativo con programacion individual y masiva, fecha futura libre, semana calculada desde la fecha programada y contrato futuro basado en scheduledAt + operationWeek derivado.
+- Reprogramacion de vehiculos: accion con icono de carrito disponible solo en operaciones finalizadas para crear una nueva programacion vinculada al registro origen.
 - No se modela eliminacion fisica; se usa activar/inactivar.
 - Auditoria visible en detalle/listados y accion de visualizar mediante drawer lateral derecho.
 - Estados incluidos: default, vacio por filtro, error inline, sin permisos, exito de validacion.
@@ -37,3 +41,6 @@ Criterios aplicados:
 - Regla de formularios adoptada: maestras cortas usan formulario embebido; maestras grandes o con reglas fuertes usan vista separada de registro/edicion.
 
 Nota: estos HTML son prototipos funcionales locales. Para produccion deben portarse a React/Next, conectarse a API real, permisos administrativos y contratos DTO.
+
+
+

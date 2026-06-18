@@ -1,4 +1,4 @@
-const SIALCatalog = (() => {
+﻿const SIALCatalog = (() => {
   const views = [
     {
       module: "libreria",
@@ -373,22 +373,22 @@ const SIALCatalog = (() => {
     {
       module: "transporte",
       moduleLabel: "Transporte",
-      title: "Gestion de operaciones",
+      title: "Programacion de vehiculos",
       family: "gestion",
-      status: "base",
+      status: "implementada",
       href: "Gestion%20de%20Transporte/gestion-operaciones.html",
-      description: "Listado de operaciones de vehiculos con filtros por estado operativo y destino, trazabilidad por evento y detalle lateral.",
-      tags: ["Operaciones", "Trazabilidad", "Asignacion"]
+      description: "Listado de programacion de vehiculos con filtros por estado, destino y semana, parametrizacion masiva y reprogramacion de vehiculos finalizados.",
+      tags: ["Programacion", "Vehiculos", "Masivo"]
     },
     {
       module: "transporte",
       moduleLabel: "Transporte",
-      title: "Inicio de operacion",
+      title: "Programar vehiculo",
       family: "registro",
-      status: "base",
+      status: "implementada",
       href: "Gestion%20de%20Transporte/inicio-operacion.html",
-      description: "Formulario para iniciar operacion asignando vehiculo disponible, conductor validado (licencia activa y ARL vigente), semana operativa y tipo de destino.",
-      tags: ["Operaciones", "Formulario", "Conductor", "Planificacion"]
+      description: "Formulario para programar vehiculo con conductor validado, fecha futura libre, semana operativa calculada y tipo de destino.",
+      tags: ["Programacion", "Formulario", "Planificacion"]
     },
     {
       module: "fincas",
@@ -725,3 +725,9 @@ const SIALCatalog = (() => {
 })();
 
 SIALCatalog.init();
+
+
+
+
+
+

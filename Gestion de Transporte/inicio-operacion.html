@@ -1,16 +1,17 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>SIAL | Inicio de operacion</title>
+  <title>SIAL | Programar vehiculo</title>
   <script>
     (function () {
       const savedTheme = localStorage.getItem("sial-theme");
       const systemDark = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
       document.documentElement.dataset.theme = savedTheme || (systemDark ? "dark" : "light");
     })();
-  </script>  <link rel="stylesheet" href="sial-operaciones.css" />
+  </script>
+  <link rel="stylesheet" href="sial-operaciones.css" />
 </head>
 <body data-view-family="registro-extenso">
   <div class="app-shell">
@@ -18,16 +19,16 @@
     <header class="header"><div class="header-left"><button class="icon-btn" aria-label="Abrir menu"><svg class="icon" viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button><label class="search"><svg class="icon" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-3.5-3.5"></path></svg><input aria-label="Busqueda principal" placeholder="Buscar..." /></label></div><div class="header-right"><button class="icon-btn theme-toggle" type="button" data-theme-toggle aria-label="Cambiar a modo oscuro" aria-pressed="false" title="Cambiar a modo oscuro"><svg class="icon theme-icon theme-icon-moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12.8A8.5 8.5 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"></path></svg><svg class="icon theme-icon theme-icon-sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2"></path><path d="M12 20v2"></path><path d="m4.93 4.93 1.41 1.41"></path><path d="m17.66 17.66 1.41 1.41"></path><path d="M2 12h2"></path><path d="M20 12h2"></path><path d="m6.34 17.66-1.41 1.41"></path><path d="m19.07 4.93-1.41 1.41"></path></svg></button><button class="icon-btn" aria-label="Notificaciones"><svg class="icon" viewBox="0 0 24 24"><path d="M15 17h5l-1.4-1.4A2 2 0 0 1 18 14.2V11a6 6 0 1 0-12 0v3.2a2 2 0 0 1-.6 1.4L4 17h5"></path><path d="M10 17a2 2 0 0 0 4 0"></path></svg></button><span class="avatar">QA</span></div></header>
     <main class="main">
       <section class="page">
-        <p class="page-eyebrow">Transporte / Operaciones / Inicio de operacion</p>
-        <div class="page-header"><div><h1 class="page-title">Inicio de operacion</h1><p class="page-subtitle">Formulario para iniciar una operacion de transporte asignando vehiculo disponible, conductor validado y programacion semanal.</p></div><a class="btn btn-secondary" href="gestion-operaciones.html">Volver a gestion</a></div>
-        <div class="notice notice-info"><svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"></circle><path d="M12 8v5"></path><path d="M12 16h.01"></path></svg><span>El sistema solo permite iniciar operacion con vehiculos en estado DISPONIBLE. El conductor debe estar activo, con licencia valida, ARL vigente y no asignado a otra operacion.</span></div>
+        <p class="page-eyebrow">Transporte / Programacion de vehiculos / Programar vehiculo</p>
+        <div class="page-header"><div><h1 class="page-title">Programar vehiculo</h1><p class="page-subtitle">Formulario para planificar una asignacion futura de vehiculo, conductor, destino y fecha operativa. La semana operativa se calcula automaticamente.</p></div><a class="btn btn-secondary" href="gestion-operaciones.html">Volver a programacion</a></div>
+        <div class="notice notice-info"><svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"></circle><path d="M12 8v5"></path><path d="M12 16h.01"></path></svg><span>El sistema solo permite programar vehiculos disponibles y conductores activos. La fecha debe ser futura para planificacion.</span></div>
         <div class="notice notice-success is-hidden" id="formOk"></div>
         <article class="card form-card">
-          <div class="form-heading"><h2>Formulario de inicio de operacion</h2><p>Asignacion de vehiculo, conductor, planificacion semanal y destino operativo.</p></div>
+          <div class="form-heading"><h2>Formulario de programacion</h2><p>Asignacion de vehiculo, conductor, fecha libre futura, semana calculada y destino operativo.</p></div>
           <div class="form-body">
             <form id="operationForm" novalidate>
               <section class="section"><h3 class="section-title">Asignacion de vehiculo</h3><div class="grid">
-                <div class="field span-3"><label class="label" for="vehicleSelect">Vehiculo <span class="required">*</span></label><select class="select" id="vehicleSelect" aria-describedby="vehicleSelectNote"><option value="">Selecciona vehiculo disponible</option><option value="TRK-421">TRK-421 (TRACTOMULA - TRANSLOGISTICA SAS)</option><option value="CAM-101">CAM-101 (CAMION - Transportes del Valle)</option><option value="TRK-422">TRK-422 (TRACTOMULA - Flota Oriente S.A.S.)</option><option value="CAM-102">CAM-102 (CAMION RIGIDO - Carga Pesada Ltda.)</option></select><div class="field-note" id="vehicleSelectNote">Solo vehiculos en estado DISPONIBLE.</div></div>
+                <div class="field span-3"><label class="label" for="vehicleSelect">Vehiculo <span class="required">*</span></label><select class="select" id="vehicleSelect" aria-describedby="vehicleSelectNote"><option value="">Selecciona vehiculo disponible</option><option value="TRK-421">TRK-421 (TRACTOMULA - TRANSLOGISTICA SAS)</option><option value="CAM-101">CAM-101 (CAMION - Transportes del Valle)</option><option value="TRK-422">TRK-422 (TRACTOMULA - Flota Oriente S.A.S.)</option><option value="CAM-102">CAM-102 (CAMION RIGIDO - Carga Pesada Ltda.)</option><option value="CMN-204">CMN-204 (CAMION - OPERADOR CARIBE SAS)</option></select><div class="field-note" id="vehicleSelectNote">Solo vehiculos en estado DISPONIBLE.</div></div>
                 <div class="field span-3"><label class="label">Placa</label><input class="input" id="plateDisplay" readonly /><div class="field-note">&nbsp;</div></div>
                 <div class="field span-3"><label class="label">Tipo</label><input class="input" id="vehicleTypeDisplay" readonly /><div class="field-note">&nbsp;</div></div>
                 <div class="field span-3"><label class="label">Capacidad pallets</label><input class="input" id="capacityDisplay" readonly /><div class="field-note">&nbsp;</div></div>
@@ -40,18 +41,18 @@
                 <div class="field span-3"><label class="label">ARL vigente hasta</label><input class="input" id="arlExpDisplay" readonly /><div class="field-note">&nbsp;</div></div>
               </div></section>
               <section class="section"><h3 class="section-title">Programacion operativa</h3><div class="grid">
-                <div class="field span-3"><label class="label" for="weekSelect">Semana operativa <span class="required">*</span></label><select class="select" id="weekSelect" aria-describedby="weekSelectNote"><option value="">Selecciona semana</option><option value="SEM-24-2026">Semana 24 - 2026 (08/06 al 14/06)</option><option value="SEM-25-2026">Semana 25 - 2026 (15/06 al 21/06)</option><option value="SEM-26-2026">Semana 26 - 2026 (22/06 al 28/06)</option></select><div class="field-note" id="weekSelectNote">Llave foranea a Semana / Aviso de Corte.</div></div>
-                <div class="field span-3"><label class="label" for="dateOperative">Fecha operativa programada <span class="required">*</span></label><input class="input" id="dateOperative" type="datetime-local" aria-describedby="dateOperativeNote" /><div class="field-note" id="dateOperativeNote">Fecha/hora programada para la operacion.</div></div>
+                <div class="field span-3"><label class="label" for="dateOperative">Fecha operativa programada <span class="required">*</span></label><input class="input" id="dateOperative" type="datetime-local" aria-describedby="dateOperativeNote" /><div class="field-note" id="dateOperativeNote">Fecha/hora futura para la programacion.</div></div>
+                <div class="field span-3"><label class="label" for="weekDisplay">Semana operativa</label><input class="input" id="weekDisplay" readonly /><input id="operationWeek" type="hidden" /><div class="field-note" id="weekDisplayNote">Se calcula desde la fecha programada.</div></div>
                 <div class="field span-3"><label class="label" for="destinationType">Tipo de destino <span class="required">*</span></label><select class="select" id="destinationType" aria-describedby="destinationTypeNote"><option value="">Selecciona tipo</option><option value="Finca">Finca</option><option value="Puerto">Puerto</option></select><div class="field-note" id="destinationTypeNote">Finca para camiones, Puerto para contenedores.</div></div>
                 <div class="field span-3"><label class="label" for="destinationSelect">Destino <span class="required">*</span></label><select class="select" id="destinationSelect" aria-describedby="destinationSelectNote"><option value="">Primero selecciona tipo de destino</option></select><div class="field-note" id="destinationSelectNote">Filtrado por tipo de destino seleccionado.</div></div>
-                <div class="field span-12"><label class="label" for="operationObservations">Observaciones</label><textarea class="textarea" id="operationObservations" rows="3" placeholder="Notas opcionales sobre la operacion..."></textarea><div class="field-note">Opcional. Texto abierto para notas operativas.</div></div>
+                <div class="field span-12"><label class="label" for="operationObservations">Observaciones</label><textarea class="textarea" id="operationObservations" rows="3" placeholder="Notas opcionales sobre la programacion..."></textarea><div class="field-note">Opcional. Texto abierto para notas operativas.</div></div>
               </div></section>
               <section class="section"><h3 class="section-title">Trazabilidad</h3><div class="grid">
-                <div class="field span-3"><label class="label">Fecha inicio</label><input class="input" value="Autogenerada (timestamp)" readonly /><div class="field-note">&nbsp;</div></div>
-                <div class="field span-3"><label class="label">Iniciado por</label><input class="input" value="Usuario actual" readonly /><div class="field-note">&nbsp;</div></div>
-                <div class="field span-6"><div class="field-note" id="formResultMessage">Los datos de auditoria se generan automaticamente al iniciar la operacion.</div></div>
+                <div class="field span-3"><label class="label">Fecha registro</label><input class="input" value="Autogenerada (timestamp)" readonly /><div class="field-note">&nbsp;</div></div>
+                <div class="field span-3"><label class="label">Programado por</label><input class="input" value="Usuario actual" readonly /><div class="field-note">&nbsp;</div></div>
+                <div class="field span-6"><div class="field-note" id="formResultMessage">Los datos de auditoria se generan automaticamente al guardar la programacion.</div></div>
               </div></section>
-              <div class="form-actions"><a class="btn btn-secondary" href="gestion-operaciones.html">Cancelar</a><button class="btn btn-secondary" type="reset">Limpiar formulario</button><button class="btn btn-primary" id="operationFormSubmit" type="submit">Iniciar operacion</button></div>
+              <div class="form-actions"><a class="btn btn-secondary" href="gestion-operaciones.html">Cancelar</a><button class="btn btn-secondary" type="reset">Limpiar formulario</button><button class="btn btn-primary" id="operationFormSubmit" type="submit">Guardar programacion</button></div>
             </form>
           </div>
         </article>

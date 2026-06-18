@@ -76,7 +76,7 @@
             { id: "dashboard", label: "Dashboard transporte", href: "dashboard-transporte.html" },
             { id: "documental", label: "Matriz documental", href: "matriz-documental-vehiculos.html" },
             { id: "disponibilidad", label: "Disponibilidad", href: "disponibilidad-operativa.html" },
-            { id: "operaciones", label: "Gestion de operaciones", href: "gestion-operaciones.html" },
+            { id: "operaciones", label: "Programacion de vehiculos", href: "gestion-operaciones.html" },
           ]
         },
         {
@@ -1607,4 +1607,5 @@ if (document.readyState === "loading") {
   SIALCore.initProfileMenu();
 }
 /* === SIAL View Motion END (reversible hook) === */
+
 
