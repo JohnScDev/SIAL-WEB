@@ -1,4 +1,4 @@
-﻿const SIALCore = (() => {
+const SIALCore = (() => {
   const qs = (selector, root = document) => root.querySelector(selector);
   const qsa = (selector, root = document) => Array.from(root.querySelectorAll(selector));
   const normalize = (value) => String(value || "").trim().toLowerCase();
@@ -26,6 +26,7 @@
     referencias: '<path d="M5 4h14v16H5z"></path><path d="M9 8h6"></path><path d="M9 12h6"></path><path d="M9 16h4"></path>',
     planeacion: '<rect x="4" y="5" width="16" height="16" rx="2"></rect><path d="M16 3v4"></path><path d="M8 3v4"></path><path d="M4 11h16"></path>',
     puerto: '<path d="M4 20h16"></path><path d="M7 20V9l5-4 5 4v11"></path><path d="M9 13h6"></path>',
+    seguridad: '<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"></path><path d="m9 12 2 2 4-5"></path>',
     indicadores: '<path d="M4 19V5"></path><path d="M4 19h16"></path><path d="M8 15l3-4 3 2 5-7"></path>',
     changelog: '<rect x="4" y="3" width="16" height="18" rx="2"></rect><path d="M8 8h8"></path><path d="M8 12h8"></path><path d="M8 16h5"></path>',
     libreria: '<path d="M4 6h16"></path><path d="M4 12h16"></path><path d="M4 18h16"></path>',
@@ -137,11 +138,12 @@
         },
         {
           id: "trazabilidad",
-          label: "Trazabilidad",
-          icon: "",
+          label: "Seguridad",
+          icon: "seguridad",
           folder: "Trazabilidad",
           localFolder: "Trazabilidad",
           views: [
+            { id: "auditoria", label: "Auditoria operativa", href: "auditoria-operativa.html" },
             { id: "tiposInspeccion", label: "Tipos de inspeccion", href: "gestion-tipos-inspeccion.html" },
             { id: "tiposEvento", label: "Tipos de evento trazabilidad", href: "gestion-tipos-evento-trazabilidad.html" }
           ]

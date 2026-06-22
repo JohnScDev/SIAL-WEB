@@ -1,4 +1,4 @@
-﻿const SIALCatalog = (() => {
+const SIALCatalog = (() => {
   const views = [
     {
       module: "libreria",
@@ -532,7 +532,17 @@
     },
     {
       module: "trazabilidad",
-      moduleLabel: "Trazabilidad",
+      moduleLabel: "Seguridad",
+      title: "Auditoria operativa",
+      family: "analitica",
+      status: "implementada",
+      href: "Trazabilidad/auditoria-operativa.html",
+      description: "Consulta read-only de eventos auditables generados por transporte web y operacion movil, con trazabilidad, evidencias, usuarios, fechas y sincronizacion.",
+      tags: ["Auditoria", "Seguridad", "Operacion movil", "Transporte"]
+    },
+    {
+      module: "trazabilidad",
+      moduleLabel: "Seguridad",
       title: "Tipos de inspeccion",
       family: "configuracion",
       status: "base",
@@ -542,7 +552,7 @@
     },
     {
       module: "trazabilidad",
-      moduleLabel: "Trazabilidad",
+      moduleLabel: "Seguridad",
       title: "Tipos de evento trazabilidad",
       family: "configuracion",
       status: "base",

@@ -1,4 +1,4 @@
-﻿# Propuesta UI/UX - HU Conductores
+# Propuesta UI/UX - HU Conductores
 
 Fuente normativa principal: `Documento_Base_Consolidado_UIUX_Web_SIAL.md`.
 
@@ -33,7 +33,7 @@ Criterios aplicados:
 - Matriz documental: vista de control operativo con filtros, semaforos de vigencia y acceso a edicion del vehiculo.
 - Disponibilidad operativa: vista de monitoreo para identificar vehiculos elegibles, condicionados o bloqueados antes de asignarlos.
 - Programacion de vehiculos: listado operativo con programacion individual y masiva, fecha futura libre, semana calculada desde la fecha programada y contrato futuro basado en scheduledAt + operationWeek derivado.
-- Reprogramacion de vehiculos: accion con icono de carrito disponible solo en operaciones finalizadas para crear una nueva programacion vinculada al registro origen.
+- Reprogramacion de vehiculos: accion con icono de transporte/reprogramacion disponible solo en operaciones finalizadas para crear una nueva programacion vinculada al registro origen.
 - No se modela eliminacion fisica; se usa activar/inactivar.
 - Auditoria visible en detalle/listados y accion de visualizar mediante drawer lateral derecho.
 - Estados incluidos: default, vacio por filtro, error inline, sin permisos, exito de validacion.
