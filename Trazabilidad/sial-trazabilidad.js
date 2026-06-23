@@ -160,7 +160,7 @@ const SIAL = (() => {
   function initAuditTrail() {
     const esc = window.SIALCore?.escapeHtml || ((value) => String(value ?? "").replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll('"', "&quot;"));
     const norm = window.SIALCore?.normalize || ((value) => String(value || "").trim().toLowerCase());
-    const controls = { search: qs("#auditSearch"), from: qs("#auditFromDate"), to: qs("#auditToDate"), source: qs("#auditSource"), event: qs("#auditEvent"), status: qs("#auditStatus"), user: qs("#auditUser"), vehicle: qs("#auditVehicle"), container: qs("#auditContainer"), operation: qs("#auditOperation") };
+    const controls = { search: qs("#auditSearch"), year: qs("#auditYear"), from: qs("#auditFromDate"), to: qs("#auditToDate"), source: qs("#auditSource"), event: qs("#auditEvent"), status: qs("#auditStatus"), user: qs("#auditUser"), vehicle: qs("#auditVehicle"), container: qs("#auditContainer"), operation: qs("#auditOperation") };
     const workbench = qs("#auditWorkbench");
     const setText = (selector, value) => { const node = qs(selector); if (node) node.textContent = String(value); };
     const emptyText = (text) => `<div class="audit-empty-list">${esc(text)}</div>`;
@@ -257,6 +257,34 @@ const SIAL = (() => {
     let selectedEventId = initialEvent?.id || "";
     let selectedEvidenceId = "";
     let viewMode = "operation";
+    let pendingFocusTarget = "";
+    const shouldReduceMotion = () => window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches;
+    const requestVisualFocus = (target) => { pendingFocusTarget = target; };
+    const moveVisualFocus = () => {
+      if (!pendingFocusTarget) return;
+      const target = pendingFocusTarget;
+      pendingFocusTarget = "";
+      window.requestAnimationFrame(() => {
+        const map = {
+          events: {
+            scroll: qs("#auditEventTimeline") || qs(".audit-review-panel"),
+            focus: qs("#auditEventTimeline .audit-tree-node.active") || qs("#auditEventTimeline .audit-tree-node") || qs(".audit-review-panel")
+          },
+          evidence: {
+            scroll: qs(".audit-evidence-panel"),
+            focus: qs("#auditEvidenceGallery .audit-photo-card") || qs("#auditEvidenceGallery .audit-photo-nav:not([disabled])") || qs(".audit-evidence-panel")
+          }
+        };
+        const region = map[target];
+        if (!region?.scroll) return;
+        region.scroll.scrollIntoView({ behavior: shouldReduceMotion() ? "auto" : "smooth", block: "start", inline: "nearest" });
+        const focusTarget = region.focus || region.scroll;
+        if (!focusTarget.hasAttribute("tabindex") && focusTarget.tabIndex < 0) focusTarget.setAttribute("tabindex", "-1");
+        focusTarget.focus({ preventScroll: true });
+        region.scroll.classList.add("audit-visual-focus");
+        window.setTimeout(() => region.scroll.classList.remove("audit-visual-focus"), 900);
+      });
+    };
 
     const values = (key) => [...new Set(auditEvents.map((event) => event[key]).filter((value) => value && value !== "--"))].sort((a, b) => String(a).localeCompare(String(b), "es"));
     const fill = (selector, options, label = (value) => value) => {
@@ -264,6 +292,15 @@ const SIAL = (() => {
       if (!select) return;
       select.insertAdjacentHTML("beforeend", options.map((value) => `<option value="${esc(value)}">${esc(label(value))}</option>`).join(""));
     };
+    const currentYear = String(new Date().getFullYear());
+    const years = [...new Set(auditEvents.map((event) => {
+      const year = new Date(event.at).getFullYear();
+      return Number.isFinite(year) ? String(year) : "";
+    }).filter(Boolean))];
+    if (!years.includes(currentYear)) years.push(currentYear);
+    years.sort((a, b) => Number(b) - Number(a));
+    fill("#auditYear", years);
+    if (controls.year) controls.year.value = currentYear;
     fill("#auditEvent", values("type"), (value) => auditEvents.find((event) => event.type === value)?.event || value);
     fill("#auditUser", values("user"));
     fill("#auditVehicle", values("vehicle"));
@@ -287,10 +324,16 @@ const SIAL = (() => {
       return true;
     };
     const selectOk = (event, control, key) => !control || control.value === "all" || String(event[key]) === control.value;
+    const yearOk = (event) => {
+      const selectedYear = controls.year?.value || "all";
+      if (selectedYear === "all") return true;
+      const date = new Date(event.at);
+      return !Number.isNaN(date.getTime()) && String(date.getFullYear()) === selectedYear;
+    };
     function filteredEvents() {
       const term = norm(controls.search?.value || "");
       const state = controls.status?.value || "all";
-      return auditEvents.filter((event) => (!term || searchText(event).includes(term)) && dateOk(event) && selectOk(event, controls.source, "source") && selectOk(event, controls.event, "type") && (state === "all" || event.severity === state || norm(event.sync).includes(state)) && selectOk(event, controls.user, "user") && selectOk(event, controls.vehicle, "vehicle") && selectOk(event, controls.container, "container") && selectOk(event, controls.operation, "operation")).sort((a, b) => eventTime(b) - eventTime(a));
+      return auditEvents.filter((event) => (!term || searchText(event).includes(term)) && yearOk(event) && dateOk(event) && selectOk(event, controls.source, "source") && selectOk(event, controls.event, "type") && (state === "all" || event.severity === state || norm(event.sync).includes(state)) && selectOk(event, controls.user, "user") && selectOk(event, controls.vehicle, "vehicle") && selectOk(event, controls.container, "container") && selectOk(event, controls.operation, "operation")).sort((a, b) => eventTime(b) - eventTime(a));
     }
 
     function renderOperationStrip(events) {
@@ -318,6 +361,7 @@ const SIAL = (() => {
         selectedEventId = group.last.id;
         selectedEvidenceId = "";
         viewMode = "operation";
+        requestVisualFocus("events");
         renderAll();
       }));
       qs(".audit-case-card.active", node)?.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "center" });
@@ -336,7 +380,7 @@ const SIAL = (() => {
         if (focus) {
           const ctx = contextFor(focus);
           queue.innerHTML = `<button class="audit-queue-item audit-event-item audit-rail-item audit-focus-rail active" type="button" data-audit-focus-operation="${esc(focus.id)}" title="${esc(focus.operation)} - ${esc(focus.event)}"><span class="audit-severity-dot ${esc(focus.severity)}"></span><strong>${esc(focus.operation)}</strong><small>${esc(tracePosition(focus))} en el arbol</small><em>${esc(evidenceCount(focus))}</em></button>`;
-          qs("[data-audit-focus-operation]", queue)?.addEventListener("click", () => { viewMode = "operation"; renderAll(); });
+          qs("[data-audit-focus-operation]", queue)?.addEventListener("click", () => { viewMode = "operation"; requestVisualFocus("events"); renderAll(); });
           return;
         }
       }
@@ -349,7 +393,7 @@ const SIAL = (() => {
         }
         return `<button class="audit-queue-item audit-event-item ${selected ? "active" : ""}" type="button" data-audit-event-card="${esc(event.id)}"><span class="audit-severity-dot ${esc(event.severity)}"></span><strong>${esc(ctx.travelOrder)}</strong><span>${esc(event.operation)} / ${esc(ctx.externalZone)}</span><div class="audit-queue-meta"><span class="status ${statusClass(event.severity)}">${esc(formatStatus(event.status))}</span><em>${esc(evidenceLabel)}</em></div></button>`;
       }).join("");
-      qsa("[data-audit-event-card]", queue).forEach((button) => button.addEventListener("click", () => { selectedEventId = button.dataset.auditEventCard; selectedEvidenceId = ""; viewMode = "operation"; renderAll(); }));
+      qsa("[data-audit-event-card]", queue).forEach((button) => button.addEventListener("click", () => { selectedEventId = button.dataset.auditEventCard; selectedEvidenceId = ""; viewMode = "operation"; requestVisualFocus("events"); renderAll(); }));
     }
 
     function renderSummary(event) {
@@ -370,7 +414,7 @@ const SIAL = (() => {
         const outsideFilter = !visible.some((visibleEvent) => visibleEvent.id === item.id);
         return `<button class="audit-flow-step audit-tree-node ${item.id === selectedEventId ? "active" : ""} ${outsideFilter ? "muted-step" : ""}" type="button" data-audit-event="${esc(item.id)}"><span class="audit-tree-index">${index + 1}</span><div class="audit-tree-copy"><strong>${esc(item.event)}</strong><small>${esc(item.operation)} / ${esc(shortDate(item.at))} / ${esc(ctx.externalZone)}</small></div><span class="status ${statusClass(item.severity)}">${esc(formatStatus(item.status))}</span></button>`;
       }).join("");
-      qsa("[data-audit-event]", node).forEach((button) => button.addEventListener("click", () => { selectedEventId = button.dataset.auditEvent; selectedEvidenceId = ""; viewMode = "evidence"; renderAll(); }));
+      qsa("[data-audit-event]", node).forEach((button) => button.addEventListener("click", () => { selectedEventId = button.dataset.auditEvent; selectedEvidenceId = ""; viewMode = "evidence"; requestVisualFocus("evidence"); renderAll(); }));
     }
 
     function renderEvidence(event) {
@@ -394,7 +438,7 @@ const SIAL = (() => {
       if (context) context.innerHTML = `<strong>${esc(event.operation)}</strong><span>${esc(tracePosition(event))} en el arbol / ${esc(ctx.externalZone)}</span>`;
       const gallery = qs("#auditEvidenceGallery");
       if (gallery) {
-        gallery.innerHTML = active ? `<div class="audit-photo-viewer"><button class="icon-btn audit-photo-nav" type="button" data-evidence-step="-1" aria-label="Foto anterior" ${activeIndex === 0 ? "disabled" : ""}><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m15 18-6-6 6-6"></path></svg></button><article class="audit-gallery-item audit-photo-card"><div class="audit-gallery-head"><span>${esc(active.type || "Evidencia")} ${activeIndex + 1} de ${evidence.length}</span><strong>${esc(titleWithDate)}</strong></div><div class="audit-gallery-photo ${esc(valueClass(active.status))}"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg><span>Foto ${activeIndex + 1}</span></div><div class="audit-gallery-copy audit-photo-detail">${observationMarkup}</div></article><button class="icon-btn audit-photo-nav" type="button" data-evidence-step="1" aria-label="Foto siguiente" ${activeIndex === evidence.length - 1 ? "disabled" : ""}><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m9 18 6-6-6-6"></path></svg></button></div>` : emptyText("El evento seleccionado no tiene evidencias fotograficas asociadas.");
+        gallery.innerHTML = active ? `<div class="audit-photo-viewer"><button class="icon-btn audit-photo-nav" type="button" data-evidence-step="-1" aria-label="Foto anterior" ${activeIndex === 0 ? "disabled" : ""}><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m15 18-6-6 6-6"></path></svg></button><article class="audit-gallery-item audit-photo-card" tabindex="-1"><div class="audit-gallery-head"><span>${esc(active.type || "Evidencia")} ${activeIndex + 1} de ${evidence.length}</span><strong>${esc(titleWithDate)}</strong></div><div class="audit-gallery-photo ${esc(valueClass(active.status))}"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg><span>Foto ${activeIndex + 1}</span></div><div class="audit-gallery-copy audit-photo-detail">${observationMarkup}</div></article><button class="icon-btn audit-photo-nav" type="button" data-evidence-step="1" aria-label="Foto siguiente" ${activeIndex === evidence.length - 1 ? "disabled" : ""}><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m9 18 6-6-6-6"></path></svg></button></div>` : emptyText("El evento seleccionado no tiene evidencias fotograficas asociadas.");
         qsa("[data-evidence-step]", gallery).forEach((button) => button.addEventListener("click", () => {
           const nextIndex = activeIndex + Number(button.dataset.evidenceStep || 0);
           if (!evidence[nextIndex]) return;
@@ -466,6 +510,7 @@ const SIAL = (() => {
       renderOperationStrip(visible);
       renderQueue(visible);
       renderSelected(visible);
+      moveVisualFocus();
     }
 
     const advancedFilters = qs("#auditAdvancedFilters");
@@ -479,10 +524,10 @@ const SIAL = (() => {
       if (label) label.textContent = willOpen ? "Ocultar filtros" : "Mas filtros";
     });
     Object.values(controls).filter(Boolean).forEach((control) => control.addEventListener(control.tagName === "INPUT" ? "input" : "change", () => { viewMode = "operation"; selectedEvidenceId = ""; renderAll(); }));
-    qs("#auditClearFilters")?.addEventListener("click", () => { Object.values(controls).filter(Boolean).forEach((control) => { control.value = control.tagName === "SELECT" ? "all" : ""; }); selectedEvidenceId = ""; viewMode = "operation"; renderAll(); controls.search?.focus(); });
+    qs("#auditClearFilters")?.addEventListener("click", () => { Object.entries(controls).filter(([, control]) => Boolean(control)).forEach(([key, control]) => { control.value = key === "year" ? currentYear : control.tagName === "SELECT" ? "all" : ""; }); selectedEvidenceId = ""; viewMode = "operation"; renderAll(); controls.search?.focus(); });
     qs("#auditOpenDetail")?.addEventListener("click", () => { const event = auditEvents.find((item) => item.id === selectedEventId); if (event) openDrawer(event); });
     qs("#auditExpandQueue")?.addEventListener("click", () => { viewMode = "list"; renderAll(); });
-    qs("#auditBackToOperation")?.addEventListener("click", () => { viewMode = "operation"; renderAll(); });
+    qs("#auditBackToOperation")?.addEventListener("click", () => { viewMode = "operation"; requestVisualFocus("events"); renderAll(); });
     qs("#auditCasesPrev")?.addEventListener("click", () => qs("#auditOperationStrip")?.scrollBy({ left: -360, behavior: "smooth" }));
     qs("#auditCasesNext")?.addEventListener("click", () => qs("#auditOperationStrip")?.scrollBy({ left: 360, behavior: "smooth" }));
     qs("#closeAuditDrawer")?.addEventListener("click", closeDrawer);

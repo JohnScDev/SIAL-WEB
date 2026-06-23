@@ -719,7 +719,7 @@
 }
 
 .audit-filter-row.primary {
-  grid-template-columns: minmax(260px, 1.5fr) repeat(3, minmax(150px, .8fr));
+  grid-template-columns: minmax(320px, 1.7fr) minmax(112px, .45fr) repeat(3, minmax(150px, .8fr));
 }
 
 .audit-filter-row.secondary {
@@ -728,6 +728,65 @@
 
 .audit-filter-row[hidden] {
   display: none;
+}
+
+.audit-search-marquee {
+  position: relative;
+  display: block;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.audit-search-marquee .input {
+  width: 100%;
+}
+
+.audit-search-hint {
+  position: absolute;
+  top: 50%;
+  left: 14px;
+  display: inline-flex;
+  width: max-content;
+  max-width: none;
+  gap: 48px;
+  color: var(--color-text-3);
+  font-size: 13px;
+  line-height: 1;
+  pointer-events: none;
+  white-space: nowrap;
+  transform: translateY(-50%);
+  transition: opacity var(--motion-duration-fast) var(--motion-ease-standard), visibility var(--motion-duration-fast) var(--motion-ease-standard);
+  animation: auditSearchHintLoop 18s linear infinite;
+}
+
+.audit-search-marquee .input:focus + .audit-search-hint,
+.audit-search-marquee .input:not(:placeholder-shown) + .audit-search-hint {
+  visibility: hidden;
+  opacity: 0;
+}
+
+.audit-year-select {
+  min-width: 0;
+}
+
+@keyframes auditSearchHintLoop {
+  from {
+    transform: translate(0, -50%);
+  }
+
+  to {
+    transform: translate(calc(-50% - 24px), -50%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .audit-search-hint {
+    animation: none;
+  }
+
+  .audit-search-hint span + span {
+    display: none;
+  }
 }
 
 .audit-workbench {
@@ -1914,4 +1973,25 @@
 .audit-photo-detail .audit-evidence-control strong,
 .audit-photo-detail .audit-evidence-control p {
   grid-column: 1 / -1;
+}
+
+.audit-review-panel,
+.audit-evidence-panel,
+#auditEventTimeline,
+#auditEvidenceGallery {
+  scroll-margin-top: 88px;
+}
+
+.audit-review-panel:focus,
+.audit-evidence-panel:focus,
+.audit-gallery-item.audit-photo-card:focus {
+  outline: 2px solid var(--color-primary-500);
+  outline-offset: 3px;
+}
+
+.audit-visual-focus {
+  outline: 2px solid color-mix(in srgb, var(--color-primary-500) 72%, transparent);
+  outline-offset: 4px;
+  border-radius: var(--radius-card);
+  transition: outline-color var(--motion-duration-base) var(--motion-ease-standard);
 }
