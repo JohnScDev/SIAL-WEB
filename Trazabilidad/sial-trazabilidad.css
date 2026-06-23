@@ -102,11 +102,6 @@
     grid-template-columns: 1fr;
   }
 }
-/* Auditoria operativa - mesa de revision */
-.audit-stats .stat strong {
-  font-size: 24px;
-}
-
 .audit-toolbar {
   grid-template-columns: minmax(260px, 1.4fr) repeat(2, minmax(145px, .72fr)) repeat(7, minmax(150px, 1fr));
 }
@@ -906,62 +901,6 @@
     justify-self: start;
   }
 }
-/* Auditoria operativa optimizada - primera seccion */
-.audit-stats {
-  align-items: stretch;
-}
-
-.audit-trend-card {
-  display: flex;
-  align-items: stretch;
-  justify-content: space-between;
-  gap: 14px;
-  min-width: 0;
-}
-
-.audit-trend-card > div:first-child {
-  min-width: 0;
-}
-
-.audit-mini-chart {
-  display: flex;
-  align-items: end;
-  gap: 5px;
-  width: 118px;
-  min-width: 118px;
-  height: 68px;
-  padding: 7px 7px 4px;
-  border: 1px solid var(--color-border-subtle);
-  border-radius: 10px;
-  background: linear-gradient(180deg, var(--color-soft-surface), var(--color-surface));
-}
-
-.audit-mini-bar {
-  display: grid;
-  grid-template-rows: 1fr auto;
-  align-items: end;
-  justify-items: center;
-  width: 100%;
-  height: 100%;
-  gap: 4px;
-}
-
-.audit-mini-bar i {
-  display: block;
-  width: 100%;
-  height: var(--bar);
-  min-height: 10px;
-  border-radius: 6px 6px 3px 3px;
-  background: linear-gradient(180deg, var(--color-primary-500), var(--color-info-main));
-}
-
-.audit-mini-bar em {
-  color: var(--color-text-3);
-  font-size: 9px;
-  font-style: normal;
-  font-weight: 700;
-}
-
 .audit-workbench .audit-evidence-panel {
   display: block;
   grid-column: auto;
@@ -1261,18 +1200,8 @@
 }
 
 @media (max-width: 760px) {
-  .audit-trend-card,
   .audit-gallery-item {
     grid-template-columns: 1fr;
-  }
-
-  .audit-trend-card {
-    flex-direction: column;
-  }
-
-  .audit-mini-chart {
-    width: 100%;
-    min-width: 0;
   }
 
   .audit-summary-grid,
@@ -1557,24 +1486,6 @@
   }
 }
 
-/* Identidad SIAL - normalizacion auditoria */
-.audit-trend-card {
-  align-items: center;
-}
-
-.audit-mini-chart {
-  height: 70px;
-  padding: 8px;
-  border: 1px solid var(--color-border-subtle);
-  border-radius: var(--radius-control);
-  background: var(--color-empty-bg);
-}
-
-.audit-mini-bar i {
-  border-radius: 5px 5px 0 0;
-  background: var(--color-primary-500);
-}
-
 .audit-case-nav,
 .audit-case-card,
 .audit-queue-panel,
@@ -1776,4 +1687,231 @@
   .audit-workbench[data-audit-mode="evidence"] .audit-summary-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
+}
+
+.audit-workbench-card,
+.audit-workbench-card .card-body,
+.audit-review-panel,
+.audit-evidence-panel {
+  min-width: 0;
+}
+
+.audit-workbench,
+.audit-workbench[data-audit-mode="list"],
+.audit-workbench[data-audit-mode="operation"],
+.audit-workbench[data-audit-mode="evidence"] {
+  grid-template-columns: minmax(320px, .74fr) minmax(0, 1.26fr);
+}
+
+.audit-case-head p {
+  max-width: 100%;
+}
+
+@media (max-width: 1180px) {
+  .audit-workbench,
+  .audit-workbench[data-audit-mode="list"],
+  .audit-workbench[data-audit-mode="operation"],
+  .audit-workbench[data-audit-mode="evidence"] {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Auditoria operativa - galeria de evidencias */
+.audit-evidence-gallery {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.audit-gallery-item,
+.audit-workbench[data-audit-mode="operation"] .audit-gallery-item,
+.audit-workbench[data-audit-mode="evidence"] .audit-gallery-item {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 10px;
+  align-content: start;
+  padding: 12px;
+}
+
+.audit-gallery-head {
+  display: grid;
+  gap: 4px;
+  min-width: 0;
+}
+
+.audit-gallery-head span,
+.audit-evidence-control span {
+  color: var(--color-text-3);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .04em;
+  line-height: 1.2;
+  text-transform: uppercase;
+}
+
+.audit-gallery-head strong {
+  color: var(--color-text);
+  font-size: 14px;
+  line-height: 1.3;
+}
+
+.audit-workbench[data-audit-mode="operation"] .audit-gallery-photo,
+.audit-workbench[data-audit-mode="evidence"] .audit-gallery-photo,
+.audit-gallery-photo {
+  min-height: 180px;
+}
+
+.audit-gallery-copy {
+  gap: 8px;
+}
+
+.audit-gallery-meta {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.audit-gallery-meta small {
+  color: var(--color-text-2);
+  font-size: 12px;
+}
+
+.audit-evidence-control {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 6px 10px;
+  padding: 10px;
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-control);
+  background: var(--color-soft-surface);
+}
+
+.audit-evidence-control span,
+.audit-evidence-control p {
+  grid-column: 1 / -1;
+}
+
+.audit-evidence-control strong {
+  min-width: 0;
+  color: var(--color-text);
+  font-size: 13px;
+  line-height: 1.35;
+}
+
+.audit-evidence-control em {
+  font-style: normal;
+}
+
+.audit-evidence-control p {
+  margin: 0;
+  color: var(--color-text-2);
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+@media (max-width: 980px) {
+  .audit-evidence-gallery {
+    grid-template-columns: 1fr;
+  }
+}
+
+.audit-workbench[data-audit-mode="operation"] .audit-evidence-gallery,
+.audit-workbench[data-audit-mode="evidence"] .audit-evidence-gallery,
+.audit-evidence-gallery {
+  display: block;
+  max-height: none;
+  overflow: visible;
+  padding-right: 0;
+}
+
+.audit-photo-viewer {
+  display: grid;
+  grid-template-columns: 42px minmax(0, 1fr) 42px;
+  gap: 10px;
+  align-items: stretch;
+}
+
+.audit-photo-nav {
+  width: 42px;
+  height: auto;
+  align-self: stretch;
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-control);
+  background: var(--color-surface);
+  color: var(--color-primary-600);
+}
+
+.audit-photo-nav:hover:not(:disabled),
+.audit-photo-nav:focus-visible:not(:disabled) {
+  background: var(--color-hover-surface);
+  border-color: var(--color-primary-500);
+}
+
+.audit-photo-nav:disabled {
+  cursor: not-allowed;
+  opacity: .38;
+}
+
+.audit-gallery-item.audit-photo-card,
+.audit-workbench[data-audit-mode="operation"] .audit-gallery-item.audit-photo-card,
+.audit-workbench[data-audit-mode="evidence"] .audit-gallery-item.audit-photo-card {
+  grid-template-columns: 1fr;
+  gap: 12px;
+  min-width: 0;
+  padding: 14px;
+}
+
+.audit-gallery-item.audit-photo-card .audit-gallery-photo,
+.audit-workbench[data-audit-mode="operation"] .audit-gallery-item.audit-photo-card .audit-gallery-photo,
+.audit-workbench[data-audit-mode="evidence"] .audit-gallery-item.audit-photo-card .audit-gallery-photo {
+  min-height: 320px;
+}
+
+@media (max-width: 760px) {
+  .audit-photo-viewer {
+    grid-template-columns: 34px minmax(0, 1fr) 34px;
+  }
+
+  .audit-photo-nav {
+    width: 34px;
+  }
+
+  .audit-gallery-item.audit-photo-card .audit-gallery-photo,
+  .audit-workbench[data-audit-mode="operation"] .audit-gallery-item.audit-photo-card .audit-gallery-photo,
+  .audit-workbench[data-audit-mode="evidence"] .audit-gallery-item.audit-photo-card .audit-gallery-photo {
+    min-height: 240px;
+  }
+}
+
+/* Auditoria operativa - detalle interno de foto */
+.audit-photo-detail {
+  align-content: start;
+  gap: 10px;
+  padding-top: 2px;
+}
+
+.audit-photo-detail .audit-evidence-control {
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 6px 10px;
+  padding: 10px 0 0;
+  border: 0;
+  border-top: 1px solid var(--color-border-subtle);
+  border-radius: 0;
+  background: transparent;
+}
+
+.audit-photo-detail .audit-evidence-control span {
+  grid-column: 1;
+  align-self: center;
+}
+
+.audit-photo-detail .audit-evidence-control em {
+  grid-column: 2;
+  grid-row: 1;
+}
+
+.audit-photo-detail .audit-evidence-control strong,
+.audit-photo-detail .audit-evidence-control p {
+  grid-column: 1 / -1;
 }

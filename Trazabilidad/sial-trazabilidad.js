@@ -171,14 +171,6 @@ const SIAL = (() => {
       "EXP-2026-0418": { travelOrder: "OV-2026-0418", externalZone: "ZE Puerto Norte", responsible: "Maria Operadora" },
       "EXP-2026-0520": { travelOrder: "OV-2026-0520", externalZone: "ZE Puerto Norte", responsible: "Jorge Auditor" }
     };
-    const noveltyTrend = [
-      { month: "Ene", value: 2 },
-      { month: "Feb", value: 3 },
-      { month: "Mar", value: 4 },
-      { month: "Abr", value: 4 },
-      { month: "May", value: 7 },
-      { month: "Jun", value: 9 }
-    ];
     const statusLabels = {
       APTO: "Apto",
       APTO_CON_NOVEDAD: "Apto con Novedad",
@@ -224,6 +216,14 @@ const SIAL = (() => {
       if (/no apto|con novedad|no capturado|error|bloque/.test(label)) return "status-inactive";
       if (/pendiente|seguimiento|revision/.test(label)) return "status-warning";
       return "status-active";
+    };
+    const matchKey = (value) => norm(formatFreeText(value)).normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9]/g, "");
+    const findControlForEvidence = (evidence, controls) => {
+      const candidates = [evidence.checkpoint, evidence.title].map(matchKey).filter(Boolean);
+      return controls.find((control) => candidates.some((candidate) => {
+        const key = matchKey(control.name);
+        return key && (key === candidate || key.includes(candidate) || candidate.includes(key));
+      }));
     };
     const formatDate = (value) => { const date = new Date(value); return Number.isNaN(date.getTime()) ? formatFreeText(value) : date.toLocaleString("es-CO", { day: "2-digit", month: "2-digit", year: "numeric", hour: "2-digit", minute: "2-digit" }); };
     const shortDate = (value) => { const date = new Date(value); return Number.isNaN(date.getTime()) ? formatFreeText(value) : date.toLocaleDateString("es-CO", { day: "2-digit", month: "2-digit", year: "numeric" }); };
@@ -291,25 +291,6 @@ const SIAL = (() => {
       const term = norm(controls.search?.value || "");
       const state = controls.status?.value || "all";
       return auditEvents.filter((event) => (!term || searchText(event).includes(term)) && dateOk(event) && selectOk(event, controls.source, "source") && selectOk(event, controls.event, "type") && (state === "all" || event.severity === state || norm(event.sync).includes(state)) && selectOk(event, controls.user, "user") && selectOk(event, controls.vehicle, "vehicle") && selectOk(event, controls.container, "container") && selectOk(event, controls.operation, "operation")).sort((a, b) => eventTime(b) - eventTime(a));
-    }
-
-    function renderStats() {
-      const groups = operationGroups();
-      const incomplete = groups.filter((group) => {
-        const last = group.events[group.events.length - 1];
-        const closed = /exportado|entrega/i.test(`${last.type} ${last.status} ${last.event}`);
-        return !closed || group.events.some(hasNovelty);
-      }).length;
-      setText("#auditIncompleteTotal", incomplete);
-      setText("#auditPendingSync", auditEvents.filter((event) => /pendiente|error|failed/i.test(event.sync)).length);
-      setText("#auditNoveltyOps", groups.filter((group) => group.events.some(hasNovelty)).length);
-      const previous = noveltyTrend[noveltyTrend.length - 2]?.value || 0;
-      const current = noveltyTrend[noveltyTrend.length - 1]?.value || 0;
-      const trend = previous ? Math.round(((current - previous) / previous) * 100) : current ? 100 : 0;
-      setText("#auditNoveltyTrendLabel", `${trend >= 0 ? "+" : ""}${trend}%`);
-      const chart = qs("#auditNoveltyTrend");
-      const max = Math.max(...noveltyTrend.map((item) => item.value), 1);
-      if (chart) chart.innerHTML = noveltyTrend.map((item) => `<span class="audit-mini-bar" style="--bar:${Math.max(16, Math.round((item.value / max) * 100))}%" title="${esc(item.month)}: ${esc(item.value)} novedades"><i></i><em>${esc(item.month)}</em></span>`).join("");
     }
 
     function renderOperationStrip(events) {
@@ -392,17 +373,20 @@ const SIAL = (() => {
       qsa("[data-audit-event]", node).forEach((button) => button.addEventListener("click", () => { selectedEventId = button.dataset.auditEvent; selectedEvidenceId = ""; viewMode = "evidence"; renderAll(); }));
     }
 
-    function renderControls(event) {
-      const controlsNode = qs("#auditControlPoints");
-      const points = (event.controls || []).map(readControl);
-      setText("#auditControlMeta", points.length ? `${points.length} puntos` : "Sin puntos");
-      if (!controlsNode) return;
-      controlsNode.innerHTML = points.length ? points.map((point) => `<article class="audit-control-item"><div><strong>${esc(point.name)}</strong><span>${esc(formatFreeText(point.observation || "Sin observacion"))}</span></div><span class="status ${valueClass(point.value)}">${esc(formatStatus(point.value))}</span>${point.hasPhoto ? "<small>Foto asociada</small>" : ""}</article>`).join("") : emptyText("Este evento no tiene puntos de control asociados.");
-    }
-
     function renderEvidence(event) {
       const evidence = (event.evidence || []).map(readEvidence);
+      const controls = (event.controls || []).map(readControl);
       const ctx = contextFor(event);
+      if (!evidence.some((item) => item.id === selectedEvidenceId)) selectedEvidenceId = evidence[0]?.id || "";
+      const activeIndex = Math.max(0, evidence.findIndex((item) => item.id === selectedEvidenceId));
+      const active = evidence[activeIndex];
+      const control = active ? findControlForEvidence(active, controls) : null;
+      const activeTitle = active?.checkpoint || active?.title || "Punto fotografiado";
+      const controlNameRepeatsTitle = control && matchKey(control.name) === matchKey(activeTitle);
+      const titleWithDate = active ? `${activeTitle} - ${active.capturedAt || "Sin fecha"}` : activeTitle;
+      const observationValue = control?.value || active?.status || "";
+      const observationText = control?.observation || active?.note || "Sin observacion registrada.";
+      const observationMarkup = active ? `<div class="audit-evidence-control audit-evidence-observation"><span>Observaciones</span>${observationValue ? `<em class="status ${esc(valueClass(observationValue))}">${esc(formatStatus(observationValue))}</em>` : ""}${control && !controlNameRepeatsTitle ? `<strong>${esc(control.name)}</strong>` : ""}<p>${esc(formatFreeText(observationText))}</p></div>` : "";
       const title = qs("#auditEvidenceTitle");
       if (title) title.textContent = event.event;
       setText("#auditEvidenceCountLabel", `${evidence.length} ${evidence.length === 1 ? "foto" : "fotos"}`);
@@ -410,7 +394,13 @@ const SIAL = (() => {
       if (context) context.innerHTML = `<strong>${esc(event.operation)}</strong><span>${esc(tracePosition(event))} en el arbol / ${esc(ctx.externalZone)}</span>`;
       const gallery = qs("#auditEvidenceGallery");
       if (gallery) {
-        gallery.innerHTML = evidence.length ? evidence.map((item, index) => `<article class="audit-gallery-item"><div class="audit-gallery-photo ${esc(valueClass(item.status))}"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg><span>Foto ${index + 1}</span></div><div class="audit-gallery-copy"><span>${esc(item.type || "Evidencia")}</span><strong>${esc(item.checkpoint || item.title || "Punto fotografiado")}</strong><small>${esc(formatStatus(item.status))} / ${esc(item.capturedAt || "Sin fecha")}</small><p>${esc(formatFreeText(item.note || "Sin comentario registrado para esta foto."))}</p></div></article>`).join("") : emptyText("El evento seleccionado no tiene evidencias fotograficas asociadas.");
+        gallery.innerHTML = active ? `<div class="audit-photo-viewer"><button class="icon-btn audit-photo-nav" type="button" data-evidence-step="-1" aria-label="Foto anterior" ${activeIndex === 0 ? "disabled" : ""}><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m15 18-6-6 6-6"></path></svg></button><article class="audit-gallery-item audit-photo-card"><div class="audit-gallery-head"><span>${esc(active.type || "Evidencia")} ${activeIndex + 1} de ${evidence.length}</span><strong>${esc(titleWithDate)}</strong></div><div class="audit-gallery-photo ${esc(valueClass(active.status))}"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg><span>Foto ${activeIndex + 1}</span></div><div class="audit-gallery-copy audit-photo-detail">${observationMarkup}</div></article><button class="icon-btn audit-photo-nav" type="button" data-evidence-step="1" aria-label="Foto siguiente" ${activeIndex === evidence.length - 1 ? "disabled" : ""}><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m9 18 6-6-6-6"></path></svg></button></div>` : emptyText("El evento seleccionado no tiene evidencias fotograficas asociadas.");
+        qsa("[data-evidence-step]", gallery).forEach((button) => button.addEventListener("click", () => {
+          const nextIndex = activeIndex + Number(button.dataset.evidenceStep || 0);
+          if (!evidence[nextIndex]) return;
+          selectedEvidenceId = evidence[nextIndex].id;
+          renderEvidence(event);
+        }));
       }
     }
 
@@ -433,10 +423,9 @@ const SIAL = (() => {
       detailButton?.removeAttribute("disabled");
       setText("#auditSelectedPhase", `${sourceLabel(selected)} / ${ctx.travelOrder}`);
       setText("#auditSelectedTitle", selected.event);
-      setText("#auditSelectedSubtitle", `${selected.operation} / ${ctx.externalZone} - ${formatFreeText(selected.summary)}`);
+      setText("#auditSelectedSubtitle", `${selected.operation} / ${ctx.externalZone}`);
       renderSummary(selected);
       renderTimeline(selected, visible);
-      renderControls(selected);
       renderEvidence(selected);
       renderComments(selected);
     }
@@ -499,7 +488,6 @@ const SIAL = (() => {
     qs("#closeAuditDrawer")?.addEventListener("click", closeDrawer);
     qs("#auditBackdrop")?.addEventListener("click", closeDrawer);
     document.addEventListener("keydown", (event) => { if (event.key === "Escape") closeDrawer(); });
-    renderStats();
     renderAll();
   }
   return { applyShell, initTableFilters, initDrawer, initEmbeddedForm, initCatalogForm, initAuditTrail };
