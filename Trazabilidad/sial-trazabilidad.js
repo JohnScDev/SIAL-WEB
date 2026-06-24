@@ -148,8 +148,8 @@ const SIAL = (() => {
   const auditEvents = [
     { id: "AUD-TR-001", source: "web", sourceLabel: "Transporte web", operation: "OP-003", vehicle: "CMN-204", container: "--", type: "PROGRAMACION", phase: "Transporte", event: "Programacion de vehiculo", user: "admin.operaciones", at: "2026-06-18T09:00:00", location: "Puerto Cartagena", status: "PROGRAMADO", severity: "warning", sync: "Sincronizado", summary: "Programacion futura generada desde Transporte.", evidence: [], controls: ["Vehiculo|Asignado|CMN-204 disponible para semana operativa.|0", "Conductor|Asignado|Carlos Mendoza asociado a la programacion.|0"], comments: ["Sistema|18/06/2026 09:00|operationWeek derivado desde scheduledAt."], novelties: [], signatures: [], trace: ["Programacion futura|18/06/2026 09:00|warning", "Semana 2026-W26|Derivada desde fecha programada|active"], meta: ["scheduledAt: 2026-06-22T09:00", "operationWeek derivado", "Origen: Transporte web"] },
     { id: "AUD-MO-001", source: "mobile", sourceLabel: "Operacion movil", operation: "EXP-2026-0418", vehicle: "TUL458", container: "SIALU1234567", type: "RECEPCION", phase: "ZE", event: "Recepcion vehiculo en ZE", user: "Maria Operadora", at: "2026-05-05T08:15:00", location: "ZE Puerto Norte", status: "RECIBIDO_EN_ZE", severity: "success", sync: "Sincronizado", summary: "Inicio de trazabilidad movil con vehiculo, contenedor y conductor confirmados.", evidence: ["EV-001|Placa vehiculo|Foto|OK|Recepcion|Maria Operadora|05/05/2026 08:13|Placa TUL458 visible.", "EV-002|Contenedor asociado|Foto|OK|Recepcion|Maria Operadora|05/05/2026 08:14|SIALU1234567 confirmado."], controls: ["Vehiculo|SIN_NOVEDAD|Placa y conductor coinciden con la programacion.|1", "Contenedor|SIN_NOVEDAD|Contenedor disponible en ZE.|1"], comments: ["Maria Operadora|05/05/2026 08:15|Recepcion sin novedades visibles."], novelties: [], signatures: [], trace: ["Recepcion ZE|05/05/2026 08:15|active", "Operacion activa|EXP-2026-0418|active"], meta: ["auditEventId: AUD-MO-001", "eventIdempotencyKey: EXP-2026-0418_zeReception", "syncStatus: SYNCED"] },
-    { id: "AUD-MO-002", source: "mobile", sourceLabel: "Operacion movil", operation: "EXP-2026-0418", vehicle: "TUL458", container: "SIALU1234567", type: "INSPECCION_EXTERNA", phase: "ZE", event: "Inspeccion externa ZE", user: "Maria Operadora", at: "2026-05-05T09:05:00", location: "ZE Puerto Norte", status: "APTO_CON_NOVEDAD", severity: "error", sync: "Pendiente de sincronizar", summary: "Inspeccion externa con novedad y evidencia pendiente por confirmar en backend.", evidence: ["EV-101|Vista frontal|Foto|OK|Vista general frontal|Maria Operadora|05/05/2026 09:01|Sin novedad visible.", "EV-102|Puertas exteriores|Foto|Con novedad|Puertas exteriores|Maria Operadora|05/05/2026 09:02|Marca superficial sobre puerta derecha.", "EV-103|Techo exterior|Foto|No capturado seguridad|Techo exterior|Maria Operadora|05/05/2026 09:03|Punto no capturado por restriccion de seguridad.", "EV-104|Sellos|Foto|Con novedad|Sellos / aseguramiento|Maria Operadora|05/05/2026 09:04|Sello requiere revision de supervisor."], controls: ["Vista general frontal|SIN_NOVEDAD|Estructura frontal conforme.|1", "Puertas exteriores|CON_NOVEDAD|Marca superficial en puerta derecha.|1", "Techo exterior|NO_CAPTURADO_SEGURIDAD|No se permite captura por condicion de seguridad.|1", "Sellos / aseguramiento|CON_NOVEDAD|Sello reportado para validacion.|1"], comments: ["Maria Operadora|05/05/2026 09:05|Se deja novedad para revision de seguridad antes del despacho.", "Supervisor ZE|05/05/2026 09:12|Priorizar validacion de sello cuando sincronice."], novelties: ["Puerta derecha marcada con novedad.", "Sello con observacion pendiente.", "Evento aun pendiente de sincronizacion."], signatures: [], trace: ["Recepcion ZE|05/05/2026 08:15|active", "Inspeccion externa|05/05/2026 09:05|warning", "Alerta automatica|APTO_CON_NOVEDAD|inactive"], meta: ["auditEventId: AUD-MO-002", "syncStatus: LOCAL_PENDING_SYNC", "Fotos requeridas: 14", "Resultado inspeccion: APTO_CON_NOVEDAD"] },
-    { id: "AUD-MO-003", source: "mobile", sourceLabel: "Operacion movil", operation: "EXP-2026-0418", vehicle: "TUL458", container: "SIALU1234567", type: "INSPECCION_INTERNA", phase: "ZE", event: "Inspeccion interna ZE", user: "Maria Operadora", at: "2026-05-05T09:45:00", location: "ZE Puerto Norte", status: "APTO", severity: "success", sync: "Sincronizado", summary: "Checklist interno completado con evidencias obligatorias principales.", evidence: ["EV-201|Vista desde puerta|Foto|OK|Vista general interna|Maria Operadora|05/05/2026 09:40|Interior limpio.", "EV-202|Piso zona media|Foto|OK|Piso zona media|Maria Operadora|05/05/2026 09:42|Sin residuos.", "EV-203|Techo interno|Foto|OK|Techo zona media|Maria Operadora|05/05/2026 09:43|Sin filtraciones."], controls: ["Pared interna izquierda|SIN_NOVEDAD|Conforme.|1", "Piso zona media|SIN_NOVEDAD|Conforme.|1", "Techo zona media|SIN_NOVEDAD|Conforme.|1"], comments: ["Maria Operadora|05/05/2026 09:45|Interior apto para continuar flujo."], novelties: [], signatures: [], trace: ["Inspeccion externa|05/05/2026 09:05|warning", "Inspeccion interna|05/05/2026 09:45|active"], meta: ["auditEventId: AUD-MO-003", "syncStatus: SYNCED", "Resultado inspeccion: APTO"] },
+    { id: "AUD-MO-002", source: "mobile", sourceLabel: "Operacion movil", operation: "EXP-2026-0418", vehicle: "TUL458", container: "SIALU1234567", type: "INSPECCION_EXTERNA", phase: "ZE", event: "Inspeccion externa ZE", user: "Maria Operadora", at: "2026-05-05T09:05:00", location: "ZE Puerto Norte", status: "APTO_CON_NOVEDAD", severity: "error", sync: "Pendiente de sincronizar", summary: "Inspeccion externa con novedad y evidencia pendiente por confirmar en backend.", evidence: ["EV-101|Fruta y empaque|Foto|OK|Fruta y empaque|Maria Operadora|05/05/2026 09:01|Fruta y empaque visibles sin novedad.", "EV-102|Empaque|Foto|Con novedad|Empaque|Maria Operadora|05/05/2026 09:02|Empaque con punto para revision.", "EV-103|Cargue a carro|Foto|OK|Cargue a carro|Maria Operadora|05/05/2026 09:03|Cargue en proceso registrado.", "EV-104|Cargue de contenedor a vehiculo|Foto|Con novedad|Cargue de contenedor a vehiculo|Maria Operadora|05/05/2026 09:04|Validar alineacion del cargue."], controls: ["Fruta y empaque|SIN_NOVEDAD|Producto y empaque visibles sin novedad.|1", "Empaque|CON_NOVEDAD|Empaque requiere revision visual.|1", "Cargue a carro|SIN_NOVEDAD|Cargue en proceso registrado.|1", "Cargue de contenedor a vehiculo|CON_NOVEDAD|Validar alineacion del cargue.|1"], comments: ["Maria Operadora|05/05/2026 09:05|Se deja novedad para revision de seguridad antes del despacho.", "Supervisor ZE|05/05/2026 09:12|Priorizar validacion de empaque y cargue cuando sincronice."], novelties: ["Empaque con revision pendiente.", "Cargue con validacion visual pendiente.", "Evento aun pendiente de sincronizacion."], signatures: [], trace: ["Recepcion ZE|05/05/2026 08:15|active", "Inspeccion externa|05/05/2026 09:05|warning", "Alerta automatica|APTO_CON_NOVEDAD|inactive"], meta: ["auditEventId: AUD-MO-002", "syncStatus: LOCAL_PENDING_SYNC", "Fotos requeridas: 14", "Resultado inspeccion: APTO_CON_NOVEDAD"] },
+    { id: "AUD-MO-003", source: "mobile", sourceLabel: "Operacion movil", operation: "EXP-2026-0418", vehicle: "TUL458", container: "SIALU1234567", type: "INSPECCION_INTERNA", phase: "ZE", event: "Inspeccion interna ZE", user: "Maria Operadora", at: "2026-05-05T09:45:00", location: "ZE Puerto Norte", status: "APTO", severity: "success", sync: "Sincronizado", summary: "Checklist interno completado con evidencias obligatorias principales.", evidence: ["EV-201|Cargue de contenedor a vehiculo|Foto|OK|Cargue de contenedor a vehiculo|Maria Operadora|05/05/2026 09:40|Cargue controlado sin novedad.", "EV-202|Limpieza de banano|Foto|OK|Limpieza de banano|Maria Operadora|05/05/2026 09:42|Producto limpio y disponible para continuar.", "EV-203|Cargue de pallet al vehiculo|Foto|OK|Cargue de pallet al vehiculo|Maria Operadora|05/05/2026 09:43|Pallet cargado y asegurado."], controls: ["Cargue de contenedor a vehiculo|SIN_NOVEDAD|Cargue controlado sin novedad.|1", "Limpieza de banano|SIN_NOVEDAD|Producto limpio y disponible para continuar.|1", "Cargue de pallet al vehiculo|SIN_NOVEDAD|Pallet cargado y asegurado.|1"], comments: ["Maria Operadora|05/05/2026 09:45|Interior apto para continuar flujo."], novelties: [], signatures: [], trace: ["Inspeccion externa|05/05/2026 09:05|warning", "Inspeccion interna|05/05/2026 09:45|active"], meta: ["auditEventId: AUD-MO-003", "syncStatus: SYNCED", "Resultado inspeccion: APTO"] },
     { id: "AUD-MO-004", source: "mobile", sourceLabel: "Operacion movil", operation: "EXP-2026-0418", vehicle: "TUL458", container: "SIALU1234567", type: "RESPONSABILIDAD", phase: "Finca", event: "Sesion de responsabilidad", user: "Laura Pineda", at: "2026-05-05T11:30:00", location: "Finca Santa Isabel", status: "RESPONSABILIDAD_CAPTURADA", severity: "success", sync: "Sincronizado", summary: "Responsables de finca y conductor registrados antes del cargue.", evidence: ["EV-301|Firma conductor|Firma|OK|Responsabilidad|Laura Pineda|05/05/2026 11:29|Firma asociada a Carlos Mendoza."], controls: ["Conductor|FIRMADO|Carlos Mendoza confirma responsabilidad.|0", "Supervisor finca|FIRMADO|Laura Pineda confirma recepcion.|0"], comments: ["Laura Pineda|05/05/2026 11:30|Responsabilidad aceptada antes de cargue."], novelties: [], signatures: ["Conductor: Carlos Mendoza", "Supervisor finca: Laura Pineda"], trace: ["Recepcion finca|05/05/2026 10:58|active", "Responsabilidad|05/05/2026 11:30|active"], meta: ["auditEventId: AUD-MO-004", "syncStatus: SYNCED", "responsibilitySessionId: RESP-0418"] },
     { id: "AUD-MO-005", source: "mobile", sourceLabel: "Operacion movil", operation: "EXP-2026-0418", vehicle: "TUL458", container: "SIALU1234567", type: "CIERRE", phase: "Finca", event: "Cierre de contenedor", user: "Laura Pineda", at: "2026-05-05T14:05:00", location: "Finca Santa Isabel", status: "CONTENEDOR_CERRADO", severity: "success", sync: "Sincronizado", summary: "Cierre con pallets cargados, sellos validados y evidencia final.", evidence: ["EV-401|Contenedor cerrado|Foto|OK|Cierre|Laura Pineda|05/05/2026 14:01|Puertas cerradas.", "EV-402|Sello final|Foto|OK|Sellos|Laura Pineda|05/05/2026 14:03|Sello validado."], controls: ["Pallets cargados|12|Cantidad confirmada.|0", "Sellos|SIN_NOVEDAD|Sello final conforme.|1"], comments: ["Laura Pineda|05/05/2026 14:05|Contenedor cerrado y listo para despacho."], novelties: [], signatures: ["Supervisor finca: Laura Pineda"], trace: ["Pallets cargados|05/05/2026 12:25|active", "Cierre contenedor|05/05/2026 14:05|active"], meta: ["auditEventId: AUD-MO-005", "Pallets cargados: 12", "syncStatus: SYNCED"] },
     { id: "AUD-MO-006", source: "mobile", sourceLabel: "Operacion movil", operation: "EXP-2026-0418", vehicle: "TUL458", container: "SIALU1234567", type: "ENTREGA", phase: "Puerto", event: "Entrega final en puerto", user: "Maria Operadora", at: "2026-05-05T18:10:00", location: "Puerto Cartagena", status: "EXPORTADO", severity: "success", sync: "Sincronizado", summary: "Entrega final y cierre de trazabilidad operativa.", evidence: ["EV-501|Recepcion puerto|Foto|OK|Entrega puerto|Maria Operadora|05/05/2026 18:08|Contenedor entregado."], controls: ["Recepcion puerto|SIN_NOVEDAD|Cierre correcto.|1"], comments: ["Maria Operadora|05/05/2026 18:10|Operacion cerrada en puerto."], novelties: [], signatures: [], trace: ["Recepcion puerto|05/05/2026 17:25|active", "Entrega final|05/05/2026 18:10|active"], meta: ["auditEventId: AUD-MO-006", "Vehiculo liberado", "Contenedor exportado"] },
@@ -194,8 +194,9 @@ const SIAL = (() => {
       SYNC_FAILED: "Error de Sincronizacion"
     };
 
+    const showProposalImages = false;
     const split = (item) => String(item || "").split("|");
-    const readEvidence = (item) => { const [id, title, type, status, checkpoint, capturedBy, capturedAt, note] = split(item); return { id, title, type, status, checkpoint, capturedBy, capturedAt, note }; };
+    const readEvidence = (item) => { const [id, title, type, status, checkpoint, capturedBy, capturedAt, note, image] = split(item); return { id, title, type, status, checkpoint, capturedBy, capturedAt, note, image: showProposalImages ? image : "" }; };
     const readControl = (item) => { const [name, value, observation, hasPhoto] = split(item); return { name, value, observation, hasPhoto: hasPhoto === "1" }; };
     const readComment = (item) => { const [author, at, text] = split(item); return { author, at, text }; };
     const readTrace = (item) => { const [title, meta, status] = split(item); return { title, meta, status }; };
@@ -448,20 +449,79 @@ const SIAL = (() => {
       qsa("[data-audit-event]", node).forEach((button) => button.addEventListener("click", () => { selectedEventId = button.dataset.auditEvent; selectedEvidenceId = ""; viewMode = "evidence"; requestVisualFocus("evidence"); renderAll(); }));
     }
 
+    function evidenceViewData(event, item) {
+      const controls = (event.controls || []).map(readControl);
+      const title = item?.checkpoint || item?.title || "Punto fotografiado";
+      const control = item ? findControlForEvidence(item, controls) : null;
+      const controlNameRepeatsTitle = control && matchKey(control.name) === matchKey(title);
+      const observationValue = control?.value || item?.status || "";
+      const observationText = control?.observation || item?.note || "Sin observacion registrada.";
+      return {
+        title,
+        date: item?.capturedAt || "Sin fecha",
+        image: item?.image || "",
+        type: item?.type || "Evidencia",
+        statusClass: valueClass(observationValue),
+        statusText: formatStatus(observationValue),
+        controlName: control && !controlNameRepeatsTitle ? control.name : "",
+        observation: formatFreeText(observationText)
+      };
+    }
+
+    function ensurePhotoLightbox() {
+      let node = qs("#auditPhotoLightbox");
+      if (node) return node;
+      document.body.insertAdjacentHTML("beforeend", `<div class="audit-photo-lightbox" id="auditPhotoLightbox" aria-hidden="true"></div>`);
+      return qs("#auditPhotoLightbox");
+    }
+
+    function closePhotoLightbox() {
+      const node = qs("#auditPhotoLightbox");
+      if (!node) return;
+      node.classList.remove("show");
+      node.setAttribute("aria-hidden", "true");
+    }
+
+    function stepPhotoLightbox(delta) {
+      const event = auditEvents.find((item) => item.id === selectedEventId);
+      if (!event) return;
+      const evidence = (event.evidence || []).map(readEvidence);
+      const currentIndex = Math.max(0, evidence.findIndex((item) => item.id === selectedEvidenceId));
+      const next = currentIndex + delta;
+      if (!evidence[next]) return;
+      selectedEvidenceId = evidence[next].id;
+      renderEvidence(event);
+      renderPhotoLightbox(event);
+    }
+
+    function renderPhotoLightbox(event) {
+      const evidence = (event.evidence || []).map(readEvidence);
+      if (!evidence.length) return;
+      if (!evidence.some((item) => item.id === selectedEvidenceId)) selectedEvidenceId = evidence[0].id;
+      const activeIndex = Math.max(0, evidence.findIndex((item) => item.id === selectedEvidenceId));
+      const active = evidence[activeIndex];
+      const detail = evidenceViewData(event, active);
+      const node = ensurePhotoLightbox();
+      if (!node) return;
+      const imageMarkup = detail.image ? `<img src="${esc(detail.image)}" alt="${esc(detail.title)}" />` : `<div class="audit-photo-lightbox-empty"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg><span>Sin imagen asociada</span></div>`;
+      node.innerHTML = `<div class="audit-photo-lightbox-scrim" data-lightbox-close></div><section class="audit-photo-lightbox-card" role="dialog" aria-modal="true" aria-labelledby="auditPhotoLightboxTitle"><button class="icon-btn audit-photo-lightbox-close" type="button" data-lightbox-close aria-label="Cerrar foto"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m18 6-12 12"></path><path d="m6 6 12 12"></path></svg></button><button class="icon-btn audit-photo-lightbox-nav prev" type="button" data-lightbox-step="-1" aria-label="Foto anterior" ${activeIndex === 0 ? "disabled" : ""}><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m15 18-6-6 6-6"></path></svg></button><figure class="audit-photo-lightbox-figure"><div class="audit-photo-lightbox-media">${imageMarkup}</div><figcaption class="audit-photo-lightbox-caption"><span>${esc(detail.type)} ${activeIndex + 1} de ${evidence.length}</span><h3 id="auditPhotoLightboxTitle">${esc(detail.title)}</h3><time>${esc(detail.date)}</time><div class="audit-photo-lightbox-observation"><strong>Observacion</strong>${detail.controlName ? `<em>${esc(detail.controlName)}</em>` : ""}<p>${esc(detail.observation)}</p></div></figcaption></figure><button class="icon-btn audit-photo-lightbox-nav next" type="button" data-lightbox-step="1" aria-label="Foto siguiente" ${activeIndex === evidence.length - 1 ? "disabled" : ""}><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m9 18 6-6-6-6"></path></svg></button></section>`;
+      node.classList.add("show");
+      node.setAttribute("aria-hidden", "false");
+      qsa("[data-lightbox-close]", node).forEach((button) => button.addEventListener("click", closePhotoLightbox));
+      qsa("[data-lightbox-step]", node).forEach((button) => button.addEventListener("click", () => stepPhotoLightbox(Number(button.dataset.lightboxStep || 0))));
+      qs(".audit-photo-lightbox-close", node)?.focus();
+    }
+
     function renderEvidence(event) {
       const evidence = (event.evidence || []).map(readEvidence);
-      const controls = (event.controls || []).map(readControl);
       const ctx = contextFor(event);
       if (!evidence.some((item) => item.id === selectedEvidenceId)) selectedEvidenceId = evidence[0]?.id || "";
       const activeIndex = Math.max(0, evidence.findIndex((item) => item.id === selectedEvidenceId));
       const active = evidence[activeIndex];
-      const control = active ? findControlForEvidence(active, controls) : null;
-      const activeTitle = active?.checkpoint || active?.title || "Punto fotografiado";
-      const controlNameRepeatsTitle = control && matchKey(control.name) === matchKey(activeTitle);
-      const titleWithDate = active ? `${activeTitle} - ${active.capturedAt || "Sin fecha"}` : activeTitle;
-      const observationValue = control?.value || active?.status || "";
-      const observationText = control?.observation || active?.note || "Sin observacion registrada.";
-      const observationMarkup = active ? `<div class="audit-evidence-control audit-evidence-observation"><span>Observaciones</span>${observationValue ? `<em class="status ${esc(valueClass(observationValue))}">${esc(formatStatus(observationValue))}</em>` : ""}${control && !controlNameRepeatsTitle ? `<strong>${esc(control.name)}</strong>` : ""}<p>${esc(formatFreeText(observationText))}</p></div>` : "";
+      const detail = active ? evidenceViewData(event, active) : null;
+      const titleWithDate = detail ? `${detail.title} - ${detail.date}` : "Punto fotografiado";
+      const observationMarkup = detail ? `<div class="audit-evidence-control audit-evidence-observation"><span>Observaciones</span><em class="status ${esc(detail.statusClass)}">${esc(detail.statusText)}</em>${detail.controlName ? `<strong>${esc(detail.controlName)}</strong>` : ""}<p>${esc(detail.observation)}</p></div>` : "";
+      const photoMarkup = detail?.image ? `<img src="${esc(detail.image)}" alt="${esc(detail.title)}" loading="lazy" />` : `<svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg><span>Foto ${activeIndex + 1}</span>`;
       const title = qs("#auditEvidenceTitle");
       if (title) title.textContent = event.event;
       setText("#auditEvidenceCountLabel", `${evidence.length} ${evidence.length === 1 ? "foto" : "fotos"}`);
@@ -469,13 +529,14 @@ const SIAL = (() => {
       if (context) context.innerHTML = `<strong>${esc(event.operation)}</strong><span>${esc(tracePosition(event))} en el arbol / ${esc(ctx.externalZone)}</span>`;
       const gallery = qs("#auditEvidenceGallery");
       if (gallery) {
-        gallery.innerHTML = active ? `<div class="audit-photo-viewer"><button class="icon-btn audit-photo-nav" type="button" data-evidence-step="-1" aria-label="Foto anterior" ${activeIndex === 0 ? "disabled" : ""}><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m15 18-6-6 6-6"></path></svg></button><article class="audit-gallery-item audit-photo-card" tabindex="-1"><div class="audit-gallery-head"><span>${esc(active.type || "Evidencia")} ${activeIndex + 1} de ${evidence.length}</span><strong>${esc(titleWithDate)}</strong></div><div class="audit-gallery-photo ${esc(valueClass(active.status))}"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg><span>Foto ${activeIndex + 1}</span></div><div class="audit-gallery-copy audit-photo-detail">${observationMarkup}</div></article><button class="icon-btn audit-photo-nav" type="button" data-evidence-step="1" aria-label="Foto siguiente" ${activeIndex === evidence.length - 1 ? "disabled" : ""}><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m9 18 6-6-6-6"></path></svg></button></div>` : emptyText("El evento seleccionado no tiene evidencias fotograficas asociadas.");
+        gallery.innerHTML = active ? `<div class="audit-photo-viewer"><button class="icon-btn audit-photo-nav" type="button" data-evidence-step="-1" aria-label="Foto anterior" ${activeIndex === 0 ? "disabled" : ""}><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m15 18-6-6 6-6"></path></svg></button><article class="audit-gallery-item audit-photo-card" tabindex="-1"><div class="audit-gallery-head"><span>${esc(detail.type)} ${activeIndex + 1} de ${evidence.length}</span><strong>${esc(titleWithDate)}</strong></div><button class="audit-gallery-photo ${esc(detail.statusClass)} ${detail.image ? "has-image" : ""}" type="button" data-open-photo-lightbox aria-label="${esc(`Ampliar foto ${detail.title}`)}">${photoMarkup}</button><div class="audit-gallery-copy audit-photo-detail">${observationMarkup}</div></article><button class="icon-btn audit-photo-nav" type="button" data-evidence-step="1" aria-label="Foto siguiente" ${activeIndex === evidence.length - 1 ? "disabled" : ""}><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m9 18 6-6-6-6"></path></svg></button></div>` : emptyText("El evento seleccionado no tiene evidencias fotograficas asociadas.");
         qsa("[data-evidence-step]", gallery).forEach((button) => button.addEventListener("click", () => {
           const nextIndex = activeIndex + Number(button.dataset.evidenceStep || 0);
           if (!evidence[nextIndex]) return;
           selectedEvidenceId = evidence[nextIndex].id;
           renderEvidence(event);
         }));
+        qs("[data-open-photo-lightbox]", gallery)?.addEventListener("click", () => renderPhotoLightbox(event));
       }
     }
 
@@ -515,7 +576,7 @@ const SIAL = (() => {
       const map = { source: sourceLabel(event), operation: event.operation, reference: refLabel(event), user: event.user, date: formatDate(event.at), location: contextFor(event).externalZone, status: formatStatus(event.status), sync: formatStatus(event.sync) };
       qsa("[data-audit-target]").forEach((node) => { node.textContent = map[node.dataset.auditTarget] || "-"; });
       qs("#auditTraceList").innerHTML = list((event.trace || []).map(readTrace), "Sin trazabilidad registrada.", (item) => `<article class="audit-timeline-item ${esc(item.status)}"><strong>${esc(item.title)}</strong><span>${esc(formatFreeText(item.meta))}</span></article>`);
-      qs("#auditEvidenceList").innerHTML = list((event.evidence || []).map(readEvidence), "Sin evidencias asociadas.", (item) => `<article class="audit-evidence-card"><div class="audit-evidence-thumb"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg></div><strong>${esc(item.title)}</strong><span>${esc(item.type)} - ${esc(formatStatus(item.status))}</span><small>${esc(formatFreeText(item.note || ""))}</small></article>`);
+      qs("#auditEvidenceList").innerHTML = list((event.evidence || []).map(readEvidence), "Sin evidencias asociadas.", (item) => `<article class="audit-evidence-card"><div class="audit-evidence-thumb ${item.image ? "has-image" : ""}">${item.image ? `<img src="${esc(item.image)}" alt="${esc(item.title || "Evidencia")}" loading="lazy" />` : `<svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>`}</div><strong>${esc(item.title)}</strong><span>${esc(item.type)} - ${esc(formatStatus(item.status))}</span><small>${esc(formatFreeText(item.note || ""))}</small></article>`);
       qs("#auditDrawerControls").innerHTML = list((event.controls || []).map(readControl), "Sin puntos de control asociados.", (point) => `<article class="audit-control-item"><div><strong>${esc(point.name)}</strong><span>${esc(formatFreeText(point.observation || "Sin observacion"))}</span></div><span class="status ${valueClass(point.value)}">${esc(formatStatus(point.value))}</span></article>`);
       qs("#auditNoveltyList").innerHTML = list([...(event.novelties || []), ...(event.comments || []).map((item) => { const comment = readComment(item); return `${comment.author}: ${comment.text}`; })], "Sin novedades registradas.", (item) => `<div class="audit-note warning">${esc(formatFreeText(item))}</div>`);
       qs("#auditSignatureList").innerHTML = list(event.signatures || [], "Sin firmas/responsabilidad asociada.", (item) => `<div class="audit-note success">${esc(formatFreeText(item))}</div>`);
@@ -564,6 +625,22 @@ const SIAL = (() => {
     qs("#closeAuditDrawer")?.addEventListener("click", closeDrawer);
     qs("#auditBackdrop")?.addEventListener("click", closeDrawer);
     document.addEventListener("keydown", (event) => { if (event.key === "Escape") closeDrawer(); });
+    document.addEventListener("keydown", (event) => {
+      const lightbox = qs("#auditPhotoLightbox");
+      if (!lightbox?.classList.contains("show")) return;
+      if (event.key === "Escape") {
+        event.preventDefault();
+        closePhotoLightbox();
+      }
+      if (event.key === "ArrowLeft") {
+        event.preventDefault();
+        stepPhotoLightbox(-1);
+      }
+      if (event.key === "ArrowRight") {
+        event.preventDefault();
+        stepPhotoLightbox(1);
+      }
+    });
     renderAll();
   }
   return { applyShell, initTableFilters, initDrawer, initEmbeddedForm, initCatalogForm, initAuditTrail };
