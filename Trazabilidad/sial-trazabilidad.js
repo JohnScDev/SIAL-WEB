@@ -160,7 +160,7 @@ const SIAL = (() => {
   function initAuditTrail() {
     const esc = window.SIALCore?.escapeHtml || ((value) => String(value ?? "").replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll('"', "&quot;"));
     const norm = window.SIALCore?.normalize || ((value) => String(value || "").trim().toLowerCase());
-    const controls = { search: qs("#auditSearch"), year: qs("#auditYear"), from: qs("#auditFromDate"), to: qs("#auditToDate"), source: qs("#auditSource"), event: qs("#auditEvent"), status: qs("#auditStatus"), user: qs("#auditUser"), vehicle: qs("#auditVehicle"), container: qs("#auditContainer"), operation: qs("#auditOperation") };
+    const controls = { search: qs("#auditSearch"), year: qs("#auditYear"), week: qs("#auditWeek"), from: qs("#auditFromDate"), to: qs("#auditToDate"), event: qs("#auditEvent"), status: qs("#auditStatus"), user: qs("#auditUser"), vehicle: qs("#auditVehicle"), container: qs("#auditContainer"), operation: qs("#auditOperation") };
     const workbench = qs("#auditWorkbench");
     const setText = (selector, value) => { const node = qs(selector); if (node) node.textContent = String(value); };
     const emptyText = (text) => `<div class="audit-empty-list">${esc(text)}</div>`;
@@ -227,6 +227,26 @@ const SIAL = (() => {
     };
     const formatDate = (value) => { const date = new Date(value); return Number.isNaN(date.getTime()) ? formatFreeText(value) : date.toLocaleString("es-CO", { day: "2-digit", month: "2-digit", year: "numeric", hour: "2-digit", minute: "2-digit" }); };
     const shortDate = (value) => { const date = new Date(value); return Number.isNaN(date.getTime()) ? formatFreeText(value) : date.toLocaleDateString("es-CO", { day: "2-digit", month: "2-digit", year: "numeric" }); };
+    const shortDayMonth = (date) => date.toLocaleDateString("es-CO", { day: "2-digit", month: "2-digit" });
+    const weekInfo = (value) => {
+      const parsed = new Date(value);
+      if (Number.isNaN(parsed.getTime())) return null;
+      const local = new Date(parsed.getFullYear(), parsed.getMonth(), parsed.getDate());
+      const day = local.getDay() || 7;
+      const start = new Date(local);
+      start.setDate(local.getDate() - day + 1);
+      const thursday = new Date(start);
+      thursday.setDate(start.getDate() + 3);
+      const firstThursday = new Date(thursday.getFullYear(), 0, 4);
+      const firstDay = firstThursday.getDay() || 7;
+      const firstMonday = new Date(firstThursday);
+      firstMonday.setDate(firstThursday.getDate() - firstDay + 1);
+      const week = Math.floor((start - firstMonday) / 604800000) + 1;
+      const end = new Date(start);
+      end.setDate(start.getDate() + 6);
+      const year = thursday.getFullYear();
+      return { key: `${year}-W${String(week).padStart(2, "0")}`, label: `Semana ${week} - ${year} (${shortDayMonth(start)} - ${shortDayMonth(end)})`, start: start.getTime() };
+    };
     const sourceLabel = (event) => event.sourceLabel || (event.source === "web" ? "Transporte web" : "Operacion movil");
     const contextFor = (event) => {
       const base = operationContext[event.operation] || {};
@@ -301,6 +321,12 @@ const SIAL = (() => {
     years.sort((a, b) => Number(b) - Number(a));
     fill("#auditYear", years);
     if (controls.year) controls.year.value = currentYear;
+    const weekOptions = Object.values(auditEvents.reduce((acc, event) => {
+      const info = weekInfo(event.at);
+      if (info) acc[info.key] = info;
+      return acc;
+    }, {})).sort((a, b) => b.start - a.start);
+    fill("#auditWeek", weekOptions.map((item) => item.key), (key) => weekOptions.find((item) => item.key === key)?.label || key);
     fill("#auditEvent", values("type"), (value) => auditEvents.find((event) => event.type === value)?.event || value);
     fill("#auditUser", values("user"));
     fill("#auditVehicle", values("vehicle"));
@@ -330,10 +356,15 @@ const SIAL = (() => {
       const date = new Date(event.at);
       return !Number.isNaN(date.getTime()) && String(date.getFullYear()) === selectedYear;
     };
+    const weekOk = (event) => {
+      const selectedWeek = controls.week?.value || "all";
+      if (selectedWeek === "all") return true;
+      return weekInfo(event.at)?.key === selectedWeek;
+    };
     function filteredEvents() {
       const term = norm(controls.search?.value || "");
       const state = controls.status?.value || "all";
-      return auditEvents.filter((event) => (!term || searchText(event).includes(term)) && yearOk(event) && dateOk(event) && selectOk(event, controls.source, "source") && selectOk(event, controls.event, "type") && (state === "all" || event.severity === state || norm(event.sync).includes(state)) && selectOk(event, controls.user, "user") && selectOk(event, controls.vehicle, "vehicle") && selectOk(event, controls.container, "container") && selectOk(event, controls.operation, "operation")).sort((a, b) => eventTime(b) - eventTime(a));
+      return auditEvents.filter((event) => (!term || searchText(event).includes(term)) && yearOk(event) && weekOk(event) && dateOk(event) && selectOk(event, controls.event, "type") && (state === "all" || event.severity === state || norm(event.sync).includes(state)) && selectOk(event, controls.user, "user") && selectOk(event, controls.vehicle, "vehicle") && selectOk(event, controls.container, "container") && selectOk(event, controls.operation, "operation")).sort((a, b) => eventTime(b) - eventTime(a));
     }
 
     function renderOperationStrip(events) {
@@ -353,7 +384,7 @@ const SIAL = (() => {
         const syncPending = group.events.some((event) => /pendiente|error|failed/i.test(event.sync));
         const status = observed ? "Con Novedad" : syncPending ? "Pendiente Sync" : formatStatus(group.last.status);
         const css = observed ? "status-inactive" : syncPending ? "status-warning" : statusClass(group.last.severity);
-        return `<button class="audit-case-card ${current ? "active" : ""}" type="button" data-audit-operation="${esc(group.operation)}"><span class="audit-case-order">${esc(ctx.travelOrder)}</span><strong>${esc(group.operation)}</strong><small>${esc(ctx.externalZone)}</small><div><span class="status ${css}">${esc(status)}</span><em>${esc(group.events.length)} eventos / ${esc(evidences)} evidencias</em></div></button>`;
+        return `<button class="audit-case-card ${current ? "active" : ""}" type="button" data-audit-operation="${esc(group.operation)}" aria-label="${esc(`${ctx.travelOrder} ${group.operation}. ${status}. ${group.events.length} eventos y ${evidences} evidencias`)}"><span class="audit-case-status-dot ${css}" title="${esc(status)}" aria-hidden="true"></span><span class="audit-case-order">${esc(ctx.travelOrder)}</span><strong>${esc(group.operation)}</strong><small>${esc(ctx.externalZone)}</small><div><em>${esc(group.events.length)} eventos / ${esc(evidences)} evidencias</em></div></button>`;
       }).join("");
       qsa("[data-audit-operation]", node).forEach((button) => button.addEventListener("click", () => {
         const group = groups.find((item) => item.operation === button.dataset.auditOperation);
