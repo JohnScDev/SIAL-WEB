@@ -22,6 +22,7 @@ const SIALCore = (() => {
     usuarios: '<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M22 21v-2a4 4 0 0 0-3-3.87"></path>',
     empresas: '<path d="M3 21h18"></path><path d="M5 21V7l8-4v18"></path><path d="M19 21V11l-6-4"></path>',
     transporte: '<path d="M3 7h11v10H3z"></path><path d="M14 11h4l3 3v3h-7z"></path><circle cx="7" cy="18" r="2"></circle><circle cx="18" cy="18" r="2"></circle>',
+    materiales: '<path d="M21 8 12 3 3 8l9 5 9-5Z"></path><path d="M3 8v8l9 5 9-5V8"></path><path d="M12 13v8"></path>',
     fincas: '<path d="M4 20V9l8-5 8 5v11"></path><path d="M8 20v-7h8v7"></path>',
     referencias: '<path d="M5 4h14v16H5z"></path><path d="M9 8h6"></path><path d="M9 12h6"></path><path d="M9 16h4"></path>',
     planeacion: '<rect x="4" y="5" width="16" height="16" rx="2"></rect><path d="M16 3v4"></path><path d="M8 3v4"></path><path d="M4 11h16"></path>',
@@ -121,6 +122,25 @@ const SIALCore = (() => {
             { id: "cintas", label: "Gestion de cintas", href: "gestion-cintas.html" },
             { id: "validacion", label: "Validacion calendario", href: "validacion-calendario.html" },
             { id: "monitoreo", label: "Monitoreo calendario", href: "monitoreo-calendarios.html" }
+          ]
+        },
+        {
+          id: "materiales",
+          label: "Materiales y Suministros",
+          icon: "materiales",
+          folder: "Materiales y Suministros",
+          localFolder: "Materiales y Suministros",
+          views: [
+            { id: "dashboard", label: "Tablero materiales", href: "index.html" },
+            { id: "pedidos", label: "Gestion de pedidos", href: "gestion-pedidos-materiales.html" },
+            { id: "inventario", label: "Inventario por finca", href: "inventario-materiales-finca.html" },
+            { id: "pallets", label: "Inventario de pallets", href: "inventario-pallets.html" },
+            { id: "ordenes", label: "Ordenes de transporte", href: "ordenes-transporte-insumos.html" },
+            { id: "proveedores", label: "Resumen proveedores", href: "resumen-proveedores.html" },
+            { id: "entregas", label: "Seguimiento entregas", href: "seguimiento-entregas.html" },
+            { id: "materiales", label: "Gestion de materiales", href: "gestion-materiales.html" },
+            { id: "proveedoresMaster", label: "Gestion de proveedores", href: "gestion-proveedores.html" },
+            { id: "reglas", label: "Reglas documentales", href: "reglas-documentales.html" }
           ]
         },
         {

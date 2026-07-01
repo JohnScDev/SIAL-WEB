@@ -609,6 +609,106 @@ const SIALCatalog = (() => {
       href: "Gestion%20de%20Planeacion/monitoreo-calendarios.html",
       description: "Vista anual tipo calendario para monitorear semanas generadas, cintas, notas operativas y trazabilidad.",
       tags: ["Analitica", "Calendario", "Operacion"]
+    },
+    {
+      module: "materiales",
+      moduleLabel: "Materiales y Suministros",
+      title: "Tablero materiales",
+      family: "analitica",
+      status: "implementada",
+      href: "Materiales%20y%20Suministros/index.html",
+      description: "Centro orquestador para pedidos sugeridos, stock por finca, ordenes, proveedores externos, entregas y POD.",
+      tags: ["HU659", "HU662", "HU666", "Orquestador"]
+    },
+    {
+      module: "materiales",
+      moduleLabel: "Materiales y Suministros",
+      title: "Gestion de pedidos de materiales",
+      family: "gestion",
+      status: "implementada",
+      href: "Materiales%20y%20Suministros/gestion-pedidos-materiales.html",
+      description: "Pedidos sugeridos, adicionales y estandar vinculados a semana de corte, finca, stock y clasificacion documental.",
+      tags: ["HU659", "HU666", "HU667", "Pedidos"]
+    },
+    {
+      module: "materiales",
+      moduleLabel: "Materiales y Suministros",
+      title: "Inventario por finca",
+      family: "gestion",
+      status: "implementada",
+      href: "Materiales%20y%20Suministros/inventario-materiales-finca.html",
+      description: "Consulta de stock disponible por finca y material antes de confirmar pedidos o sobrepedidos.",
+      tags: ["HU662", "Stock", "Fincas"]
+    },
+    {
+      module: "materiales",
+      moduleLabel: "Materiales y Suministros",
+      title: "Inventario de pallets",
+      family: "gestion",
+      status: "implementada",
+      href: "Materiales%20y%20Suministros/inventario-pallets.html",
+      description: "Pallets completos y mochos con referencia, finca origen, cajas restantes y destino operativo.",
+      tags: ["HU559", "HU560", "Pallets"]
+    },
+    {
+      module: "materiales",
+      moduleLabel: "Materiales y Suministros",
+      title: "Ordenes de transporte de insumos",
+      family: "gestion",
+      status: "implementada",
+      href: "Materiales%20y%20Suministros/ordenes-transporte-insumos.html",
+      description: "Ordenes de transporte con documento logistico, vehiculo, conductor y notificaciones a transporte, seguridad y fincas.",
+      tags: ["HU546", "HU669", "HU670", "HU532"]
+    },
+    {
+      module: "materiales",
+      moduleLabel: "Materiales y Suministros",
+      title: "Resumen para proveedores externos",
+      family: "comunicacion",
+      status: "implementada",
+      href: "Materiales%20y%20Suministros/resumen-proveedores.html",
+      description: "Consolidacion digital por proveedor, materiales, cantidades, destinos y fechas con registro de generacion y envio.",
+      tags: ["HU668", "Proveedores", "Envio digital"]
+    },
+    {
+      module: "materiales",
+      moduleLabel: "Materiales y Suministros",
+      title: "Seguimiento de entregas y POD",
+      family: "gestion",
+      status: "implementada",
+      href: "Materiales%20y%20Suministros/seguimiento-entregas.html",
+      description: "Consulta read-only de entregas moviles, evidencia POD, firma digital y enlace contextual a Seguridad.",
+      tags: ["HU681", "HU682", "HU547", "HU607"]
+    },
+    {
+      module: "materiales",
+      moduleLabel: "Materiales y Suministros",
+      title: "Gestion de materiales",
+      family: "configuracion",
+      status: "implementada",
+      href: "Materiales%20y%20Suministros/gestion-materiales.html",
+      description: "Maestra minima de materiales usados por pedidos, inventario, ordenes y proveedores externos.",
+      tags: ["Maestra corta", "Materiales"]
+    },
+    {
+      module: "materiales",
+      moduleLabel: "Materiales y Suministros",
+      title: "Gestion de proveedores",
+      family: "configuracion",
+      status: "implementada",
+      href: "Materiales%20y%20Suministros/gestion-proveedores.html",
+      description: "Maestra minima de proveedores externos para resumenes digitales y coordinacion de cartoneras o estibaderos.",
+      tags: ["Maestra corta", "Proveedores"]
+    },
+    {
+      module: "materiales",
+      moduleLabel: "Materiales y Suministros",
+      title: "Reglas documentales",
+      family: "configuracion",
+      status: "implementada",
+      href: "Materiales%20y%20Suministros/reglas-documentales.html",
+      description: "Parametrizacion de clasificacion automatica para RPT, remision o reserva, visible en pedidos y ordenes.",
+      tags: ["HU667", "RPT", "Remision", "Reserva"]
     }
   ];
 
@@ -645,7 +745,7 @@ const SIALCatalog = (() => {
   }
 
   function render() {
-    ["libreria", "indicadores", "changelog", "errores", "autenticacion", "referencias", "fincas", "transporte", "empresas", "usuarios", "aviso-corte", "puerto", "trazabilidad"].forEach((module) => {
+    ["libreria", "indicadores", "changelog", "errores", "autenticacion", "referencias", "fincas", "transporte", "empresas", "usuarios", "aviso-corte", "materiales", "puerto", "trazabilidad"].forEach((module) => {
       const group = qs(`[data-module-group="${module}"]`);
       if (!group) return;
       group.innerHTML = views.filter((view) => view.module === module).map(cardTemplate).join("");

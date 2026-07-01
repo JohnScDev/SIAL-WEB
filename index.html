@@ -67,6 +67,10 @@
           <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="5" width="16" height="16" rx="2"></rect><path d="M16 3v4"></path><path d="M8 3v4"></path><path d="M4 11h16"></path><path d="M8 15h2"></path><path d="M13 15h3"></path></svg>
           <span>Planeacion</span>
         </a>
+        <a class="nav-link" href="#materiales" data-section-link="materiales">
+          <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 8 12 3 3 8l9 5 9-5Z"></path><path d="M3 8v8l9 5 9-5V8"></path><path d="M12 13v8"></path></svg>
+          <span>Materiales</span>
+        </a>
         <a class="nav-link" href="#puerto" data-section-link="puerto">
           <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20h16"></path><path d="M7 20V9l5-4 5 4v11"></path><path d="M9 13h6"></path></svg>
           <span>Puerto</span>
@@ -113,8 +117,8 @@
         <section class="stats" aria-label="Resumen del catalogo">
           <article class="stat">
             <label>Modulos publicados</label>
-            <strong>12</strong>
-            <span>Login, Changelog, Errores, Indicadores, Usuarios, Empresa, Transporte, Fincas, Referencias, Planeacion, Puerto y Seguridad.</span>
+            <strong>13</strong>
+            <span>Login, Changelog, Errores, Indicadores, Usuarios, Empresa, Transporte, Fincas, Referencias, Planeacion, Materiales, Puerto y Seguridad.</span>
           </article>
           <article class="stat">
             <label>Vistas enlazadas</label>
@@ -161,6 +165,7 @@
                 <option value="empresas">Empresa</option>
                 <option value="usuarios">Usuarios</option>
                 <option value="aviso-corte">Planeacion Aviso de Corte</option>
+                <option value="materiales">Materiales y Suministros</option>
                 <option value="puerto">Operaciones Puerto</option>
                 <option value="trazabilidad">Seguridad</option>
               </select>
@@ -325,6 +330,18 @@
             <a class="btn btn-primary" href="Gestion%20de%20Planeacion/index.html">Abrir modulo</a>
           </div>
           <div class="catalog-grid" data-module-group="aviso-corte"></div>
+        </section>
+
+        <section class="catalog-section" id="materiales" aria-labelledby="materialsTitle">
+          <div class="section-heading">
+            <div>
+              <p class="section-kicker">Modulo</p>
+              <h2 id="materialsTitle">Materiales y Suministros</h2>
+              <p>Pedidos, inventario por finca, pallets, ordenes de transporte, proveedores externos, entregas y POD.</p>
+            </div>
+            <a class="btn btn-primary" href="Materiales%20y%20Suministros/index.html">Abrir modulo</a>
+          </div>
+          <div class="catalog-grid" data-module-group="materiales"></div>
         </section>
 
         <section class="catalog-section" id="puerto" aria-labelledby="portTitle">
