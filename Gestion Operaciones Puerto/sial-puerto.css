@@ -1,3 +1,197 @@
 @import url("../shared/sial-core.css");
 
 /* Estilos especificos del modulo. Mantener aqui solo excepciones justificadas al core SIAL. */
+
+.container-schedule-grid {
+  grid-template-columns: minmax(240px, 320px) minmax(0, 1fr);
+  align-items: start;
+  gap: 18px 20px;
+}
+
+.container-schedule-week {
+  grid-column: 1;
+}
+
+.container-schedule-select {
+  grid-column: 2;
+}
+
+.container-schedule-observation {
+  grid-column: 1 / -1;
+}
+
+.search-select {
+  position: relative;
+  width: 100%;
+}
+
+.search-select-panel {
+  position: absolute;
+  z-index: 30;
+  top: calc(100% + 6px);
+  left: 0;
+  right: 0;
+  padding: 8px;
+  background: var(--color-surface-overlay);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-control);
+  box-shadow: var(--shadow-overlay);
+  overflow: hidden;
+}
+
+.search-select-panel.is-hidden {
+  display: none;
+}
+
+.search-select-list {
+  display: grid;
+  gap: 6px;
+  max-height: 248px;
+  overflow: auto;
+  padding-right: 2px;
+}
+
+.search-select-option {
+  width: 100%;
+  min-height: 58px;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  color: var(--color-text);
+  text-align: left;
+  background: var(--color-field-bg);
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-control);
+  cursor: pointer;
+}
+
+.search-select-option:hover {
+  background: var(--color-hover-surface);
+  border-color: var(--color-border);
+}
+
+.search-select-option strong,
+.search-select-option small {
+  display: block;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.search-select-option small {
+  margin-top: 2px;
+  color: var(--color-text-2);
+  font-size: 12px;
+}
+
+.search-select-empty {
+  padding: 14px;
+  color: var(--color-text-2);
+  background: var(--color-empty-bg);
+  border: 1px dashed var(--color-border);
+  border-radius: var(--radius-control);
+}
+
+.search-select-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 8px;
+  padding-top: 8px;
+  color: var(--color-text-2);
+  border-top: 1px solid var(--color-border-subtle);
+  font-size: 12px;
+}
+
+.search-select-pages {
+  display: flex;
+  flex: 0 0 auto;
+  gap: 6px;
+}
+
+.selected-containers {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  max-height: 118px;
+  min-height: 40px;
+  margin-top: 8px;
+  overflow: auto;
+  padding-right: 2px;
+}
+
+.selected-containers-empty {
+  width: 100%;
+  padding: 9px 12px;
+  color: var(--color-text-2);
+  background: var(--color-soft-surface);
+  border: 1px dashed var(--color-border);
+  border-radius: var(--radius-control);
+  font-size: 12px;
+}
+
+.selected-container-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  max-width: 100%;
+  min-height: 36px;
+  padding: 5px 5px 5px 10px;
+  color: var(--color-text);
+  background: var(--color-soft-surface);
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-control);
+}
+
+.selected-container-chip strong,
+.selected-container-chip small {
+  display: inline;
+}
+
+.selected-container-chip small {
+  margin-left: 6px;
+  color: var(--color-text-2);
+  font-size: 11px;
+}
+
+.selected-container-chip .icon-btn {
+  width: 28px;
+  height: 28px;
+  flex: 0 0 28px;
+}
+
+.field textarea.input {
+  min-height: 72px;
+  resize: vertical;
+}
+
+@media (max-width: 760px) {
+  .container-schedule-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .container-schedule-week,
+  .container-schedule-select,
+  .container-schedule-observation {
+    grid-column: 1;
+  }
+
+  .search-select-panel {
+    position: static;
+    margin-top: 6px;
+  }
+
+  .search-select-footer {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .search-select-pages {
+    width: 100%;
+    justify-content: space-between;
+  }
+}

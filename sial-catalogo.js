@@ -503,6 +503,16 @@ const SIALCatalog = (() => {
     {
       module: "puerto",
       moduleLabel: "Gestion Operaciones Puerto",
+      title: "Programacion de contenedores",
+      family: "gestion",
+      status: "implementada",
+      href: "Gestion%20Operaciones%20Puerto/programacion-contenedores.html",
+      description: "Parametrizacion semanal de uno o varios contenedores activos y disponibles, con selector paginado tipo SearchSelectInput, validacion contra container_process, etapa visible en tabla y listado de programaciones vigentes/finalizadas.",
+      tags: ["Programacion", "Contenedores", "SearchSelectInput"]
+    },
+    {
+      module: "puerto",
+      moduleLabel: "Gestion Operaciones Puerto",
       title: "Tipos de contenedor",
       family: "gestion",
       status: "implementada",

@@ -151,6 +151,7 @@ const SIALCore = (() => {
           localFolder: "Gestion Operaciones Puerto",
           views: [
             { id: "contenedores", label: "Gestion de contenedores", href: "gestion-contenedores.html" },
+            { id: "programacionContenedores", label: "Programacion de contenedores", href: "programacion-contenedores.html" },
             { id: "tipos", label: "Tipos de contenedor", href: "gestion-tipos-contenedor.html" },
             { id: "etapas", label: "Etapas de contenedor", href: "gestion-etapas-contenedor.html" },
             { id: "puertos", label: "Gestion de puertos", href: "gestion-puertos.html" }
