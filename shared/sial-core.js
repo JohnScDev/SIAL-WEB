@@ -1039,6 +1039,174 @@ const SIALCore = (() => {
     note.textContent = error || successText || note.dataset.base || note.textContent;
   }
 
+  function initDatePickers(config = {}) {
+    const pickers = qsa(config.selector || "[data-sial-datepicker]").filter((picker) => picker.dataset.datepickerReady !== "true");
+    if (!pickers.length) return;
+    const monthNames = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
+    const monthShort = ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"];
+    const weekdays = ["L", "M", "M", "J", "V", "S", "D"];
+    const pad = (value) => String(value).padStart(2, "0");
+    const toInputValue = (date) => `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}`;
+    const toDisplayValue = (date) => `${pad(date.getDate())}/${pad(date.getMonth() + 1)}/${date.getFullYear()}`;
+    const parseDate = (value) => {
+      const parts = String(value || "").split("-").map(Number);
+      if (parts.length !== 3 || parts.some(Number.isNaN)) return null;
+      const parsed = new Date(parts[0], parts[1] - 1, parts[2]);
+      return Number.isNaN(parsed.getTime()) ? null : parsed;
+    };
+    const sameDate = (a, b) => a && b && a.getFullYear() === b.getFullYear() && a.getMonth() === b.getMonth() && a.getDate() === b.getDate();
+    const sameMonth = (a, b) => a && b && a.getFullYear() === b.getFullYear() && a.getMonth() === b.getMonth();
+    const sameYear = (a, b) => a && b && a.getFullYear() === b.getFullYear();
+
+    pickers.forEach((picker) => {
+      picker.dataset.datepickerReady = "true";
+      const trigger = qs("[data-date-trigger]", picker);
+      const popover = qs("[data-date-popover]", picker);
+      const input = qs("[data-date-input]", picker);
+      const valueLabel = qs("[data-date-value]", picker);
+      const monthButton = qs("[data-date-month]", picker);
+      const yearButton = qs("[data-date-year]", picker);
+      const weekdaysNode = qs("[data-date-weekdays]", picker);
+      const grid = qs("[data-date-grid]", picker);
+      const selectedFromMarkup = parseDate(input?.value || picker.dataset.value);
+      let selectedDate = selectedFromMarkup;
+      let viewDate = selectedDate ? new Date(selectedDate) : new Date();
+      let mode = "day";
+
+      function syncOpen(open) {
+        picker.classList.toggle("is-open", open);
+        trigger?.setAttribute("aria-expanded", String(open));
+        if (popover) popover.hidden = !open;
+      }
+
+      function setSelected(date) {
+        selectedDate = date ? new Date(date) : null;
+        if (input) input.value = selectedDate ? toInputValue(selectedDate) : "";
+        if (valueLabel) valueLabel.textContent = selectedDate ? toDisplayValue(selectedDate) : "Selecciona fecha";
+      }
+
+      function renderHeader() {
+        const year = viewDate.getFullYear();
+        if (mode === "year") {
+          const first = year - (year % 12);
+          if (monthButton) monthButton.textContent = "Anos";
+          if (yearButton) yearButton.textContent = `${first} - ${first + 11}`;
+          return;
+        }
+        if (monthButton) monthButton.textContent = mode === "month" ? "Meses" : monthNames[viewDate.getMonth()];
+        if (yearButton) yearButton.textContent = String(year);
+      }
+
+      function renderDays() {
+        if (!grid) return;
+        const firstDay = new Date(viewDate.getFullYear(), viewDate.getMonth(), 1);
+        const offset = (firstDay.getDay() + 6) % 7;
+        const start = new Date(viewDate.getFullYear(), viewDate.getMonth(), 1 - offset);
+        const today = new Date();
+        grid.dataset.mode = "day";
+        weekdaysNode?.removeAttribute("hidden");
+        grid.innerHTML = Array.from({ length: 42 }, (_, index) => {
+          const date = new Date(start);
+          date.setDate(start.getDate() + index);
+          const outside = date.getMonth() !== viewDate.getMonth();
+          const selected = sameDate(date, selectedDate);
+          const current = sameDate(date, today);
+          return `<button class="sial-date-cell ${outside ? "is-outside" : ""} ${selected ? "is-selected" : ""} ${current ? "is-today" : ""}" type="button" data-date-day="${toInputValue(date)}" aria-pressed="${selected ? "true" : "false"}">${date.getDate()}</button>`;
+        }).join("");
+      }
+
+      function renderMonths() {
+        if (!grid) return;
+        grid.dataset.mode = "month";
+        weekdaysNode?.setAttribute("hidden", "hidden");
+        grid.innerHTML = monthShort.map((label, index) => {
+          const date = new Date(viewDate.getFullYear(), index, 1);
+          return `<button class="sial-date-cell ${sameMonth(date, selectedDate) ? "is-selected" : ""}" type="button" data-date-month-index="${index}">${label}</button>`;
+        }).join("");
+      }
+
+      function renderYears() {
+        if (!grid) return;
+        const year = viewDate.getFullYear();
+        const first = year - (year % 12);
+        grid.dataset.mode = "year";
+        weekdaysNode?.setAttribute("hidden", "hidden");
+        grid.innerHTML = Array.from({ length: 12 }, (_, index) => {
+          const date = new Date(first + index, 0, 1);
+          return `<button class="sial-date-cell ${sameYear(date, selectedDate) ? "is-selected" : ""}" type="button" data-date-year-value="${date.getFullYear()}">${date.getFullYear()}</button>`;
+        }).join("");
+      }
+
+      function render() {
+        renderHeader();
+        if (mode === "month") renderMonths();
+        else if (mode === "year") renderYears();
+        else renderDays();
+      }
+
+      weekdaysNode && (weekdaysNode.innerHTML = weekdays.map((day) => `<span>${day}</span>`).join(""));
+      setSelected(selectedDate);
+      syncOpen(picker.dataset.open === "true");
+      render();
+
+      trigger?.addEventListener("click", () => syncOpen(!picker.classList.contains("is-open")));
+      monthButton?.addEventListener("click", () => { mode = mode === "month" ? "day" : "month"; render(); });
+      yearButton?.addEventListener("click", () => { mode = mode === "year" ? "day" : "year"; render(); });
+      qs("[data-date-prev]", picker)?.addEventListener("click", () => {
+        if (mode === "year") viewDate.setFullYear(viewDate.getFullYear() - 12);
+        else if (mode === "month") viewDate.setFullYear(viewDate.getFullYear() - 1);
+        else viewDate.setMonth(viewDate.getMonth() - 1);
+        render();
+      });
+      qs("[data-date-next]", picker)?.addEventListener("click", () => {
+        if (mode === "year") viewDate.setFullYear(viewDate.getFullYear() + 12);
+        else if (mode === "month") viewDate.setFullYear(viewDate.getFullYear() + 1);
+        else viewDate.setMonth(viewDate.getMonth() + 1);
+        render();
+      });
+      grid?.addEventListener("click", (event) => {
+        const dayButton = event.target.closest("[data-date-day]");
+        const monthItem = event.target.closest("[data-date-month-index]");
+        const yearItem = event.target.closest("[data-date-year-value]");
+        if (dayButton) {
+          const date = parseDate(dayButton.dataset.dateDay);
+          if (!date) return;
+          viewDate = new Date(date);
+          setSelected(date);
+          render();
+        } else if (monthItem) {
+          viewDate.setMonth(Number(monthItem.dataset.dateMonthIndex || 0));
+          mode = "day";
+          render();
+        } else if (yearItem) {
+          viewDate.setFullYear(Number(yearItem.dataset.dateYearValue || viewDate.getFullYear()));
+          mode = "month";
+          render();
+        }
+      });
+      qs("[data-date-clear]", picker)?.addEventListener("click", () => { setSelected(null); render(); });
+      qs("[data-date-today]", picker)?.addEventListener("click", () => {
+        const today = new Date();
+        viewDate = new Date(today);
+        mode = "day";
+        setSelected(today);
+        render();
+      });
+      qs("[data-date-apply]", picker)?.addEventListener("click", () => syncOpen(false));
+    });
+
+    document.addEventListener("click", (event) => {
+      qsa(config.selector || "[data-sial-datepicker]").forEach((picker) => {
+        if (!picker.contains(event.target)) {
+          picker.classList.remove("is-open");
+          qs("[data-date-trigger]", picker)?.setAttribute("aria-expanded", "false");
+          const popover = qs("[data-date-popover]", picker);
+          if (popover) popover.hidden = true;
+        }
+      });
+    });
+  }
+
   function initTableFilters(config) {
     const rows = qsa(config.rowSelector || "tbody tr");
     const search = qs(config.search);
@@ -1606,6 +1774,7 @@ const SIALCore = (() => {
     initProfileMenu,
     navigationRegistry,
     setFieldState,
+    initDatePickers,
     initTableFilters,
     initTableExport,
     initDrawer,

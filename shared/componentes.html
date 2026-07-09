@@ -27,6 +27,10 @@
           <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"></path><path d="m13 6 6 6-6 6"></path></svg>
           <span>Acciones</span>
         </a>
+        <a class="nav-link" href="#marca-componentes">
+          <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 18c-2.2-4.2-.7-8.4 4-10 1.6-.5 3-.6 4-.4-1.4 1.6-2.5 3.3-3.3 5.1-.8 1.8-1.9 3.4-3.6 4.5-.4.3-.8.5-1.1.8Z"></path><path d="M7 6c1.9.7 3.5 1.8 4.7 3.4"></path></svg>
+          <span>Marca</span>
+        </a>
         <a class="nav-link" href="#layout">
           <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"></rect><path d="M8 4v16"></path><path d="M3 9h18"></path></svg>
           <span>Layout</span>
@@ -284,6 +288,88 @@
               <div class="notice notice-warning"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M12 8v5"></path><path d="M12 16h.01"></path></svg><span>Valida los campos obligatorios antes de continuar.</span></div>
               <div class="notice notice-error"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="m15 9-6 6"></path><path d="m9 9 6 6"></path></svg><span>No fue posible completar la accion solicitada.</span></div>
             </div>
+            <div class="sial-motion-alert-preview" aria-label="Componente piloto de alerta animada">
+              <article class="component-preview sial-motion-alert-panel">
+                <span class="preview-kicker">Piloto animado</span>
+                <strong>Alerta con icono acoplado</strong>
+                <p>El icono entra desde el borde, se acopla a una muesca lateral y deja el mensaje estable.</p>
+                <div class="sial-motion-alert sial-motion-alert-info is-animated" role="status">
+                  <span class="sial-motion-alert-icon" aria-hidden="true">
+                    <svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"></circle><path d="M12 8v5"></path><path d="M12 16h.01"></path></svg>
+                  </span>
+                  <span>Informacion contextual para decisiones de gestion.</span>
+                </div>
+                <ol class="sial-motion-alert-steps" aria-label="Secuencia de animacion">
+                  <li><span>1</span>Entra</li>
+                  <li><span>2</span>Encaja</li>
+                  <li><span>3</span>Estabiliza</li>
+                </ol>
+              </article>
+
+              <article class="component-preview sial-motion-alert-panel">
+                <span class="preview-kicker">Estados disponibles</span>
+                <div class="sial-motion-alert-stack">
+                  <div class="sial-motion-alert sial-motion-alert-success">
+                    <span class="sial-motion-alert-icon" aria-hidden="true">
+                      <svg class="icon" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"></path></svg>
+                    </span>
+                    <span>Registro guardado con trazabilidad de auditoria.</span>
+                  </div>
+                  <div class="sial-motion-alert sial-motion-alert-warning">
+                    <span class="sial-motion-alert-icon" aria-hidden="true">
+                      <svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"></circle><path d="M12 8v5"></path><path d="M12 16h.01"></path></svg>
+                    </span>
+                    <span>Valida los campos obligatorios antes de continuar.</span>
+                  </div>
+                  <div class="sial-motion-alert sial-motion-alert-error">
+                    <span class="sial-motion-alert-icon" aria-hidden="true">
+                      <svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"></circle><path d="m15 9-6 6"></path><path d="m9 9 6 6"></path></svg>
+                    </span>
+                    <span>No fue posible completar la accion solicitada.</span>
+                  </div>
+                </div>
+              </article>
+            </div>
+          </div>
+        </section>
+
+        <section class="card" id="marca-componentes" aria-labelledby="brandComponentsTitle">
+          <div class="card-header">
+            <div>
+              <h2 class="card-title" id="brandComponentsTitle">Callout de marca SIAL</h2>
+              <p class="card-subtitle">Componente visual para notas no criticas donde se quiera reemplazar la franja lateral por un marcador de banano controlado.</p>
+            </div>
+            <span class="tag">Componente nuevo</span>
+          </div>
+          <div class="card-body">
+            <div class="sial-brand-callout-grid">
+              <article class="sial-brand-callout">
+                <span class="sial-brand-callout-rail" aria-hidden="true">
+                  <svg class="sial-brand-banana" viewBox="0 0 32 32" aria-hidden="true">
+                    <path class="sial-brand-banana-fill" d="M10.3 24.6c-1.8-4.1-.6-9.4 3.1-12.9 2.2-2.1 4.9-3.3 8-3.7-1.4 2.3-2.5 4.5-3.2 6.7-.8 2.4-2.1 4.7-4.2 6.8-1.1 1.1-2.4 2.1-3.7 3.1Z"></path>
+                    <path class="sial-brand-banana-line" d="M10.3 24.6c-1.8-4.1-.6-9.4 3.1-12.9 2.2-2.1 4.9-3.3 8-3.7-1.4 2.3-2.5 4.5-3.2 6.7-.8 2.4-2.1 4.7-4.2 6.8-1.1 1.1-2.4 2.1-3.7 3.1Z"></path>
+                  </svg>
+                </span>
+                <div class="sial-brand-callout-content">
+                  <span class="section-kicker">Nota SIAL</span>
+                  <strong>Componente de marca para informacion auxiliar</strong>
+                  <p>Usarlo en mensajes de apoyo, criterios de propuesta o notas de documentacion. No reemplaza alertas funcionales, errores ni estados de riesgo.</p>
+                </div>
+              </article>
+
+              <article class="sial-brand-callout compact">
+                <span class="sial-brand-callout-rail" aria-hidden="true">
+                  <svg class="sial-brand-banana" viewBox="0 0 32 32" aria-hidden="true">
+                    <path class="sial-brand-banana-fill" d="M10.3 24.6c-1.8-4.1-.6-9.4 3.1-12.9 2.2-2.1 4.9-3.3 8-3.7-1.4 2.3-2.5 4.5-3.2 6.7-.8 2.4-2.1 4.7-4.2 6.8-1.1 1.1-2.4 2.1-3.7 3.1Z"></path>
+                    <path class="sial-brand-banana-line" d="M10.3 24.6c-1.8-4.1-.6-9.4 3.1-12.9 2.2-2.1 4.9-3.3 8-3.7-1.4 2.3-2.5 4.5-3.2 6.7-.8 2.4-2.1 4.7-4.2 6.8-1.1 1.1-2.4 2.1-3.7 3.1Z"></path>
+                  </svg>
+                </span>
+                <div class="sial-brand-callout-content">
+                  <strong>Version compacta</strong>
+                  <p>Para bloques cortos dentro de catalogos o secciones de ayuda.</p>
+                </div>
+              </article>
+            </div>
           </div>
         </section>
 
@@ -330,6 +416,56 @@
               <button class="btn btn-ghost" type="button">Cancelar</button>
               <button class="btn btn-secondary" type="button">Limpiar formulario</button>
               <button class="btn btn-primary" type="button">Guardar registro</button>
+            </div>
+          </div>
+        </section>
+
+        <section class="card" id="date-picker-sial" aria-labelledby="datePickerTitle">
+          <div class="card-header">
+            <div>
+              <h2 class="card-title" id="datePickerTitle">DatePicker SIAL</h2>
+              <p class="card-subtitle">Componente experimental para seleccionar dia, mes y ano con los colores definidos del sistema, sin reemplazar aun los campos fecha actuales.</p>
+            </div>
+            <span class="tag tag-warning">Piloto UI</span>
+          </div>
+          <div class="card-body">
+            <div class="sial-date-demo-grid">
+              <article class="component-preview sial-date-preview">
+                <span class="preview-kicker">Selector completo</span>
+                <div class="sial-date-picker" data-sial-datepicker data-open="true" data-value="2026-07-09">
+                  <label class="label" for="libraryDatePickerValue">Fecha operativa</label>
+                  <button class="sial-date-trigger" type="button" data-date-trigger aria-haspopup="dialog" aria-expanded="true" aria-controls="libraryDatePopover">
+                    <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="5" width="16" height="16" rx="2"></rect><path d="M16 3v4"></path><path d="M8 3v4"></path><path d="M4 11h16"></path></svg>
+                    <span data-date-value>09/07/2026</span>
+                    <svg class="icon sial-date-chevron" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"></path></svg>
+                  </button>
+                  <input id="libraryDatePickerValue" type="hidden" value="2026-07-09" data-date-input />
+                  <div class="sial-date-popover" id="libraryDatePopover" data-date-popover role="dialog" aria-label="Seleccionar fecha operativa">
+                    <div class="sial-date-head">
+                      <button class="icon-btn" type="button" data-date-prev aria-label="Periodo anterior"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m15 18-6-6 6-6"></path></svg></button>
+                      <div class="sial-date-period">
+                        <button type="button" data-date-month>Julio</button>
+                        <button type="button" data-date-year>2026</button>
+                      </div>
+                      <button class="icon-btn" type="button" data-date-next aria-label="Periodo siguiente"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m9 18 6-6-6-6"></path></svg></button>
+                    </div>
+                    <div class="sial-date-weekdays" data-date-weekdays aria-hidden="true"></div>
+                    <div class="sial-date-grid" data-date-grid></div>
+                    <div class="sial-date-actions">
+                      <button type="button" data-date-clear>Limpiar</button>
+                      <button type="button" data-date-today>Hoy</button>
+                      <button type="button" data-date-apply>Aplicar</button>
+                    </div>
+                  </div>
+                </div>
+              </article>
+
+              <article class="component-preview">
+                <span class="preview-kicker">Reglas de uso</span>
+                <strong>Color primario del sistema</strong>
+                <p>La seleccion, foco y acciones usan el azul SIAL para mantener consistencia con formularios, filtros y controles existentes.</p>
+                <div class="note-line"><strong>Aplicacion futura:</strong> filtros de auditoria, programacion y formularios que requieran seleccionar fecha sin depender del control nativo del navegador.</div>
+              </article>
             </div>
           </div>
         </section>
@@ -1474,6 +1610,7 @@
   <script>
     window.SIALCore?.initThemeToggle?.();
     window.SIALCore?.initDrawer?.();
+    window.SIALCore?.initDatePickers?.();
   </script>
 </body>
 </html>

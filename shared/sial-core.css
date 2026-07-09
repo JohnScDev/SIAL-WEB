@@ -1873,6 +1873,500 @@ tbody tr.state-updated {
 }
 .component-preview p, .state-panel p { margin: 0; color: var(--color-text-2); font-size: 13px; line-height: 1.5; }
 .component-preview strong { font-size: 16px; line-height: 1.35; }
+
+/* SIAL animated alert component preview */
+.sial-motion-alert-preview {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(320px, .9fr);
+  gap: 16px;
+  margin-top: 18px;
+}
+
+.sial-motion-alert-panel {
+  overflow: visible;
+}
+
+.sial-motion-alert-stack {
+  display: grid;
+  gap: 12px;
+}
+
+.sial-motion-alert {
+  --motion-alert-bg: var(--color-info-bg);
+  --motion-alert-text: var(--color-info-text);
+  --motion-alert-accent: var(--color-info-main);
+  position: relative;
+  display: flex;
+  align-items: center;
+  min-height: 46px;
+  margin-left: 18px;
+  padding: 11px 16px 11px 38px;
+  border: 1px solid var(--motion-alert-accent);
+  border-radius: var(--radius-surface);
+  background: var(--motion-alert-bg);
+  color: var(--motion-alert-text);
+  font-size: 13px;
+  line-height: 1.45;
+  isolation: isolate;
+}
+
+.sial-motion-alert::before {
+  content: "";
+  position: absolute;
+  left: -18px;
+  top: 50%;
+  z-index: -1;
+  width: 34px;
+  height: 34px;
+  border: 1px solid var(--motion-alert-accent);
+  border-right-color: transparent;
+  border-radius: var(--radius-pill);
+  background: var(--color-surface);
+  transform: translateY(-50%);
+}
+
+.sial-motion-alert-icon {
+  position: absolute;
+  left: -13px;
+  top: 50%;
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border: 1px solid var(--motion-alert-accent);
+  border-radius: var(--radius-pill);
+  background: var(--motion-alert-bg);
+  color: var(--motion-alert-accent);
+  transform: translateY(-50%);
+  box-shadow: 0 8px 18px rgba(16, 24, 40, .08);
+}
+
+.sial-motion-alert-icon .icon {
+  width: 15px;
+  height: 15px;
+  stroke-width: 2.2;
+}
+
+.sial-motion-alert-info {
+  --motion-alert-bg: var(--color-info-bg);
+  --motion-alert-text: var(--color-info-text);
+  --motion-alert-accent: var(--color-info-main);
+}
+
+.sial-motion-alert-success {
+  --motion-alert-bg: var(--color-success-bg);
+  --motion-alert-text: var(--color-success-text);
+  --motion-alert-accent: var(--color-success-main);
+}
+
+.sial-motion-alert-warning {
+  --motion-alert-bg: var(--color-warning-bg);
+  --motion-alert-text: var(--color-warning-text);
+  --motion-alert-accent: var(--color-warning-main);
+}
+
+.sial-motion-alert-error {
+  --motion-alert-bg: var(--color-error-bg);
+  --motion-alert-text: var(--color-error-text);
+  --motion-alert-accent: var(--color-error-main);
+}
+
+.sial-motion-alert.is-animated::before {
+  animation: sial-alert-notch-dock 4.8s var(--motion-ease-standard) infinite;
+}
+
+.sial-motion-alert.is-animated .sial-motion-alert-icon {
+  animation: sial-alert-icon-dock 4.8s var(--motion-ease-standard) infinite;
+}
+
+.sial-motion-alert-steps {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+.sial-motion-alert-steps li {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  padding: 8px 10px;
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-control);
+  background: var(--color-soft-surface);
+  color: var(--color-text-2);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.sial-motion-alert-steps span {
+  display: grid;
+  place-items: center;
+  width: 20px;
+  height: 20px;
+  border-radius: var(--radius-pill);
+  background: var(--color-primary-50);
+  color: var(--color-primary-700);
+  font-size: 11px;
+}
+
+@keyframes sial-alert-icon-dock {
+  0%, 14% {
+    opacity: 0;
+    transform: translate(-34px, -50%) scale(.82);
+  }
+  30%, 48% {
+    opacity: 1;
+    transform: translate(-13px, -50%) scale(1.04);
+  }
+  62%, 100% {
+    opacity: 1;
+    transform: translate(-13px, -50%) scale(1);
+  }
+}
+
+@keyframes sial-alert-notch-dock {
+  0%, 18% {
+    opacity: .2;
+    transform: translate(-8px, -50%) scale(.72);
+  }
+  36%, 100% {
+    opacity: 1;
+    transform: translateY(-50%) scale(1);
+  }
+}
+
+html[data-theme="dark"] .sial-motion-alert::before {
+  background: var(--color-surface-raised);
+}
+
+html[data-theme="dark"] .sial-motion-alert-icon {
+  box-shadow: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sial-motion-alert.is-animated::before,
+  .sial-motion-alert.is-animated .sial-motion-alert-icon {
+    animation: none;
+  }
+}
+/* SIAL brand callout component preview */
+.sial-brand-callout-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(280px, .75fr);
+  gap: 14px;
+  align-items: stretch;
+}
+
+.sial-brand-callout {
+  display: grid;
+  grid-template-columns: 46px minmax(0, 1fr);
+  gap: 14px;
+  align-items: center;
+  min-height: 120px;
+  padding: 16px;
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-surface);
+  background: var(--color-empty-bg);
+}
+
+.sial-brand-callout.compact {
+  min-height: 96px;
+}
+
+.sial-brand-callout-rail {
+  position: relative;
+  align-self: stretch;
+  display: grid;
+  place-items: center;
+  min-height: 84px;
+}
+
+.sial-brand-callout-rail::before,
+.sial-brand-callout-rail::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  width: 2px;
+  height: calc(50% - 18px);
+  border-radius: var(--radius-pill);
+  background: color-mix(in srgb, var(--color-primary-500) 72%, var(--color-border-subtle));
+  transform: translateX(-50%);
+}
+
+.sial-brand-callout-rail::before {
+  top: 0;
+}
+
+.sial-brand-callout-rail::after {
+  bottom: 0;
+}
+
+.sial-brand-banana {
+  position: relative;
+  z-index: 1;
+  width: 28px;
+  height: 28px;
+  padding: 3px;
+  border: 1px solid color-mix(in srgb, var(--color-ribbon-am) 56%, var(--color-border-subtle));
+  border-radius: var(--radius-pill);
+  background: var(--color-surface);
+  box-shadow: 0 6px 14px rgba(16, 24, 40, .08);
+}
+
+.sial-brand-banana-fill {
+  fill: color-mix(in srgb, var(--color-ribbon-am) 82%, var(--color-surface));
+}
+
+.sial-brand-banana-line {
+  fill: none;
+  stroke: var(--color-primary-700);
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.sial-brand-callout-content {
+  display: grid;
+  gap: 6px;
+}
+
+.sial-brand-callout-content strong {
+  color: var(--color-text);
+  font-size: 15px;
+  line-height: 1.35;
+}
+
+.sial-brand-callout-content p {
+  margin: 0;
+  color: var(--color-text-2);
+  font-size: 13px;
+  line-height: 1.55;
+}
+
+html[data-theme="dark"] .sial-brand-banana {
+  background: var(--color-surface-raised);
+  box-shadow: none;
+}
+
+html[data-theme="dark"] .sial-brand-banana-line {
+  stroke: var(--color-text);
+}
+
+/* SIAL DatePicker component preview */
+.sial-date-demo-grid {
+  display: grid;
+  grid-template-columns: minmax(320px, 420px) minmax(0, 1fr);
+  gap: 18px;
+  align-items: start;
+}
+
+.sial-date-preview {
+  overflow: visible;
+}
+
+.sial-date-picker {
+  --date-accent: var(--color-primary-500);
+  --date-accent-text: var(--color-on-primary);
+  position: relative;
+  display: grid;
+  gap: 8px;
+  width: min(100%, 360px);
+}
+
+.sial-date-trigger {
+  width: 100%;
+  min-height: 44px;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 10px;
+  padding: 0 12px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-control);
+  background: var(--color-field-bg);
+  color: var(--color-text);
+  cursor: pointer;
+  text-align: left;
+  transition: border-color var(--motion-duration-fast) var(--motion-ease-standard), box-shadow var(--motion-duration-fast) var(--motion-ease-standard), background var(--motion-duration-fast) var(--motion-ease-standard);
+}
+
+.sial-date-trigger:hover {
+  border-color: color-mix(in srgb, var(--date-accent) 56%, var(--color-border));
+}
+
+.sial-date-trigger:focus-visible {
+  outline: 2px solid var(--color-focus-ring);
+  outline-offset: 2px;
+  border-color: var(--color-focus-ring);
+}
+
+.sial-date-trigger .icon {
+  color: var(--color-primary-500);
+}
+
+.sial-date-picker.is-open .sial-date-trigger {
+  border-color: color-mix(in srgb, var(--date-accent) 64%, var(--color-border));
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--date-accent) 24%, transparent);
+}
+
+.sial-date-chevron {
+  transition: transform var(--motion-duration-fast) var(--motion-ease-standard);
+}
+
+.sial-date-picker.is-open .sial-date-chevron {
+  transform: rotate(180deg);
+}
+
+.sial-date-popover {
+  display: none;
+  width: min(100%, 360px);
+  padding: 14px;
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-surface);
+  background: var(--color-surface-overlay);
+  box-shadow: var(--shadow-overlay);
+}
+
+.sial-date-picker.is-open .sial-date-popover {
+  display: grid;
+  gap: 12px;
+}
+
+.sial-date-head {
+  display: grid;
+  grid-template-columns: 36px minmax(0, 1fr) 36px;
+  align-items: center;
+  gap: 8px;
+}
+
+.sial-date-head .icon-btn {
+  width: 36px;
+  height: 36px;
+  color: var(--color-primary-600);
+}
+
+.sial-date-period {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+.sial-date-period button {
+  min-height: 34px;
+  padding: 0 10px;
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-control);
+  background: var(--color-soft-surface);
+  color: var(--color-text);
+  cursor: pointer;
+  font-weight: 700;
+}
+
+.sial-date-period button:hover,
+.sial-date-period button:focus-visible {
+  border-color: color-mix(in srgb, var(--date-accent) 64%, var(--color-border));
+  background: color-mix(in srgb, var(--date-accent) 18%, var(--color-soft-surface));
+}
+
+.sial-date-weekdays,
+.sial-date-grid {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 6px;
+}
+
+.sial-date-weekdays span {
+  display: grid;
+  place-items: center;
+  min-height: 24px;
+  color: var(--color-text-3);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+}
+
+.sial-date-grid[data-mode="month"],
+.sial-date-grid[data-mode="year"] {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.sial-date-cell {
+  min-height: 36px;
+  display: grid;
+  place-items: center;
+  border: 1px solid transparent;
+  border-radius: var(--radius-control);
+  background: transparent;
+  color: var(--color-text);
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.sial-date-cell:hover,
+.sial-date-cell:focus-visible {
+  border-color: color-mix(in srgb, var(--date-accent) 58%, var(--color-border));
+  background: color-mix(in srgb, var(--date-accent) 16%, var(--color-soft-surface));
+  outline: none;
+}
+
+.sial-date-cell.is-outside {
+  color: var(--color-text-3);
+  font-weight: 500;
+}
+
+.sial-date-cell.is-today {
+  border-color: color-mix(in srgb, var(--date-accent) 70%, var(--color-border));
+}
+
+.sial-date-cell.is-selected {
+  border-color: var(--date-accent);
+  background: var(--date-accent);
+  color: var(--date-accent-text);
+  box-shadow: 0 6px 16px color-mix(in srgb, var(--date-accent) 32%, transparent);
+}
+
+.sial-date-actions {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+  padding-top: 10px;
+  border-top: 1px solid var(--color-border-subtle);
+}
+
+.sial-date-actions button {
+  min-height: 36px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-control);
+  background: var(--color-field-bg);
+  color: var(--color-primary-600);
+  cursor: pointer;
+  font-weight: 700;
+}
+
+.sial-date-actions button:hover,
+.sial-date-actions button:focus-visible {
+  border-color: color-mix(in srgb, var(--date-accent) 62%, var(--color-border));
+  background: color-mix(in srgb, var(--date-accent) 18%, var(--color-field-bg));
+  outline: none;
+}
+
+.sial-date-actions [data-date-apply] {
+  border-color: var(--date-accent);
+  background: var(--date-accent);
+  color: var(--date-accent-text);
+}
+
+html[data-theme="dark"] .sial-date-picker.is-open .sial-date-trigger {
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--date-accent) 18%, transparent);
+}
+
 .auth-preview-panel {
   min-height: 116px;
   position: relative;
@@ -3368,7 +3862,7 @@ html[data-view-motion-overlay="visible"] .view-motion-overlay {
   .public-changelog-topbar { margin-bottom: 28px; }
   .specimen-grid { grid-template-columns: 1fr; }
   .page-header, .form-actions, .card-header, .section-heading, .module-actions, .assignment-actions { flex-direction: column; align-items: stretch; }
-  .stats, .catalog-grid, .pattern-grid, .toolbar, .admin-toolbar, .release-filterbar, .release-filterbar-internal, .release-meta-grid, .release-detail-grid, .library-admin-grid, .metric-row, .ribbon-flow, .monitor-toolbar, .library-monitor-toolbar, .role-grid, .state-grid, .indicator-grid, .indicator-layout, .indicator-layout.three-columns, .indicator-meter-row, .distribution-item, .chart-card-grid, .visual-gallery-grid, .geo-map-controls, .geo-map-layout { grid-template-columns: 1fr; }
+  .stats, .catalog-grid, .pattern-grid, .toolbar, .admin-toolbar, .release-filterbar, .release-filterbar-internal, .release-meta-grid, .release-detail-grid, .library-admin-grid, .sial-motion-alert-preview, .sial-brand-callout-grid, .sial-date-demo-grid, .metric-row, .ribbon-flow, .monitor-toolbar, .library-monitor-toolbar, .role-grid, .state-grid, .indicator-grid, .indicator-layout, .indicator-layout.three-columns, .indicator-meter-row, .distribution-item, .chart-card-grid, .visual-gallery-grid, .geo-map-controls, .geo-map-layout { grid-template-columns: 1fr; }
   .table-pagination {
     flex-direction: column;
     align-items: stretch;
