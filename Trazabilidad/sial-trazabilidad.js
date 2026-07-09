@@ -160,7 +160,7 @@ const SIAL = (() => {
   function initAuditTrail() {
     const esc = window.SIALCore?.escapeHtml || ((value) => String(value ?? "").replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll('"', "&quot;"));
     const norm = window.SIALCore?.normalize || ((value) => String(value || "").trim().toLowerCase());
-    const controls = { search: qs("#auditSearch"), year: qs("#auditYear"), week: qs("#auditWeek"), from: qs("#auditFromDate"), to: qs("#auditToDate"), event: qs("#auditEvent"), status: qs("#auditStatus"), user: qs("#auditUser"), vehicle: qs("#auditVehicle"), container: qs("#auditContainer"), operation: qs("#auditOperation") };
+    const controls = { search: qs("#auditSearch"), year: qs("#auditYear"), week: qs("#auditWeek"), from: qs("#auditFromDate"), to: qs("#auditToDate"), event: qs("#auditEvent"), status: qs("#auditStatus") };
     const workbench = qs("#auditWorkbench");
     const setText = (selector, value) => { const node = qs(selector); if (node) node.textContent = String(value); };
     const emptyText = (text) => `<div class="audit-empty-list">${esc(text)}</div>`;
@@ -246,7 +246,7 @@ const SIAL = (() => {
       const end = new Date(start);
       end.setDate(start.getDate() + 6);
       const year = thursday.getFullYear();
-      return { key: `${year}-W${String(week).padStart(2, "0")}`, label: `Semana ${week} - ${year} (${shortDayMonth(start)} - ${shortDayMonth(end)})`, start: start.getTime() };
+      return { key: `${year}-W${String(week).padStart(2, "0")}`, label: `Semana ${week}`, start: start.getTime() };
     };
     const sourceLabel = (event) => event.sourceLabel || (event.source === "web" ? "Transporte web" : "Operacion movil");
     const contextFor = (event) => {
@@ -329,10 +329,6 @@ const SIAL = (() => {
     }, {})).sort((a, b) => b.start - a.start);
     fill("#auditWeek", weekOptions.map((item) => item.key), (key) => weekOptions.find((item) => item.key === key)?.label || key);
     fill("#auditEvent", values("type"), (value) => auditEvents.find((event) => event.type === value)?.event || value);
-    fill("#auditUser", values("user"));
-    fill("#auditVehicle", values("vehicle"));
-    fill("#auditContainer", values("container"));
-    fill("#auditOperation", values("operation"));
 
     const searchText = (event) => {
       const ctx = contextFor(event);
@@ -365,7 +361,7 @@ const SIAL = (() => {
     function filteredEvents() {
       const term = norm(controls.search?.value || "");
       const state = controls.status?.value || "all";
-      return auditEvents.filter((event) => (!term || searchText(event).includes(term)) && yearOk(event) && weekOk(event) && dateOk(event) && selectOk(event, controls.event, "type") && (state === "all" || event.severity === state || norm(event.sync).includes(state)) && selectOk(event, controls.user, "user") && selectOk(event, controls.vehicle, "vehicle") && selectOk(event, controls.container, "container") && selectOk(event, controls.operation, "operation")).sort((a, b) => eventTime(b) - eventTime(a));
+      return auditEvents.filter((event) => (!term || searchText(event).includes(term)) && yearOk(event) && weekOk(event) && dateOk(event) && selectOk(event, controls.event, "type") && (state === "all" || event.severity === state || norm(event.sync).includes(state))).sort((a, b) => eventTime(b) - eventTime(a));
     }
 
     function renderOperationStrip(events) {
@@ -453,18 +449,14 @@ const SIAL = (() => {
       const controls = (event.controls || []).map(readControl);
       const title = item?.checkpoint || item?.title || "Punto fotografiado";
       const control = item ? findControlForEvidence(item, controls) : null;
-      const controlNameRepeatsTitle = control && matchKey(control.name) === matchKey(title);
       const observationValue = control?.value || item?.status || "";
-      const observationText = control?.observation || item?.note || "Sin observacion registrada.";
       return {
         title,
         date: item?.capturedAt || "Sin fecha",
         image: item?.image || "",
         type: item?.type || "Evidencia",
         statusClass: valueClass(observationValue),
-        statusText: formatStatus(observationValue),
-        controlName: control && !controlNameRepeatsTitle ? control.name : "",
-        observation: formatFreeText(observationText)
+        statusText: formatStatus(observationValue)
       };
     }
 
@@ -504,7 +496,7 @@ const SIAL = (() => {
       const node = ensurePhotoLightbox();
       if (!node) return;
       const imageMarkup = detail.image ? `<img src="${esc(detail.image)}" alt="${esc(detail.title)}" />` : `<div class="audit-photo-lightbox-empty"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg><span>Sin imagen asociada</span></div>`;
-      node.innerHTML = `<div class="audit-photo-lightbox-scrim" data-lightbox-close></div><section class="audit-photo-lightbox-card" role="dialog" aria-modal="true" aria-labelledby="auditPhotoLightboxTitle"><button class="icon-btn audit-photo-lightbox-close" type="button" data-lightbox-close aria-label="Cerrar foto"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m18 6-12 12"></path><path d="m6 6 12 12"></path></svg></button><button class="icon-btn audit-photo-lightbox-nav prev" type="button" data-lightbox-step="-1" aria-label="Foto anterior" ${activeIndex === 0 ? "disabled" : ""}><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m15 18-6-6 6-6"></path></svg></button><figure class="audit-photo-lightbox-figure"><div class="audit-photo-lightbox-media">${imageMarkup}</div><figcaption class="audit-photo-lightbox-caption"><span>${esc(detail.type)} ${activeIndex + 1} de ${evidence.length}</span><h3 id="auditPhotoLightboxTitle">${esc(detail.title)}</h3><time>${esc(detail.date)}</time><div class="audit-photo-lightbox-observation"><strong>Observacion</strong>${detail.controlName ? `<em>${esc(detail.controlName)}</em>` : ""}<p>${esc(detail.observation)}</p></div></figcaption></figure><button class="icon-btn audit-photo-lightbox-nav next" type="button" data-lightbox-step="1" aria-label="Foto siguiente" ${activeIndex === evidence.length - 1 ? "disabled" : ""}><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m9 18 6-6-6-6"></path></svg></button></section>`;
+      node.innerHTML = `<div class="audit-photo-lightbox-scrim" data-lightbox-close></div><section class="audit-photo-lightbox-card" role="dialog" aria-modal="true" aria-labelledby="auditPhotoLightboxTitle"><button class="icon-btn audit-photo-lightbox-close" type="button" data-lightbox-close aria-label="Cerrar foto"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m18 6-12 12"></path><path d="m6 6 12 12"></path></svg></button><button class="icon-btn audit-photo-lightbox-nav prev" type="button" data-lightbox-step="-1" aria-label="Foto anterior" ${activeIndex === 0 ? "disabled" : ""}><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m15 18-6-6 6-6"></path></svg></button><figure class="audit-photo-lightbox-figure"><div class="audit-photo-lightbox-media">${imageMarkup}</div><figcaption class="audit-photo-lightbox-caption audit-photo-lightbox-caption-compact"><span>Foto ${activeIndex + 1} de ${evidence.length}</span><h3 id="auditPhotoLightboxTitle">${esc(detail.date)}</h3><em class="status ${esc(detail.statusClass)}">${esc(detail.statusText)}</em></figcaption></figure><button class="icon-btn audit-photo-lightbox-nav next" type="button" data-lightbox-step="1" aria-label="Foto siguiente" ${activeIndex === evidence.length - 1 ? "disabled" : ""}><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m9 18 6-6-6-6"></path></svg></button></section>`;
       node.classList.add("show");
       node.setAttribute("aria-hidden", "false");
       qsa("[data-lightbox-close]", node).forEach((button) => button.addEventListener("click", closePhotoLightbox));
@@ -519,8 +511,6 @@ const SIAL = (() => {
       const activeIndex = Math.max(0, evidence.findIndex((item) => item.id === selectedEvidenceId));
       const active = evidence[activeIndex];
       const detail = active ? evidenceViewData(event, active) : null;
-      const titleWithDate = detail ? `${detail.title} - ${detail.date}` : "Punto fotografiado";
-      const observationMarkup = detail ? `<div class="audit-evidence-control audit-evidence-observation"><span>Observaciones</span><em class="status ${esc(detail.statusClass)}">${esc(detail.statusText)}</em>${detail.controlName ? `<strong>${esc(detail.controlName)}</strong>` : ""}<p>${esc(detail.observation)}</p></div>` : "";
       const photoMarkup = detail?.image ? `<img src="${esc(detail.image)}" alt="${esc(detail.title)}" loading="lazy" />` : `<svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg><span>Foto ${activeIndex + 1}</span>`;
       const title = qs("#auditEvidenceTitle");
       if (title) title.textContent = event.event;
@@ -529,7 +519,7 @@ const SIAL = (() => {
       if (context) context.innerHTML = `<strong>${esc(event.operation)}</strong><span>${esc(tracePosition(event))} en el arbol / ${esc(ctx.externalZone)}</span>`;
       const gallery = qs("#auditEvidenceGallery");
       if (gallery) {
-        gallery.innerHTML = active ? `<div class="audit-photo-viewer"><button class="icon-btn audit-photo-nav" type="button" data-evidence-step="-1" aria-label="Foto anterior" ${activeIndex === 0 ? "disabled" : ""}><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m15 18-6-6 6-6"></path></svg></button><article class="audit-gallery-item audit-photo-card" tabindex="-1"><div class="audit-gallery-head"><span>${esc(detail.type)} ${activeIndex + 1} de ${evidence.length}</span><strong>${esc(titleWithDate)}</strong></div><button class="audit-gallery-photo ${esc(detail.statusClass)} ${detail.image ? "has-image" : ""}" type="button" data-open-photo-lightbox aria-label="${esc(`Ampliar foto ${detail.title}`)}">${photoMarkup}</button><div class="audit-gallery-copy audit-photo-detail">${observationMarkup}</div></article><button class="icon-btn audit-photo-nav" type="button" data-evidence-step="1" aria-label="Foto siguiente" ${activeIndex === evidence.length - 1 ? "disabled" : ""}><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m9 18 6-6-6-6"></path></svg></button></div>` : emptyText("El evento seleccionado no tiene evidencias fotograficas asociadas.");
+        gallery.innerHTML = active ? `<div class="audit-photo-viewer"><button class="icon-btn audit-photo-nav" type="button" data-evidence-step="-1" aria-label="Foto anterior" ${activeIndex === 0 ? "disabled" : ""}><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m15 18-6-6 6-6"></path></svg></button><article class="audit-gallery-item audit-photo-card" tabindex="-1"><div class="audit-gallery-head audit-gallery-head-compact"><span>Foto ${activeIndex + 1} de ${evidence.length}</span><strong>${esc(detail.date)}</strong><em class="status ${esc(detail.statusClass)}">${esc(detail.statusText)}</em></div><button class="audit-gallery-photo ${esc(detail.statusClass)} ${detail.image ? "has-image" : ""}" type="button" data-open-photo-lightbox aria-label="${esc(`Ampliar foto ${activeIndex + 1}`)}">${photoMarkup}</button></article><button class="icon-btn audit-photo-nav" type="button" data-evidence-step="1" aria-label="Foto siguiente" ${activeIndex === evidence.length - 1 ? "disabled" : ""}><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m9 18 6-6-6-6"></path></svg></button></div>` : emptyText("El evento seleccionado no tiene evidencias fotograficas asociadas.");
         qsa("[data-evidence-step]", gallery).forEach((button) => button.addEventListener("click", () => {
           const nextIndex = activeIndex + Number(button.dataset.evidenceStep || 0);
           if (!evidence[nextIndex]) return;

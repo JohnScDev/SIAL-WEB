@@ -729,7 +729,7 @@
 }
 
 .audit-filter-row.secondary {
-  grid-template-columns: repeat(6, minmax(140px, 1fr));
+  grid-template-columns: minmax(320px, 520px);
 }
 
 .audit-filter-row[hidden] {
@@ -774,6 +774,24 @@
 .audit-year-select,
 .audit-week-select {
   min-width: 0;
+}
+
+.audit-date-range {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  align-items: center;
+  gap: 8px;
+  max-width: 520px;
+}
+
+.audit-date-range .input {
+  min-width: 0;
+}
+
+.audit-date-range span {
+  color: var(--color-text-3);
+  font-size: 12px;
+  font-weight: 700;
 }
 
 @keyframes auditSearchHintLoop {
@@ -1663,6 +1681,10 @@
   gap: 10px;
 }
 
+.audit-filter-row.secondary {
+  grid-template-columns: minmax(320px, 520px);
+}
+
 .audit-case-carousel {
   grid-template-columns: 34px minmax(0, 1fr) 34px;
 }
@@ -1875,6 +1897,26 @@
   line-height: 1.3;
 }
 
+.audit-gallery-head-compact {
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 6px 10px;
+}
+
+.audit-gallery-head-compact span {
+  grid-column: 1 / -1;
+}
+
+.audit-gallery-head-compact strong {
+  min-width: 0;
+  font-size: 13px;
+}
+
+.audit-gallery-head-compact .status {
+  justify-self: end;
+  white-space: nowrap;
+}
+
 .audit-workbench[data-audit-mode="operation"] .audit-gallery-photo,
 .audit-workbench[data-audit-mode="evidence"] .audit-gallery-photo,
 .audit-gallery-photo {
@@ -1997,6 +2039,19 @@
 @media (max-width: 760px) {
   .audit-photo-viewer {
     grid-template-columns: 34px minmax(0, 1fr) 34px;
+  }
+
+  .audit-filter-row.secondary {
+    grid-template-columns: 1fr;
+  }
+
+  .audit-date-range {
+    grid-template-columns: 1fr;
+    max-width: none;
+  }
+
+  .audit-date-range span {
+    display: none;
   }
 
   .audit-photo-nav {
@@ -2201,6 +2256,17 @@
   color: var(--color-text-2);
   font-size: 12px;
   font-weight: 700;
+  white-space: nowrap;
+}
+
+.audit-photo-lightbox-caption-compact {
+  max-height: none;
+  overflow: visible;
+}
+
+.audit-photo-lightbox-caption-compact .status {
+  align-self: center;
+  justify-self: end;
   white-space: nowrap;
 }
 
