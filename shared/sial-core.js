@@ -485,7 +485,154 @@ const SIALCore = (() => {
       backdrop: null,
       dialog: null,
       lastAction: "view",
-      lastFocusedActionControl: null
+      lastFocusedActionControl: null,
+      carouselCleanup: null
+    };
+
+    const defaultProfileFarms = [
+      "Finca Santa Isabel",
+      "Finca Las Palmas",
+      "Finca El Retiro",
+      "Finca La Esperanza",
+      "Finca Campo Alegre"
+    ];
+
+    const parseProfileFarms = (value) => {
+      const farms = String(value || "")
+        .split("|")
+        .map((farm) => farm.trim())
+        .filter(Boolean);
+      return farms.length ? farms : defaultProfileFarms;
+    };
+
+    const getProfileMonogram = (value, fallback = "FI") => {
+      const words = String(value || "").trim().split(/\s+/).filter(Boolean);
+      if (!words.length) return fallback;
+      const relevantWords = words[0].toLowerCase() === "finca" ? words.slice(1) : words;
+      const initials = relevantWords.slice(0, 2).map((word) => word[0]).join("");
+      return (initials || words[0].slice(0, 2)).toUpperCase();
+    };
+
+    const getProfileData = (avatar) => ({
+      initials: avatar.textContent.trim() || "QA",
+      name: avatar.dataset.profileName || "John Salovro",
+      role: avatar.dataset.profileRole || "Administrador",
+      document: avatar.dataset.profileDocument || "1.001.777.496",
+      phone: avatar.dataset.profilePhone || "+57 300 777 7496",
+      email: avatar.dataset.profileEmail || "jsalovro@banasan.com.co",
+      farms: parseProfileFarms(avatar.dataset.profileFarms)
+    });
+
+    const renderCompactFarmItems = (farms) => farms.map((farm) => `
+      <span class="profile-farm-dot" title="${escapeHtml(farm)}" aria-label="${escapeHtml(farm)}">
+        ${escapeHtml(getProfileMonogram(farm))}
+      </span>
+    `).join("");
+
+    const renderProfileFarmCards = (farms) => farms.map((farm) => `
+      <article class="profile-farm-card">
+        <span class="profile-farm-monogram" aria-hidden="true">${escapeHtml(getProfileMonogram(farm))}</span>
+        <strong>${escapeHtml(farm)}</strong>
+      </article>
+    `).join("");
+
+    const renderCompactFarms = (farms) => `
+      <div class="profile-compact-carousel" data-profile-compact-carousel tabindex="0" aria-label="Fincas asignadas">
+        <button class="profile-compact-control" type="button" data-profile-compact-previous aria-label="Ver fincas anteriores">
+          <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m15 18-6-6 6-6"></path></svg>
+        </button>
+        <div class="profile-farm-preview" data-profile-compact-viewport aria-live="polite">
+          <div class="profile-compact-track" data-profile-compact-track>
+            ${renderCompactFarmItems([...farms, ...farms.slice(0, 3)])}
+          </div>
+        </div>
+        <button class="profile-compact-control" type="button" data-profile-compact-next aria-label="Ver fincas siguientes">
+          <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m9 18 6-6-6-6"></path></svg>
+        </button>
+      </div>
+    `;
+
+    const initCompactFarmCarousel = (menu, farms) => {
+      const root = qs("[data-profile-compact-carousel]", menu);
+      const viewport = qs("[data-profile-compact-viewport]", root);
+      const track = qs("[data-profile-compact-track]", root);
+      const previousButton = qs("[data-profile-compact-previous]", root);
+      const nextButton = qs("[data-profile-compact-next]", root);
+      if (!root || !viewport || !track) return;
+
+      const visibleCount = Math.min(3, farms.length);
+      const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      let currentIndex = 0;
+      let timer = null;
+      let resetTimer = null;
+
+      const stopRotation = () => {
+        if (timer) window.clearInterval(timer);
+        timer = null;
+      };
+      const moveTrack = (animate = true) => {
+        const firstItem = qs(".profile-farm-dot", track);
+        if (!firstItem) return;
+        const gap = Number.parseFloat(getComputedStyle(track).columnGap) || 0;
+        track.classList.toggle("is-resetting", !animate);
+        track.style.transform = `translateX(-${currentIndex * (firstItem.offsetWidth + gap)}px)`;
+      };
+      const moveTo = (nextIndex) => {
+        window.clearTimeout(resetTimer);
+        if (nextIndex < 0) {
+          currentIndex = farms.length;
+          moveTrack(false);
+          window.requestAnimationFrame(() => {
+            currentIndex = farms.length - 1;
+            moveTrack(true);
+          });
+          return;
+        }
+        currentIndex = nextIndex;
+        moveTrack(true);
+        if (currentIndex >= farms.length) {
+          resetTimer = window.setTimeout(() => {
+            currentIndex = 0;
+            moveTrack(false);
+          }, 320);
+        }
+      };
+      const startRotation = () => {
+        stopRotation();
+        if (reduceMotion || farms.length <= visibleCount) return;
+        timer = window.setInterval(() => moveTo(currentIndex + 1), 4000);
+      };
+      const showPrevious = () => {
+        moveTo(currentIndex - 1);
+        startRotation();
+      };
+      const showNext = () => {
+        moveTo(currentIndex + 1);
+        startRotation();
+      };
+
+      previousButton?.addEventListener("click", showPrevious);
+      nextButton?.addEventListener("click", showNext);
+      root.addEventListener("mouseenter", stopRotation);
+      root.addEventListener("mouseleave", startRotation);
+      root.addEventListener("focusin", stopRotation);
+      root.addEventListener("focusout", (event) => {
+        if (!root.contains(event.relatedTarget)) startRotation();
+      });
+      root.addEventListener("keydown", (event) => {
+        if (event.key === "ArrowLeft") {
+          event.preventDefault();
+          showPrevious();
+        }
+        if (event.key === "ArrowRight") {
+          event.preventDefault();
+          showNext();
+        }
+      });
+      previousButton?.toggleAttribute("hidden", farms.length <= visibleCount);
+      nextButton?.toggleAttribute("hidden", farms.length <= visibleCount);
+      moveTrack(false);
+      startRotation();
     };
 
     const setThemeLabel = (button, buttonText) => {
@@ -559,6 +706,8 @@ const SIALCore = (() => {
 
     const closeProfileActionDialog = () => {
       if (!dialogState.backdrop || !dialogState.dialog) return;
+      dialogState.carouselCleanup?.();
+      dialogState.carouselCleanup = null;
       dialogState.backdrop.hidden = true;
       dialogState.dialog.hidden = true;
       const returnFocus = dialogState.lastFocusedActionControl;
@@ -633,6 +782,8 @@ const SIALCore = (() => {
 
     const openProfileActionDialog = ({ title, description, contentHtml, action, showNotice = true }) => {
       ensureProfileActionDialog();
+      dialogState.carouselCleanup?.();
+      dialogState.carouselCleanup = null;
       dialogState.lastFocusedActionControl = document.activeElement instanceof HTMLElement ? document.activeElement : null;
       const titleNode = qs("#profileActionTitle", dialogState.dialog);
       const descriptionNode = qs("#profileActionDescription", dialogState.dialog);
@@ -662,45 +813,160 @@ const SIALCore = (() => {
       firstAction?.focus();
     };
 
-    const openProfileView = ({ userName, userRole, initials }) => {
-      const sessionAt = normalizeProfileSessionDate();
-      const { isDark, notificationsEnabled } = getProfileSettingsLabelState();
+    const initProfileFarmCarousel = (farms) => {
+      const root = qs("[data-profile-farm-carousel]", dialogState.dialog);
+      const viewport = qs("[data-profile-farm-viewport]", root);
+      const track = qs("[data-profile-farm-track]", root);
+      const previousButton = qs("[data-profile-farm-previous]", root);
+      const nextButton = qs("[data-profile-farm-next]", root);
+      if (!root || !viewport || !track) return;
+
+      const pageSize = viewport.clientWidth < 440 ? 1 : 3;
+      const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      let currentIndex = 0;
+      let timer = null;
+      let resetTimer = null;
+
+      const stopRotation = () => {
+        if (timer) window.clearInterval(timer);
+        timer = null;
+      };
+
+      const moveTrack = (animate = true) => {
+        const firstCard = qs(".profile-farm-card", track);
+        if (!firstCard) return;
+        const gap = Number.parseFloat(getComputedStyle(track).columnGap) || 0;
+        track.classList.toggle("is-resetting", !animate);
+        track.style.transform = `translateX(-${currentIndex * (firstCard.offsetWidth + gap)}px)`;
+      };
+      const moveTo = (nextIndex) => {
+        window.clearTimeout(resetTimer);
+        if (nextIndex < 0) {
+          currentIndex = farms.length;
+          moveTrack(false);
+          window.requestAnimationFrame(() => {
+            currentIndex = farms.length - 1;
+            moveTrack(true);
+          });
+          return;
+        }
+        currentIndex = nextIndex;
+        moveTrack(true);
+        if (currentIndex >= farms.length) {
+          resetTimer = window.setTimeout(() => {
+            currentIndex = 0;
+            moveTrack(false);
+          }, 360);
+        }
+      };
+
+      const startRotation = () => {
+        stopRotation();
+        if (reduceMotion || farms.length <= pageSize || dialogState.dialog?.hidden) return;
+        timer = window.setInterval(() => moveTo(currentIndex + 1), 5000);
+      };
+      const showPrevious = () => {
+        moveTo(currentIndex - 1);
+        startRotation();
+      };
+      const showNext = () => {
+        moveTo(currentIndex + 1);
+        startRotation();
+      };
+      const handleKeydown = (event) => {
+        if (event.key === "ArrowLeft") {
+          event.preventDefault();
+          showPrevious();
+        }
+        if (event.key === "ArrowRight") {
+          event.preventDefault();
+          showNext();
+        }
+      };
+      const resumeAfterFocus = (event) => {
+        if (!root.contains(event.relatedTarget)) startRotation();
+      };
+
+      previousButton?.addEventListener("click", showPrevious);
+      nextButton?.addEventListener("click", showNext);
+      root.addEventListener("keydown", handleKeydown);
+      root.addEventListener("mouseenter", stopRotation);
+      root.addEventListener("mouseleave", startRotation);
+      root.addEventListener("focusin", stopRotation);
+      root.addEventListener("focusout", resumeAfterFocus);
+      previousButton?.toggleAttribute("hidden", farms.length <= pageSize);
+      nextButton?.toggleAttribute("hidden", farms.length <= pageSize);
+      moveTrack(false);
+      startRotation();
+
+      dialogState.carouselCleanup = () => {
+        stopRotation();
+        previousButton?.removeEventListener("click", showPrevious);
+        nextButton?.removeEventListener("click", showNext);
+        root.removeEventListener("keydown", handleKeydown);
+        root.removeEventListener("mouseenter", stopRotation);
+        root.removeEventListener("mouseleave", startRotation);
+        root.removeEventListener("focusin", stopRotation);
+        root.removeEventListener("focusout", resumeAfterFocus);
+        window.clearTimeout(resetTimer);
+      };
+    };
+
+    const openProfileView = (profile) => {
       openProfileActionDialog({
         action: "view",
         title: "Perfil de usuario",
         description: "",
         showNotice: false,
         contentHtml: `
-          <div class="detail-group profile-action-card profile-action-id-card">
-            <div class="detail-label">Perfil activo</div>
-            <div class="profile-action-identity-row">
-              <span class="avatar profile-action-avatar-xl" aria-hidden="true">${escapeHtml(initials || "QA")}</span>
+          <section class="profile-overview" aria-label="Identidad y contacto">
+            <div class="profile-full-identity">
+              <span class="avatar profile-action-avatar-xl" aria-hidden="true">${escapeHtml(profile.initials)}</span>
               <div class="profile-action-identity-content">
-                <strong>${escapeHtml(userName || "Usuario SIAL")}</strong>
-                <p class="muted">${escapeHtml(userRole || "Sin rol definido")}</p>
+                <strong>${escapeHtml(profile.name)}</strong>
+                <span>${escapeHtml(profile.role)}</span>
               </div>
             </div>
-          </div>
-          <div class="detail-group profile-action-card">
-            <div class="detail-label">Resumen de sesión</div>
-            <div class="profile-action-meta-kv">
-              <div>
-                <span class="muted">Conexión</span>
-                <strong>Activa</strong>
+            <div class="profile-contact-grid" aria-label="Datos del usuario">
+              <div class="profile-contact-item">
+                <span>Identificacion</span>
+                <strong>${escapeHtml(profile.document)}</strong>
               </div>
-              <div>
-                <span class="muted">Tema</span>
-                <strong>${isDark ? "Oscuro" : "Claro"}</strong>
+              <div class="profile-contact-item">
+                <span>Telefono</span>
+                <strong>${escapeHtml(profile.phone)}</strong>
               </div>
-              <div>
-                <span class="muted">Notificaciones</span>
-                <strong>${notificationsEnabled ? "Sí" : "No"}</strong>
+              <div class="profile-contact-item">
+                <span>Correo</span>
+                <strong>${escapeHtml(profile.email)}</strong>
               </div>
             </div>
-            <p class="muted">Última revisión: ${escapeHtml(sessionAt)}</p>
-          </div>
+          </section>
+          <section class="profile-farms-section" aria-labelledby="profileFarmsTitle">
+            <div class="profile-farms-heading">
+              <div>
+                <span class="detail-label">Asignacion operativa</span>
+                <h3 id="profileFarmsTitle">Fincas asignadas</h3>
+              </div>
+              <span class="table-count">${profile.farms.length} fincas</span>
+            </div>
+            <div class="profile-farm-carousel" data-profile-farm-carousel tabindex="0" aria-label="Carrusel de fincas asignadas">
+              <button class="icon-btn profile-farm-control" type="button" data-profile-farm-previous aria-label="Ver fincas anteriores">
+                <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m15 18-6-6 6-6"></path></svg>
+              </button>
+              <div class="profile-farm-page" data-profile-farm-viewport aria-live="polite">
+                <div class="profile-farm-track" data-profile-farm-track>
+                  ${renderProfileFarmCards([...profile.farms, ...profile.farms.slice(0, 3)])}
+                </div>
+              </div>
+              <button class="icon-btn profile-farm-control" type="button" data-profile-farm-next aria-label="Ver fincas siguientes">
+                <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m9 18 6-6-6-6"></path></svg>
+              </button>
+            </div>
+          </section>
         `
       });
+      initProfileFarmCarousel(profile.farms);
     };
 
     const openProfileSettings = () => {
@@ -782,30 +1048,40 @@ const SIALCore = (() => {
       }
     };
     avatars.forEach((avatar) => {
-      const initials = avatar.textContent.trim() || "QA";
-      const userName = avatar.dataset.profileName || "Usuario SIAL";
-      const userRole = avatar.dataset.profileRole || "Sesion activa";
+      const profile = getProfileData(avatar);
       const menu = document.createElement("div");
       menu.className = "profile-menu";
       menu.dataset.profileMenu = "true";
       menu.innerHTML = `
         <button class="profile-trigger" type="button" aria-haspopup="menu" aria-expanded="false" aria-label="Abrir menu de perfil">
-          <span class="avatar" aria-hidden="true">${escapeHtml(initials)}</span>
+          <span class="avatar" aria-hidden="true">${escapeHtml(profile.initials)}</span>
           <svg class="profile-chevron" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"></path></svg>
         </button>
         <div class="profile-panel" role="menu" aria-label="Menu de perfil" hidden>
           <div class="profile-summary">
-            <strong class="profile-user">${escapeHtml(userName)}</strong>
-            <span class="profile-role">${escapeHtml(userRole)}</span>
+            <div class="profile-summary-identity">
+              <span class="avatar" aria-hidden="true">${escapeHtml(profile.initials)}</span>
+              <div>
+                <strong class="profile-user">${escapeHtml(profile.name)}</strong>
+                <span class="profile-role">${escapeHtml(profile.role)}</span>
+              </div>
+            </div>
+            <div class="profile-summary-meta">
+              <span>Identificacion</span>
+              <strong>${escapeHtml(profile.document)}</strong>
+            </div>
+          </div>
+          <div class="profile-assignment-preview">
+            <div class="profile-assignment-heading">
+              <span>Fincas asignadas</span>
+              <strong>${profile.farms.length}</strong>
+            </div>
+            ${renderCompactFarms(profile.farms)}
           </div>
           <div class="profile-menu-list">
             <button class="profile-menu-item" type="button" role="menuitem" data-profile-action="view">
               ${profileActionIcon("view")}
               <span>Ver perfil</span>
-            </button>
-            <button class="profile-menu-item" type="button" role="menuitem" data-profile-action="settings">
-              ${profileActionIcon("settings")}
-              <span>Preferencias</span>
             </button>
             <a class="profile-menu-item profile-menu-item-danger" role="menuitem" href="${escapeHtml(getLoginUrl())}" data-profile-action="logout">
               ${profileActionIcon("logout")}
@@ -816,6 +1092,7 @@ const SIALCore = (() => {
       `;
       avatar.dataset.profileReady = "true";
       avatar.replaceWith(menu);
+      initCompactFarmCarousel(menu, profile.farms);
 
       const trigger = qs(".profile-trigger", menu);
       const panel = qs(".profile-panel", menu);
@@ -845,7 +1122,7 @@ const SIALCore = (() => {
         const action = actionControl.dataset.profileAction;
         trigger?.dispatchEvent(new CustomEvent("sial:profile-action", {
           bubbles: true,
-          detail: { action, userName, userRole, initials }
+          detail: { action, profile }
         }));
         closeProfileMenu(menu);
         if (action === "logout") {
@@ -855,12 +1132,8 @@ const SIALCore = (() => {
         }
         if (action === "view") {
           event.preventDefault();
-          openProfileView({ userName, userRole, initials });
+          openProfileView(profile);
           return;
-        }
-        if (action === "settings") {
-          event.preventDefault();
-          openProfileSettings();
         }
       });
     });
