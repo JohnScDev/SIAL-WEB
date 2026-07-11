@@ -4173,6 +4173,7 @@ html[data-view-motion-overlay="visible"] .view-motion-overlay {
   .specimen-grid { grid-template-columns: 1fr; }
   .page-header, .form-actions, .card-header, .section-heading, .module-actions, .assignment-actions { flex-direction: column; align-items: stretch; }
   .stats, .catalog-grid, .pattern-grid, .toolbar, .admin-toolbar, .release-filterbar, .release-filterbar-internal, .release-meta-grid, .release-detail-grid, .library-admin-grid, .sial-motion-alert-preview, .sial-brand-callout-grid, .sial-date-demo-grid, .metric-row, .ribbon-flow, .monitor-toolbar, .library-monitor-toolbar, .role-grid, .state-grid, .indicator-grid, .indicator-layout, .indicator-layout.three-columns, .indicator-meter-row, .distribution-item, .chart-card-grid, .visual-gallery-grid, .geo-map-controls, .geo-map-layout { grid-template-columns: 1fr; }
+  .toolbar.compact { grid-template-columns: 1fr; }
   .table-pagination {
     flex-direction: column;
     align-items: stretch;

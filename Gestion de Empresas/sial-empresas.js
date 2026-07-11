@@ -23,6 +23,7 @@ const SIAL = (() => {
       ["paramRoles", "parametrizacion-roles.html", "Creacion de roles"],
       ["tiposEmpresa", "../Gestion%20de%20Transporte/gestion-tipos-empresa.html", "Tipos de empresas"],
       ["empresaTipo", "../Gestion%20de%20Transporte/relacion-empresa-tipo.html", "Empresa + tipo"],
+      ["clientes", "gestion-clientes.html", "Clientes"],
       ["contactos", "gestion-contactos.html", "Contactos"],
       ["dependencias", "gestion-dependencias.html", "Dependencias"]
     ];

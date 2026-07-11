@@ -443,6 +443,16 @@ const SIALCatalog = (() => {
     {
       module: "empresas",
       moduleLabel: "Empresa",
+      title: "Gestion de clientes",
+      family: "gestion",
+      status: "implementada",
+      href: "Gestion%20de%20Empresas/gestion-clientes.html",
+      description: "Maestra de clientes y exportadores requerida por HU290 para asociar avisos de corte a un comprador o destino comercial.",
+      tags: ["HU290", "Clientes", "Exportadores"]
+    },
+    {
+      module: "empresas",
+      moduleLabel: "Empresa",
       title: "Contactos",
       family: "gestion",
       status: "base",
@@ -569,6 +579,16 @@ const SIALCatalog = (() => {
       href: "Trazabilidad/gestion-tipos-evento-trazabilidad.html",
       description: "Catalogo de eventos del flujo logistico: recepcion, inspeccion, cargue, despacho y exportacion. Incluye orden numerico opcional.",
       tags: ["Maestra corta", "Trazabilidad", "Eventos"]
+    },
+    {
+      module: "aviso-corte",
+      moduleLabel: "Planeacion Aviso de Corte",
+      title: "Gestion de avisos de corte",
+      family: "gestion",
+      status: "implementada",
+      href: "Gestion%20de%20Planeacion/gestion-avisos-corte.html",
+      description: "Vista independiente HU290 para registrar y consultar avisos de corte por finca, semana, fecha, producto, cliente y estado operativo.",
+      tags: ["HU290", "Aviso de corte", "Formulario"]
     },
     {
       module: "aviso-corte",

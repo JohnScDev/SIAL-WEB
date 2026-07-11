@@ -93,6 +93,7 @@ const SIALCore = (() => {
             { id: "paramRoles", label: "Creacion de roles", href: "parametrizacion-roles.html" },
             { id: "tiposEmpresa", label: "Tipos de empresas", href: "gestion-tipos-empresa.html", folder: "Gestion de Transporte", localFolder: "Gestion de Transporte" },
             { id: "empresaTipo", label: "Empresa + tipo", href: "relacion-empresa-tipo.html", folder: "Gestion de Transporte", localFolder: "Gestion de Transporte" },
+            { id: "clientes", label: "Clientes", href: "gestion-clientes.html" },
             { id: "contactos", label: "Contactos", href: "gestion-contactos.html" },
             { id: "dependencias", label: "Dependencias", href: "gestion-dependencias.html" }
           ]
@@ -117,6 +118,7 @@ const SIALCore = (() => {
           folder: "Gestion de Planeacion",
           localFolder: "Gestion de Planeacion",
           views: [
+            { id: "avisos", label: "Avisos de corte", href: "gestion-avisos-corte.html" },
             { id: "semanas", label: "Gestion de semanas", href: "gestion-semanas.html" },
             { id: "generacion", label: "Generar semanas", href: "generacion-semanas.html" },
             { id: "cintas", label: "Gestion de cintas", href: "gestion-cintas.html" },
@@ -792,7 +794,7 @@ const SIALCore = (() => {
       if (!titleNode || !descriptionNode || !contentNode) return;
 
       dialogState.lastAction = action || "view";
-      titleNode.textContent = title || "Acción de perfil";
+      titleNode.textContent = title || "Accion de perfil";
       const safeDescription = String(description || "").trim();
       descriptionNode.textContent = safeDescription;
       descriptionNode.hidden = !safeDescription;
@@ -981,7 +983,7 @@ const SIALCore = (() => {
             <div class="detail-label">Tema visual</div>
             <div class="profile-action-toggle-row">
               <div class="profile-action-inline-copy">
-                <span class="muted">Tema en esta sesión</span>
+                <span class="muted">Tema en esta sesion</span>
                 <strong data-profile-theme-state></strong>
               </div>
               <button class="btn btn-secondary profile-action-theme-btn" type="button" data-profile-theme-toggle></button>
@@ -1001,9 +1003,9 @@ const SIALCore = (() => {
             </div>
           </div>
           <div class="detail-group profile-action-card">
-            <div class="detail-label">Acceso rápido</div>
+            <div class="detail-label">Acceso rapido</div>
             <button class="btn btn-danger profile-action-quick-btn" type="button" data-profile-logout>
-              Cerrar sesión
+              Cerrar sesion
             </button>
           </div>
         `
@@ -1085,7 +1087,7 @@ const SIALCore = (() => {
             </button>
             <a class="profile-menu-item profile-menu-item-danger" role="menuitem" href="${escapeHtml(getLoginUrl())}" data-profile-action="logout">
               ${profileActionIcon("logout")}
-              <span>Cerrar sesión</span>
+              <span>Cerrar sesion</span>
             </a>
           </div>
         </div>

@@ -22,6 +22,7 @@ const SIAL = (() => {
     const nav = qs("[data-nav]");
     if (!nav) return;
     const items = [
+      ["avisos", "gestion-avisos-corte.html", "Avisos de corte"],
       ["semanas", "gestion-semanas.html", "Gestion de semanas"],
       ["generacion", "generacion-semanas.html", "Generar semanas"],
       ["cintas", "gestion-cintas.html", "Gestion de cintas"],
@@ -290,5 +291,89 @@ const SIAL = (() => {
     });
   }
 
-  return { applyShell, initTableFilters, initDrawer, initEmbeddedForm, initRibbonForm, initWeekGeneration, initCalendarMonitor };
+  function initCutNoticeForm() {
+    const form = qs("[data-cut-notice-form]");
+    if (!form) return;
+
+    const okNotice = qs("#cutNoticeOk");
+    const warningNotice = qs("#cutNoticeWarning");
+    const farmSummary = qs("#cutSummaryFarm");
+    const productSummary = qs("#cutSummaryProduct");
+    const palletsSummary = qs("#cutSummaryPallets");
+    const logisticsSummary = qs("#cutSummaryLogistics");
+    const fieldValue = (selector) => String(qs(selector, form)?.value || "").trim();
+
+    qsa(".field-note", form).forEach((note) => {
+      if (!note.dataset.base) note.dataset.base = note.textContent;
+    });
+
+    function updateSummary() {
+      const farm = fieldValue("#cutFarm") || "Finca pendiente";
+      const reference = fieldValue("#cutReference") || "Referencia pendiente";
+      const client = fieldValue("#cutClient") || "Cliente pendiente";
+      const pallets = Number(fieldValue("#cutPallets") || 0);
+      const week = fieldValue("#cutWeek") || "Semana pendiente";
+      const line = fieldValue("#cutLine") || "Linea pendiente";
+      const boxes = fieldValue("#cutBoxes") ? `${fieldValue("#cutBoxes")} cajas por pallet` : "Cajas pendientes";
+
+      if (farmSummary) farmSummary.textContent = farm;
+      if (productSummary) productSummary.textContent = `${reference} para ${client}.`;
+      if (palletsSummary) palletsSummary.textContent = `${pallets} pallets`;
+      if (logisticsSummary) logisticsSummary.textContent = `${week} - ${line} - ${boxes}.`;
+    }
+
+    function validateRequired() {
+      let valid = true;
+      qsa("[data-cut-required]", form).forEach((control) => {
+        const noteId = control.getAttribute("aria-describedby");
+        const note = noteId ? qs(`#${noteId}`) : null;
+        const empty = !String(control.value || "").trim();
+        setFieldState(control, note, empty ? "Este campo es obligatorio." : "");
+        if (empty) valid = false;
+      });
+
+      [
+        ["#cutPallets", "#cutPalletsNote", "La cantidad de pallets debe ser mayor a cero."],
+        ["#cutBunches", "#cutBunchesNote", "La cantidad estimada de racimos debe ser mayor a cero."]
+      ].forEach(([fieldSelector, noteSelector, message]) => {
+        const input = qs(fieldSelector, form);
+        if (!input || !input.value) return;
+        const invalid = Number(input.value) <= 0;
+        setFieldState(input, qs(noteSelector), invalid ? message : "");
+        if (invalid) valid = false;
+      });
+
+      return valid;
+    }
+
+    qsa("input, select, textarea", form).forEach((control) => {
+      control.addEventListener(control.tagName === "SELECT" ? "change" : "input", updateSummary);
+      control.addEventListener("change", updateSummary);
+    });
+
+    form.addEventListener("submit", (event) => {
+      event.preventDefault();
+      const valid = validateRequired();
+      updateSummary();
+      okNotice?.classList.toggle("is-hidden", !valid);
+      warningNotice?.classList.toggle("is-hidden", valid);
+      (valid ? okNotice : warningNotice)?.scrollIntoView({ block: "nearest", behavior: "smooth" });
+    });
+
+    form.addEventListener("reset", () => {
+      window.setTimeout(() => {
+        qsa("[data-cut-required], #cutPallets, #cutBunches", form).forEach((control) => {
+          const noteId = control.getAttribute("aria-describedby");
+          setFieldState(control, noteId ? qs(`#${noteId}`) : null, "", "");
+        });
+        okNotice?.classList.add("is-hidden");
+        warningNotice?.classList.add("is-hidden");
+        updateSummary();
+      }, 0);
+    });
+
+    updateSummary();
+  }
+
+  return { applyShell, initTableFilters, initDrawer, initEmbeddedForm, initRibbonForm, initWeekGeneration, initCalendarMonitor, initCutNoticeForm };
 })();
