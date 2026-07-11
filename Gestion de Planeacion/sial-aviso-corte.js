@@ -291,6 +291,51 @@ const SIAL = (() => {
     });
   }
 
+  function initCutNoticeViewMode() {
+    const listNodes = qsa("[data-cut-list-view]");
+    const createView = qs("[data-cut-create-view]");
+    const openButtons = qsa("[data-open-cut-create]");
+    const closeButtons = qsa("[data-close-cut-create]");
+    if (!listNodes.length || !createView) return;
+
+    const setMode = (mode) => {
+      const isCreate = mode === "create";
+      listNodes.forEach((node) => node.classList.toggle("is-hidden", isCreate));
+      createView.classList.toggle("is-hidden", !isCreate);
+      if (isCreate) {
+        window.history.replaceState(null, "", "#crear");
+        createView.scrollIntoView({ block: "start", behavior: "smooth" });
+        createView.querySelector("form input, form select, form textarea")?.focus();
+        return;
+      }
+      if (window.location.hash === "#crear") {
+        window.history.replaceState(null, "", window.location.pathname);
+      }
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    };
+
+    openButtons.forEach((button) => {
+      button.addEventListener("click", (event) => {
+        event.preventDefault();
+        setMode("create");
+      });
+    });
+
+    closeButtons.forEach((button) => {
+      button.addEventListener("click", () => setMode("list"));
+    });
+
+    window.addEventListener("hashchange", () => {
+      setMode(window.location.hash === "#crear" ? "create" : "list");
+    });
+
+    if (window.location.hash === "#crear") {
+      window.setTimeout(() => setMode("create"), 0);
+    } else {
+      setMode("list");
+    }
+  }
+
   function initCutNoticeForm() {
     const form = qs("[data-cut-notice-form]");
     if (!form) return;
@@ -375,5 +420,5 @@ const SIAL = (() => {
     updateSummary();
   }
 
-  return { applyShell, initTableFilters, initDrawer, initEmbeddedForm, initRibbonForm, initWeekGeneration, initCalendarMonitor, initCutNoticeForm };
+  return { applyShell, initTableFilters, initDrawer, initEmbeddedForm, initRibbonForm, initWeekGeneration, initCalendarMonitor, initCutNoticeViewMode, initCutNoticeForm };
 })();

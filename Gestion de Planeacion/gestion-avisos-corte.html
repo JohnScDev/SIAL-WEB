@@ -41,22 +41,23 @@
           </div>
         </div>
 
-        <div class="notice notice-info">
+        <div class="notice notice-info" data-cut-list-view>
           <svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"></circle><path d="M12 8v5"></path><path d="M12 16h.01"></path></svg>
           <span>La propuesta conserva los catalogos de HU290 como selects. La conexion real a Fincas, Referencias, Productos, Clases, Clientes y demas maestros queda pendiente de contrato backend.</span>
         </div>
 
-        <div class="stats">
+        <div class="stats" data-cut-list-view>
           <article class="stat"><label>Avisos vigentes</label><strong>3</strong><span>Planificaciones listas para activar procesos logisticos.</span></article>
           <article class="stat"><label>Pallets proyectados</label><strong>356</strong><span>Suma estimada sobre avisos visibles.</span></article>
           <article class="stat"><label>Clientes</label><strong>2</strong><span>Catalogo requerido como FK por la HU.</span></article>
           <article class="stat"><label>Alertas</label><strong>1</strong><span>Registro con validacion pendiente por cupo.</span></article>
         </div>
 
-        <article class="card form-card">
+        <article class="card form-card is-hidden" data-cut-create-view>
           <div class="form-heading">
-            <h2>Registrar aviso de corte</h2>
+            <h2>Crear aviso de corte</h2>
             <p>Captura los campos de HU290 para proyectar la cosecha y habilitar procesos posteriores de materiales, transporte, contenedores y trazabilidad.</p>
+            <button class="btn btn-secondary mt-24" type="button" data-close-cut-create>Volver al listado</button>
           </div>
           <div class="form-body">
             <form data-cut-notice-form novalidate>
@@ -207,7 +208,7 @@
                     </select>
                     <div class="field-note">Indica si el envio es directo.</div>
                   </div>
-                  <div class="field span-9">
+                  <div class="field span-12">
                     <label class="label" for="cutObservation">Observaciones</label>
                     <textarea class="textarea" id="cutObservation" rows="3" placeholder="Comentarios operativos del aviso"></textarea>
                     <div class="field-note">Texto opcional para novedades de planificacion.</div>
@@ -227,6 +228,7 @@
               <div class="notice notice-success is-hidden" id="cutNoticeOk">Aviso de corte listo para guardar cuando el backend confirme contratos.</div>
               <div class="notice notice-warning is-hidden" id="cutNoticeWarning">Completa los campos obligatorios antes de guardar.</div>
               <div class="form-actions">
+                <button class="btn btn-secondary" type="button" data-close-cut-create>Cancelar</button>
                 <button class="btn btn-secondary" type="reset">Limpiar formulario</button>
                 <button class="btn btn-primary" type="submit">Guardar aviso de corte</button>
               </div>
@@ -234,10 +236,10 @@
           </div>
         </article>
 
-        <article class="card mt-24">
+        <article class="card mt-24" data-cut-list-view>
           <div class="card-header">
             <div><h2 class="card-title">Avisos registrados</h2><p class="card-subtitle">Consulta por finca, fecha, semana productiva, producto y estado.</p></div>
-            <div class="card-actions"><span class="chip" id="cutNoticeCount">0 registros visibles</span><button class="btn btn-secondary" type="button" data-export-table data-export-filename="avisos-corte" aria-label="Exportar avisos de corte"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 3h18v4H3zM7 7v13h10V7"></path></svg><span>Exportar</span></button></div>
+            <div class="card-actions"><span class="chip" id="cutNoticeCount">0 registros visibles</span><button class="btn btn-secondary" type="button" data-export-table data-export-filename="avisos-corte" aria-label="Exportar avisos de corte"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 3h18v4H3zM7 7v13h10V7"></path></svg><span>Exportar</span></button><a class="btn btn-primary" href="#crear" data-open-cut-create aria-label="Crear aviso de corte"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14"></path><path d="M5 12h14"></path></svg><span>Crear aviso</span></a></div>
           </div>
           <div class="card-body">
             <div class="toolbar compact">
@@ -282,6 +284,6 @@
   </aside>
   <script src="../shared/sial-core.js"></script>
   <script src="sial-aviso-corte.js"></script>
-  <script>SIAL.applyShell("avisos"); SIAL.initCutNoticeForm(); SIAL.initDrawer(); SIAL.initTableFilters({ search: "#cutNoticeSearch", status: "#cutNoticeStatus", context: "#cutNoticeWeek", empty: "#cutNoticeEmpty", count: "#cutNoticeCount" });</script>
+  <script>SIAL.applyShell("avisos"); SIAL.initCutNoticeViewMode(); SIAL.initCutNoticeForm(); SIAL.initDrawer(); SIAL.initTableFilters({ search: "#cutNoticeSearch", status: "#cutNoticeStatus", context: "#cutNoticeWeek", empty: "#cutNoticeEmpty", count: "#cutNoticeCount" });</script>
 </body>
 </html>

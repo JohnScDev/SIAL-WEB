@@ -557,7 +557,7 @@ const SIALCatalog = (() => {
       family: "analitica",
       status: "implementada",
       href: "Trazabilidad/auditoria-operativa.html",
-      description: "Consulta read-only de eventos auditables generados por transporte web y operacion movil, con trazabilidad, evidencias, usuarios, fechas y sincronizacion.",
+      description: "Consulta de eventos auditables generados por transporte web y operacion movil, con trazabilidad, evidencias, aprobacion humana de inspeccion, usuarios, fechas y sincronizacion.",
       tags: ["Auditoria", "Seguridad", "Operacion movil", "Transporte"]
     },
     {
@@ -587,7 +587,7 @@ const SIALCatalog = (() => {
       family: "gestion",
       status: "implementada",
       href: "Gestion%20de%20Planeacion/gestion-avisos-corte.html",
-      description: "Vista independiente HU290 para registrar y consultar avisos de corte por finca, semana, fecha, producto, cliente y estado operativo.",
+      description: "Vista independiente HU290 con KPIs y tabla de avisos; el boton Crear aviso abre el formulario de creacion sin KPIs.",
       tags: ["HU290", "Aviso de corte", "Formulario"]
     },
     {
