@@ -227,6 +227,46 @@ const SIAL = (() => {
       }));
     };
     const formatDate = (value) => { const date = new Date(value); return Number.isNaN(date.getTime()) ? formatFreeText(value) : date.toLocaleString("es-CO", { day: "2-digit", month: "2-digit", year: "numeric", hour: "2-digit", minute: "2-digit" }); };
+    const evidenceApprovals = {};
+    const isInspectionEvent = (event) => /^INSPECCION_/i.test(String(event?.type || "")) || /inspeccion/i.test(String(event?.event || ""));
+    const approvalKey = (event, evidence) => `${event?.id || "event"}:${evidence?.id || "evidence"}`;
+    const approvalFor = (event, evidence) => evidenceApprovals[approvalKey(event, evidence)];
+    const approveEvidence = (event, evidence) => {
+      if (!isInspectionEvent(event) || !evidence?.id) return;
+      const key = approvalKey(event, evidence);
+      if (evidenceApprovals[key]) return;
+      evidenceApprovals[key] = {
+        actor: "QA",
+        at: new Date().toISOString(),
+        evidenceId: evidence.id,
+        title: evidence.title || evidence.checkpoint || "Evidencia"
+      };
+    };
+    const approvalComments = (event) => (event.evidence || []).map(readEvidence).map((item) => {
+      const approval = approvalFor(event, item);
+      if (!approval) return null;
+      return {
+        author: approval.actor,
+        at: formatDate(approval.at),
+        text: `Aprobacion humana registrada para evidencia ${approval.evidenceId} - ${approval.title}.`
+      };
+    }).filter(Boolean);
+    const approvalMarkup = (event, evidence, compact = false) => {
+      if (!isInspectionEvent(event) || !evidence?.id) return "";
+      const approval = approvalFor(event, evidence);
+      const approved = Boolean(approval);
+      const meta = approved ? `Aprobada por ${approval.actor} - ${formatDate(approval.at)}` : "Pendiente de aprobacion humana para evidencia de inspeccion.";
+      return `<div class="audit-approval-panel ${approved ? "is-approved" : ""} ${compact ? "compact" : ""}" data-approval-state="${approved ? "approved" : "pending"}"><div><span>Aprobacion humana</span><strong>${approved ? "Evidencia aprobada" : "Aprobacion pendiente"}</strong><small>${esc(meta)}</small></div><button class="btn ${approved ? "btn-secondary" : "btn-primary"} audit-approval-button" type="button" data-approve-inspection-evidence data-evidence-id="${esc(evidence.id)}" ${approved ? "disabled" : ""}><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6 9 17l-5-5"></path></svg><span>${approved ? "Aprobada" : "Aprobar evidencia"}</span></button></div>`;
+    };
+    const bindApprovalActions = (root, event, afterApprove) => {
+      qsa("[data-approve-inspection-evidence]", root || document).forEach((button) => {
+        button.addEventListener("click", () => {
+          const evidence = (event.evidence || []).map(readEvidence).find((item) => item.id === button.dataset.evidenceId);
+          approveEvidence(event, evidence);
+          afterApprove?.();
+        });
+      });
+    };
     const shortDate = (value) => { const date = new Date(value); return Number.isNaN(date.getTime()) ? formatFreeText(value) : date.toLocaleDateString("es-CO", { day: "2-digit", month: "2-digit", year: "numeric" }); };
     const shortDayMonth = (date) => date.toLocaleDateString("es-CO", { day: "2-digit", month: "2-digit" });
     const weekInfo = (value) => {
@@ -519,7 +559,7 @@ const SIAL = (() => {
       if (context) context.innerHTML = `<strong>${esc(event.operation)}</strong><span>${esc(tracePosition(event))} en el arbol / ${esc(ctx.externalZone)}</span>`;
       const gallery = qs("#auditEvidenceGallery");
       if (gallery) {
-        gallery.innerHTML = active ? `<div class="audit-photo-viewer"><button class="icon-btn audit-photo-nav" type="button" data-evidence-step="-1" aria-label="Foto anterior" ${activeIndex === 0 ? "disabled" : ""}><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m15 18-6-6 6-6"></path></svg></button><article class="audit-gallery-item audit-photo-card" tabindex="-1"><div class="audit-gallery-head audit-gallery-head-compact"><span>Foto ${activeIndex + 1} de ${evidence.length}</span><strong>${esc(detail.date)}</strong><em class="status ${esc(detail.statusClass)}">${esc(detail.statusText)}</em></div><button class="audit-gallery-photo ${esc(detail.statusClass)} ${detail.image ? "has-image" : ""}" type="button" data-open-photo-lightbox aria-label="${esc(`Ampliar foto ${activeIndex + 1}`)}">${photoMarkup}</button></article><button class="icon-btn audit-photo-nav" type="button" data-evidence-step="1" aria-label="Foto siguiente" ${activeIndex === evidence.length - 1 ? "disabled" : ""}><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m9 18 6-6-6-6"></path></svg></button></div>` : emptyText("El evento seleccionado no tiene evidencias fotograficas asociadas.");
+        gallery.innerHTML = active ? `<div class="audit-photo-viewer"><button class="icon-btn audit-photo-nav" type="button" data-evidence-step="-1" aria-label="Foto anterior" ${activeIndex === 0 ? "disabled" : ""}><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m15 18-6-6 6-6"></path></svg></button><article class="audit-gallery-item audit-photo-card" tabindex="-1"><div class="audit-gallery-head audit-gallery-head-compact"><span>Foto ${activeIndex + 1} de ${evidence.length}</span><strong>${esc(detail.date)}</strong><em class="status ${esc(detail.statusClass)}">${esc(detail.statusText)}</em></div><button class="audit-gallery-photo ${esc(detail.statusClass)} ${detail.image ? "has-image" : ""}" type="button" data-open-photo-lightbox aria-label="${esc(`Ampliar foto ${activeIndex + 1}`)}">${photoMarkup}</button>${approvalMarkup(event, active)}</article><button class="icon-btn audit-photo-nav" type="button" data-evidence-step="1" aria-label="Foto siguiente" ${activeIndex === evidence.length - 1 ? "disabled" : ""}><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m9 18 6-6-6-6"></path></svg></button></div>` : emptyText("El evento seleccionado no tiene evidencias fotograficas asociadas.");
         qsa("[data-evidence-step]", gallery).forEach((button) => button.addEventListener("click", () => {
           const nextIndex = activeIndex + Number(button.dataset.evidenceStep || 0);
           if (!evidence[nextIndex]) return;
@@ -527,11 +567,15 @@ const SIAL = (() => {
           renderEvidence(event);
         }));
         qs("[data-open-photo-lightbox]", gallery)?.addEventListener("click", () => renderPhotoLightbox(event));
+        bindApprovalActions(gallery, event, () => {
+          renderEvidence(event);
+          renderComments(event);
+        });
       }
     }
 
     function renderComments(event) {
-      const comments = (event.comments || []).map(readComment);
+      const comments = [...(event.comments || []).map(readComment), ...approvalComments(event)];
       const node = qs("#auditComments");
       if (node) node.innerHTML = comments.length ? comments.map((item) => `<article class="audit-comment"><strong>${esc(item.author)}</strong><span>${esc(formatFreeText(item.at))}</span><p>${esc(formatFreeText(item.text))}</p></article>`).join("") : emptyText("Sin comentarios o anotaciones registradas.");
     }
@@ -566,10 +610,11 @@ const SIAL = (() => {
       const map = { source: sourceLabel(event), operation: event.operation, reference: refLabel(event), user: event.user, date: formatDate(event.at), location: contextFor(event).externalZone, status: formatStatus(event.status), sync: formatStatus(event.sync) };
       qsa("[data-audit-target]").forEach((node) => { node.textContent = map[node.dataset.auditTarget] || "-"; });
       qs("#auditTraceList").innerHTML = list((event.trace || []).map(readTrace), "Sin trazabilidad registrada.", (item) => `<article class="audit-timeline-item ${esc(item.status)}"><strong>${esc(item.title)}</strong><span>${esc(formatFreeText(item.meta))}</span></article>`);
-      qs("#auditEvidenceList").innerHTML = list((event.evidence || []).map(readEvidence), "Sin evidencias asociadas.", (item) => `<article class="audit-evidence-card"><div class="audit-evidence-thumb ${item.image ? "has-image" : ""}">${item.image ? `<img src="${esc(item.image)}" alt="${esc(item.title || "Evidencia")}" loading="lazy" />` : `<svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>`}</div><strong>${esc(item.title)}</strong><span>${esc(item.type)} - ${esc(formatStatus(item.status))}</span><small>${esc(formatFreeText(item.note || ""))}</small></article>`);
+      qs("#auditEvidenceList").innerHTML = list((event.evidence || []).map(readEvidence), "Sin evidencias asociadas.", (item) => `<article class="audit-evidence-card"><div class="audit-evidence-thumb ${item.image ? "has-image" : ""}">${item.image ? `<img src="${esc(item.image || "")}" alt="${esc(item.title || "Evidencia")}" loading="lazy" />` : `<svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>`}</div><strong>${esc(item.title)}</strong><span>${esc(item.type)} - ${esc(formatStatus(item.status))}</span><small>${esc(formatFreeText(item.note || ""))}</small>${approvalMarkup(event, item, true)}</article>`);
       qs("#auditDrawerControls").innerHTML = list((event.controls || []).map(readControl), "Sin puntos de control asociados.", (point) => `<article class="audit-control-item"><div><strong>${esc(point.name)}</strong><span>${esc(formatFreeText(point.observation || "Sin observacion"))}</span></div><span class="status ${valueClass(point.value)}">${esc(formatStatus(point.value))}</span></article>`);
-      qs("#auditNoveltyList").innerHTML = list([...(event.novelties || []), ...(event.comments || []).map((item) => { const comment = readComment(item); return `${comment.author}: ${comment.text}`; })], "Sin novedades registradas.", (item) => `<div class="audit-note warning">${esc(formatFreeText(item))}</div>`);
+      qs("#auditNoveltyList").innerHTML = list([...(event.novelties || []), ...(event.comments || []).map((item) => { const comment = readComment(item); return `${comment.author}: ${comment.text}`; }), ...approvalComments(event).map((item) => `${item.author}: ${item.text}`)], "Sin novedades registradas.", (item) => `<div class="audit-note warning">${esc(formatFreeText(item))}</div>`);
       qs("#auditSignatureList").innerHTML = list(event.signatures || [], "Sin firmas/responsabilidad asociada.", (item) => `<div class="audit-note success">${esc(formatFreeText(item))}</div>`);
+      bindApprovalActions(qs("#auditEvidenceList"), event, () => openDrawer(event));
       drawer.classList.add("show");
       backdrop.classList.add("show");
       drawer.setAttribute("aria-hidden", "false");
