@@ -23,6 +23,10 @@
           <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h16"></path><path d="M4 12h16"></path><path d="M4 19h16"></path></svg>
           <span>Catalogo</span>
         </a>
+        <a class="nav-link" href="#inicio" data-section-link="inicio">
+          <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m3 11 9-8 9 8"></path><path d="M5 10v10h14V10"></path><path d="M9 20v-6h6v6"></path></svg>
+          <span>Inicio</span>
+        </a>
         <a class="nav-link" href="#autenticacion" data-section-link="autenticacion">
           <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"></rect><path d="M8 11V8a4 4 0 0 1 8 0v3"></path><path d="M12 15v2"></path></svg>
           <span>Login</span>
@@ -117,8 +121,8 @@
         <section class="stats" aria-label="Resumen del catalogo">
           <article class="stat">
             <label>Modulos publicados</label>
-            <strong>13</strong>
-            <span>Login, Changelog, Errores, Indicadores, Usuarios, Empresa, Transporte, Fincas, Referencias, Planeacion, Materiales, Puerto y Seguridad.</span>
+            <strong>14</strong>
+            <span>Inicio, Login, Changelog, Errores, Indicadores, Usuarios, Empresa, Transporte, Fincas, Referencias, Planeacion, Materiales, Puerto y Seguridad.</span>
           </article>
           <article class="stat">
             <label>Vistas enlazadas</label>
@@ -154,6 +158,7 @@
             <div class="toolbar">
               <select class="select" id="moduleFilter" aria-label="Filtrar por modulo">
                 <option value="all">Todos los modulos</option>
+                <option value="inicio">Inicio adaptable</option>
                 <option value="autenticacion">Login</option>
                 <option value="libreria">Libreria UI</option>
                 <option value="indicadores">Indicadores</option>
@@ -188,6 +193,18 @@
               </select>
             </div>
           </div>
+        </section>
+
+        <section class="catalog-section" id="inicio" aria-labelledby="homeTitle">
+          <div class="section-heading">
+            <div>
+              <p class="section-kicker">Cinco manejos distintos</p>
+              <h2 id="homeTitle">Inicio adaptable por permisos</h2>
+              <p>Propuestas para comparar excepciones, agenda, flujo, personalización y analítica sin revelar módulos o acciones no autorizadas.</p>
+            </div>
+            <a class="btn btn-primary" href="Inicio/index.html">Abrir módulo Inicio</a>
+          </div>
+          <div class="catalog-grid" data-module-group="inicio"></div>
         </section>
 
         <section class="catalog-section" id="libreria" aria-labelledby="libraryTitle">

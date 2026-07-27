@@ -1,6 +1,56 @@
 const SIALCatalog = (() => {
   const views = [
     {
+      module: "inicio",
+      moduleLabel: "Inicio adaptable",
+      title: "Centro de control por excepciones",
+      family: "analitica",
+      status: "implementada",
+      href: "Inicio/centro-excepciones.html",
+      description: "Bandeja priorizada de bloqueos, alertas y acciones, compuesta únicamente con módulos y permisos autorizados.",
+      tags: ["Permisos", "Excepciones", "Acciones"]
+    },
+    {
+      module: "inicio",
+      moduleLabel: "Inicio adaptable",
+      title: "Mi jornada operativa",
+      family: "gestion",
+      status: "implementada",
+      href: "Inicio/jornada-operativa.html",
+      description: "Agenda diaria con eventos y tareas del usuario, filtrada por módulo, acción y alcance de datos.",
+      tags: ["Agenda", "Tareas", "Rol"]
+    },
+    {
+      module: "inicio",
+      moduleLabel: "Inicio adaptable",
+      title: "Torre de control logística",
+      family: "analitica",
+      status: "implementada",
+      href: "Inicio/torre-control.html",
+      description: "Flujo operativo que omite etapas restringidas y declara cuándo la lectura de continuidad es parcial.",
+      tags: ["Flujo", "Etapas", "Alcance"]
+    },
+    {
+      module: "inicio",
+      moduleLabel: "Inicio adaptable",
+      title: "Inicio personalizado por rol",
+      family: "gestion",
+      status: "implementada",
+      href: "Inicio/inicio-personalizado.html",
+      description: "Espacio personal construido con contribuciones de cada módulo y acciones permitidas para el perfil efectivo.",
+      tags: ["Personalización", "Módulos", "RBAC"]
+    },
+    {
+      module: "inicio",
+      moduleLabel: "Inicio adaptable",
+      title: "Resumen ejecutivo autorizado",
+      family: "analitica",
+      status: "implementada",
+      href: "Inicio/resumen-ejecutivo.html",
+      description: "Indicadores y riesgos consolidados sin calcular ni revelar información proveniente de fuentes restringidas.",
+      tags: ["Ejecutivo", "Indicadores", "Seguridad"]
+    },
+    {
       module: "libreria",
       moduleLabel: "Libreria UI",
       title: "Componentes compartidos SIAL",
@@ -775,7 +825,7 @@ const SIALCatalog = (() => {
   }
 
   function render() {
-    ["libreria", "indicadores", "changelog", "errores", "autenticacion", "referencias", "fincas", "transporte", "empresas", "usuarios", "aviso-corte", "materiales", "puerto", "trazabilidad"].forEach((module) => {
+    ["inicio", "libreria", "indicadores", "changelog", "errores", "autenticacion", "referencias", "fincas", "transporte", "empresas", "usuarios", "aviso-corte", "materiales", "puerto", "trazabilidad"].forEach((module) => {
       const group = qs(`[data-module-group="${module}"]`);
       if (!group) return;
       group.innerHTML = views.filter((view) => view.module === module).map(cardTemplate).join("");
