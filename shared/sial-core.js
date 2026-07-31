@@ -119,6 +119,7 @@ const SIALCore = (() => {
           localFolder: "Gestion de Planeacion",
           views: [
             { id: "avisos", label: "Avisos de corte", href: "gestion-avisos-corte.html" },
+            { id: "crearAviso", label: "Crear aviso", href: "crear-aviso-corte.html" },
             { id: "semanas", label: "Gestion de semanas", href: "gestion-semanas.html" },
             { id: "generacion", label: "Generar semanas", href: "generacion-semanas.html" },
             { id: "cintas", label: "Gestion de cintas", href: "gestion-cintas.html" },

@@ -23,6 +23,7 @@ const SIAL = (() => {
     if (!nav) return;
     const items = [
       ["avisos", "gestion-avisos-corte.html", "Avisos de corte"],
+      ["crearAviso", "crear-aviso-corte.html", "Crear aviso"],
       ["semanas", "gestion-semanas.html", "Gestion de semanas"],
       ["generacion", "generacion-semanas.html", "Generar semanas"],
       ["cintas", "gestion-cintas.html", "Gestion de cintas"],

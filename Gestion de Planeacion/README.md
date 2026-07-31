@@ -4,7 +4,8 @@ Propuesta UI/UX SIAL para registro de avisos de corte y tablas maestras de calen
 
 ## Vistas incluidas
 
-- `gestion-avisos-corte.html`: vista independiente HU290 con KPIs y tabla de avisos; el boton Crear aviso abre el formulario de creacion sin KPIs.
+- `gestion-avisos-corte.html`: consulta principal de avisos con acceso a la creación dedicada.
+- `crear-aviso-corte.html`: creación HU290 como documento semanal con cabecera, matriz de asignaciones, borrador, validación y publicación.
 - `gestion-semanas.html`: listado maestro de semanas productivas con detalle lateral, auditoria y acceso a generacion.
 - `generacion-semanas.html`: formulario extenso dedicado para generar automaticamente 52 semanas por ano desde la semana 1.
 - `gestion-cintas.html`: maestra corta de cintas oficiales con formulario embebido en la card de gestion.
@@ -25,6 +26,7 @@ Propuesta UI/UX SIAL para registro de avisos de corte y tablas maestras de calen
 - Cantidad de pallets y racimos estimados deben ser mayores a cero.
 - La consulta de avisos debe filtrar por finca, fecha, semana productiva, producto y estado.
 - El formulario de creacion se muestra separado del listado y no hereda los KPIs de consulta.
+- La carga de Loading Plan, la importación desde Excel y la bandeja de borradores siempre alimentan un borrador antes de publicar.
 
 ## Dependencias backend pendientes
 

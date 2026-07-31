@@ -15,242 +15,141 @@
 </head>
 <body data-view-family="gestion">
   <div class="app-shell">
-    <aside class="sidebar" aria-label="Navegacion principal">
+    <aside class="sidebar" aria-label="Navegación principal">
       <div class="brand"><span class="brand-badge">S</span><span>SIAL</span></div>
-      <p class="menu-caption">Planeacion</p>
+      <p class="menu-caption">Planeación</p>
       <nav data-nav></nav>
     </aside>
+
     <header class="header">
       <div class="header-left">
-        <button class="icon-btn" aria-label="Abrir menu"><svg class="icon" viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
-        <label class="search"><svg class="icon" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-3.5-3.5"></path></svg><input aria-label="Busqueda principal" placeholder="Buscar..." /></label>
+        <button class="icon-btn" type="button" data-sidebar-toggle aria-label="Abrir menú">
+          <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+        </button>
+        <label class="search">
+          <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-3.5-3.5"></path></svg>
+          <input aria-label="Búsqueda principal" placeholder="Buscar..." />
+        </label>
       </div>
       <div class="header-right">
-        <button class="icon-btn theme-toggle" type="button" data-theme-toggle aria-label="Cambiar a modo oscuro" aria-pressed="false" title="Cambiar a modo oscuro"><svg class="icon theme-icon theme-icon-moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12.8A8.5 8.5 0 1 1 11.2 3a6.8 6.8 0 0 0 9.8 9.8Z"></path></svg><svg class="icon theme-icon theme-icon-sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2"></path><path d="M12 20v2"></path><path d="m4.93 4.93 1.41 1.41"></path><path d="m17.66 17.66 1.41 1.41"></path><path d="M2 12h2"></path><path d="M20 12h2"></path><path d="m6.34 17.66-1.41 1.41"></path><path d="m19.07 4.93-1.41 1.41"></path></svg></button>
-        <button class="icon-btn" aria-label="Notificaciones"><svg class="icon" viewBox="0 0 24 24"><path d="M15 17h5l-1.4-1.4A2 2 0 0 1 18 14.2V11a6 6 0 1 0-12 0v3.2a2 2 0 0 1-.6 1.4L4 17h5"></path><path d="M10 17a2 2 0 0 0 4 0"></path></svg></button>
+        <button class="icon-btn theme-toggle" type="button" data-theme-toggle aria-label="Cambiar a modo oscuro" aria-pressed="false">
+          <svg class="icon theme-icon theme-icon-moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12.8A8.5 8.5 0 1 1 11.2 3a6.8 6.8 0 0 0 9.8 9.8Z"></path></svg>
+          <svg class="icon theme-icon theme-icon-sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2M12 20v2M2 12h2M20 12h2"></path><path d="m4.93 4.93 1.41 1.41m11.32 11.32 1.41 1.41m0-14.14-1.41 1.41M6.34 17.66l-1.41 1.41"></path></svg>
+        </button>
+        <button class="icon-btn" type="button" aria-label="Notificaciones">
+          <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M15 17h5l-1.4-1.4A2 2 0 0 1 18 14.2V11a6 6 0 1 0-12 0v3.2a2 2 0 0 1-.6 1.4L4 17h5"></path><path d="M10 17a2 2 0 0 0 4 0"></path></svg>
+        </button>
         <span class="avatar">QA</span>
       </div>
     </header>
 
     <main class="main">
-      <section class="page">
-        <p class="page-eyebrow">Aviso de Corte</p>
-        <div class="page-header">
+      <section class="page cut-hub-page">
+        <div class="page-header cut-hub-heading">
           <div>
-            <h1 class="page-title">Matriz de avisos de corte</h1>
-            <p class="page-subtitle">Planea, crea y corrige avisos en una hoja operativa. Navega con teclado, pega filas desde Excel y conserva el control de materiales, transporte y trazabilidad.</p>
-          </div>
-          <div class="page-header-actions">
-            <button class="btn btn-secondary" type="button" data-cut-toggle-paste aria-label="Pegar filas desde Excel">
-              <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5h6"></path><path d="M9 3h6v4H9z"></path><path d="M7 5H5v16h14V5h-2"></path></svg>
-              Pegar desde Excel
-            </button>
-            <button class="btn btn-primary" type="button" data-cut-add-row aria-label="Crear nueva fila de aviso">
-              <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14"></path><path d="M5 12h14"></path></svg>
-              Nueva fila
-            </button>
+            <p class="page-eyebrow">Planeación</p>
+            <h1 class="page-title">Avisos de corte</h1>
+            <p class="page-subtitle">Consulta el avance semanal y entra únicamente al aviso que necesitas revisar o continuar.</p>
           </div>
         </div>
 
-        <div class="notice notice-info cut-guidance">
-          <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M12 8v5"></path><path d="M12 16h.01"></path></svg>
-          <span><strong>Operacion tipo Excel:</strong> usa Tab para avanzar, Shift + Tab para regresar y Enter para pasar a la siguiente celda. Las columnas con fondo suave se calculan automaticamente.</span>
-        </div>
-
-        <div class="stats cut-stats" aria-label="Resumen de avisos">
-          <article class="stat"><label>Avisos visibles</label><strong data-cut-stat-records>0</strong><span>Registros que cumplen los filtros.</span></article>
-          <article class="stat"><label>Pallets</label><strong data-cut-stat-pallets>0</strong><span>Proyeccion sobre la matriz visible.</span></article>
-          <article class="stat"><label>Total cajas</label><strong data-cut-stat-boxes>0</strong><span>Pallets por configuracion de cajas.</span></article>
-          <article class="stat"><label>Requieren atencion</label><strong data-cut-stat-alerts>0</strong><span>Cambios, bloqueos o recalculos pendientes.</span></article>
-        </div>
-
-        <article class="card cut-sheet-card">
-          <div class="card-header cut-sheet-header">
+        <article class="card cut-hub-card">
+          <div class="card-header cut-hub-card-header">
             <div>
-              <h2 class="card-title">Planeacion semanal</h2>
-              <p class="card-subtitle">Cada fila representa un aviso. Solo los avisos en estado CREADO permiten correccion directa.</p>
+              <h2 class="card-title">Gestión de avisos</h2>
+              <p class="card-subtitle">Selecciona un aviso para consultar su detalle o continuar el trabajo pendiente.</p>
             </div>
             <div class="card-actions">
-              <span class="chip" data-cut-visible-count>0 filas</span>
-              <button class="btn btn-ghost is-hidden" type="button" data-cut-discard>Descartar cambios</button>
-              <button class="btn btn-primary" type="button" data-cut-save disabled>Guardar cambios</button>
+              <span class="chip" data-hub-result-count>0 avisos visibles</span>
+              <a class="btn btn-primary" href="crear-aviso-corte.html">
+                <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg>
+                Crear aviso
+              </a>
             </div>
           </div>
-
-          <div class="card-body cut-filter-body">
-            <div class="toolbar cut-filter-toolbar">
-              <label class="cut-filter-search">
-                <span class="sr-only">Buscar avisos</span>
-                <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-3.5-3.5"></path></svg>
-                <input class="input" type="search" data-cut-search aria-label="Buscar avisos" placeholder="Buscar aviso, finca, cliente o referencia" />
-              </label>
-              <select class="select" data-cut-filter-week aria-label="Filtrar por semana">
+          <div class="card-body">
+            <div class="toolbar cut-hub-filters">
+              <input class="input" type="search" data-hub-search aria-label="Buscar avisos" placeholder="Buscar por aviso, semana o responsable" />
+              <select class="select" data-hub-view aria-label="Filtrar por estado de gestión">
+                <option value="all">Todos los avisos</option>
+                <option value="attention">Requieren atención</option>
+                <option value="draft">Borradores</option>
+                <option value="published">Publicados</option>
+              </select>
+              <select class="select" data-hub-week aria-label="Filtrar por semana">
                 <option value="all">Todas las semanas</option>
-                <option value="SEM-2026-30">SEM-2026-30</option>
+                <option value="SEM-2026-32">SEM-2026-32</option>
                 <option value="SEM-2026-31">SEM-2026-31</option>
+                <option value="SEM-2026-30">SEM-2026-30</option>
               </select>
-              <select class="select" data-cut-filter-farm aria-label="Filtrar por finca">
-                <option value="all">Todas las fincas</option>
-                <option value="FINCA LA ESPERANZA">FINCA LA ESPERANZA</option>
-                <option value="FINCA SANTA ISABEL">FINCA SANTA ISABEL</option>
-                <option value="FINCA LOS ALMENDROS">FINCA LOS ALMENDROS</option>
+              <select class="select" data-hub-type aria-label="Filtrar por tipo">
+                <option value="all">Todos los tipos</option>
+                <option value="Inicial">Inicial</option>
+                <option value="Proyectado">Proyectado</option>
+                <option value="Corrección">Corrección</option>
               </select>
-              <select class="select" data-cut-filter-status aria-label="Filtrar por estado">
-                <option value="all">Todos los estados</option>
-                <option value="CREADO">CREADO</option>
-                <option value="PROGRAMADO">PROGRAMADO</option>
-                <option value="EN_CARGUE">EN_CARGUE</option>
-              </select>
+              <button class="btn btn-ghost is-hidden" type="button" data-hub-clear>Limpiar filtros</button>
             </div>
-
-            <section class="inline-form-panel cut-paste-panel is-hidden" data-cut-paste-panel aria-labelledby="cutPasteTitle">
-              <div>
-                <h3 class="card-title" id="cutPasteTitle">Pegar filas desde Excel</h3>
-                <p class="card-subtitle">Copia las columnas en este orden: dia corte, finca, sector, cliente, referencia, pallets, cajas por pallet y racimos.</p>
-              </div>
-              <textarea class="textarea cut-paste-input" data-cut-paste-input rows="4" aria-label="Filas copiadas desde Excel" placeholder="28/07/2026&#9;FINCA LA ESPERANZA&#9;SECTOR 01&#9;GLOBAL FRUIT EXPORT&#9;AGSTDRA&#9;120&#9;54&#9;5400"></textarea>
-              <div class="cut-paste-actions">
-                <button class="btn btn-ghost" type="button" data-cut-paste-cancel>Cancelar</button>
-                <button class="btn btn-secondary" type="button" data-cut-paste-apply>Agregar filas</button>
-              </div>
-            </section>
           </div>
 
-          <div class="table-wrap cut-sheet-scroll" data-cut-sheet-scroll tabindex="0" aria-label="Matriz editable de avisos de corte">
-            <table class="cut-sheet-table">
-              <colgroup>
-                <col class="cut-col-code" />
-                <col class="cut-col-week" />
-                <col class="cut-col-date" />
-                <col class="cut-col-farm" />
-                <col class="cut-col-sector" />
-                <col class="cut-col-group" />
-                <col class="cut-col-client" />
-                <col class="cut-col-reference" />
-                <col class="cut-col-class" />
-                <col class="cut-col-number" />
-                <col class="cut-col-number" />
-                <col class="cut-col-number" />
-                <col class="cut-col-number" />
-                <col class="cut-col-direct" />
-                <col class="cut-col-line" />
-                <col class="cut-col-version" />
-                <col class="cut-col-materials" />
-                <col class="cut-col-status" />
-                <col class="cut-col-observation" />
-                <col class="cut-col-actions" />
-              </colgroup>
+          <div class="table-wrap cut-hub-table-wrap">
+            <table class="cut-hub-table">
               <thead>
-                <tr class="cut-group-row">
-                  <th class="cut-sticky-code" rowspan="2" scope="col">Aviso</th>
-                  <th colspan="5" scope="colgroup">Planificacion</th>
-                  <th colspan="3" scope="colgroup">Producto y cliente</th>
-                  <th colspan="4" scope="colgroup">Proyeccion</th>
-                  <th colspan="3" scope="colgroup">Logistica</th>
-                  <th colspan="3" scope="colgroup">Control</th>
-                  <th rowspan="2" scope="col">Acciones</th>
-                </tr>
                 <tr>
+                  <th scope="col">Aviso</th>
                   <th scope="col">Semana</th>
-                  <th scope="col">Dia corte</th>
-                  <th scope="col">Finca</th>
-                  <th scope="col">Sector</th>
-                  <th scope="col">Grupo</th>
-                  <th scope="col">Cliente</th>
-                  <th scope="col">Referencia</th>
-                  <th scope="col">Clase / certificacion</th>
-                  <th scope="col">Pallets</th>
-                  <th scope="col">Cajas / pallet</th>
-                  <th scope="col">Total cajas</th>
-                  <th scope="col">Racimos</th>
-                  <th scope="col">Directo</th>
-                  <th scope="col">Linea</th>
-                  <th scope="col">Version</th>
-                  <th scope="col">Materiales</th>
+                  <th scope="col">Tipo y versión</th>
+                  <th scope="col">Alcance</th>
                   <th scope="col">Estado</th>
-                  <th scope="col">Observaciones</th>
+                  <th scope="col">Última actualización</th>
+                  <th scope="col"><span class="sr-only">Acciones</span></th>
                 </tr>
               </thead>
-              <tbody data-cut-grid-body></tbody>
+              <tbody data-hub-body></tbody>
             </table>
           </div>
 
-          <div class="cut-sheet-statusbar" data-cut-statusbar>
-            <div class="cut-status-legend" aria-label="Convenciones de estado">
-              <span class="status status-active">Guardado</span>
-              <span class="status status-warning">Cambio pendiente</span>
-              <span class="status status-inactive">Bloqueado</span>
-            </div>
-            <strong data-cut-change-count>Sin cambios pendientes</strong>
+          <div class="cut-hub-empty is-hidden" data-hub-empty>
+            <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h16v14H4z"></path><path d="M8 9h8M8 13h5"></path></svg>
+            <strong>No hay avisos para esta búsqueda</strong>
+            <span>Prueba otra semana, tipo o término.</span>
+            <button class="btn btn-secondary" type="button" data-hub-empty-clear>Limpiar filtros</button>
           </div>
-          <div class="card-body"><div class="empty-state" data-cut-empty>No hay avisos que coincidan con los filtros.</div></div>
-        </article>
 
-        <div class="notice notice-success is-hidden" data-cut-feedback-success role="status">
-          <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6 9 17l-5-5"></path></svg>
-          <span>Los cambios fueron guardados y la trazabilidad visual fue actualizada.</span>
-        </div>
-        <div class="notice notice-error is-hidden" data-cut-feedback-error role="alert">
-          <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M12 8v5"></path><path d="M12 16h.01"></path></svg>
-          <span data-cut-feedback-error-text>Revisa los campos obligatorios resaltados.</span>
-        </div>
+        </article>
       </section>
     </main>
   </div>
 
-  <div class="drawer-backdrop" id="detailBackdrop"></div>
-  <aside class="drawer cut-detail-drawer" id="detailDrawer" aria-label="Detalle e impacto del aviso" aria-hidden="true">
-    <div class="drawer-head">
-      <div><h3 data-cut-detail-title>Detalle del aviso</h3><p data-cut-detail-description>Planificacion, impacto y trazabilidad.</p></div>
-      <button class="icon-btn" id="closeDetail" type="button" aria-label="Cerrar detalle"><svg class="icon" viewBox="0 0 24 24"><path d="m18 6-12 12"></path><path d="m6 6 12 12"></path></svg></button>
-    </div>
-    <div class="drawer-body">
-      <div class="cut-detail-summary" data-cut-detail-summary></div>
-      <div class="notice notice-warning is-hidden" data-cut-detail-lock></div>
-      <section class="cut-detail-section">
-        <h4 class="section-title">Impacto operativo</h4>
-        <div class="stack" data-cut-detail-impact></div>
-      </section>
-      <section class="cut-detail-section">
-        <h4 class="section-title">Historial</h4>
-        <div class="stack" data-cut-detail-audit></div>
-      </section>
-    </div>
-  </aside>
-
-  <div class="confirm-backdrop" data-cut-confirm-backdrop hidden></div>
-  <section class="confirm-dialog cut-confirm-dialog" data-cut-confirm-dialog role="dialog" aria-modal="true" aria-labelledby="cutConfirmTitle" aria-describedby="cutConfirmDescription" hidden>
+  <div class="confirm-backdrop" data-hub-backdrop hidden></div>
+  <section class="confirm-dialog cut-hub-detail" data-hub-detail role="dialog" aria-modal="true" aria-labelledby="hubDetailTitle" aria-describedby="hubDetailDescription" hidden>
     <div class="confirm-dialog-head">
       <div>
-        <h2 id="cutConfirmTitle">Confirmar cambios</h2>
-        <p id="cutConfirmDescription">Revisa el impacto antes de guardar. El ID original se conserva.</p>
+        <h2 id="hubDetailTitle" data-hub-detail-title>Detalle del aviso</h2>
+        <p id="hubDetailDescription" data-hub-detail-description></p>
       </div>
-      <button class="icon-btn" type="button" data-cut-confirm-close aria-label="Cerrar confirmacion"><svg class="icon" viewBox="0 0 24 24"><path d="m18 6-12 12"></path><path d="m6 6 12 12"></path></svg></button>
+      <button class="icon-btn" type="button" data-hub-close aria-label="Cerrar">
+        <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m18 6-12 12M6 6l12 12"></path></svg>
+      </button>
     </div>
     <div class="confirm-dialog-body">
-      <div class="notice notice-warning">
-        <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 2 21h20L12 3Z"></path><path d="M12 9v5"></path><path d="M12 17h.01"></path></svg>
-        <span>Modificar referencia o cantidades deja materiales pendientes de recalculo y exige revision de transporte.</span>
-      </div>
-      <div class="cut-diff-wrap">
-        <table class="cut-diff-table">
-          <thead><tr><th>Aviso</th><th>Campo</th><th>Anterior</th><th>Nuevo</th></tr></thead>
-          <tbody data-cut-diff-body></tbody>
-        </table>
-      </div>
-      <label class="label" for="cutChangeReason">Motivo del cambio <span class="required" data-cut-reason-required>*</span></label>
-      <textarea class="textarea" id="cutChangeReason" data-cut-change-reason rows="3" placeholder="Describe por que se ajusta la planeacion"></textarea>
-      <div class="field-note" data-cut-reason-note>Obligatorio cuando se modifica un aviso existente.</div>
+      <div class="cut-hub-detail-state" data-hub-detail-state></div>
+      <dl class="cut-hub-detail-grid" data-hub-detail-grid></dl>
+      <div class="cut-hub-detail-note" data-hub-detail-note></div>
+      <section class="cut-hub-detail-history">
+        <h3>Actividad reciente</h3>
+        <div data-hub-detail-history></div>
+      </section>
     </div>
     <div class="confirm-dialog-actions">
-      <button class="btn btn-secondary" type="button" data-cut-confirm-close>Cancelar</button>
-      <button class="btn btn-primary" type="button" data-cut-confirm-save>Confirmar y guardar</button>
+      <button class="btn btn-secondary" type="button" data-hub-close>Cerrar</button>
+      <a class="btn btn-primary" data-hub-detail-action href="crear-aviso-corte.html">Abrir aviso</a>
     </div>
   </section>
 
   <script src="../shared/sial-core.js"></script>
   <script src="sial-aviso-corte.js"></script>
-  <script src="sial-aviso-corte-grid.js"></script>
-  <script>SIAL.applyShell("avisos"); window.SIALCutNoticeGrid.init();</script>
+  <script src="sial-aviso-corte-list.js"></script>
+  <script>SIAL.applyShell("avisos"); window.SIALCutNoticeList.init();</script>
 </body>
 </html>

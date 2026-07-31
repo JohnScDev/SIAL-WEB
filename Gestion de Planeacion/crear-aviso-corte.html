@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SIAL | Crear aviso de corte</title>
+  <script>
+    (function () {
+      const savedTheme = localStorage.getItem("sial-theme");
+      const systemDark = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
+      document.documentElement.dataset.theme = savedTheme || (systemDark ? "dark" : "light");
+    })();
+  </script>
+  <link rel="stylesheet" href="sial-aviso-corte.css" />
+</head>
+<body data-view-family="gestion">
+  <div class="app-shell">
+    <aside class="sidebar" aria-label="Navegación principal">
+      <div class="brand"><span class="brand-badge">S</span><span>SIAL</span></div>
+      <p class="menu-caption">Planeación</p>
+      <nav data-nav></nav>
+    </aside>
+
+    <header class="header">
+      <div class="header-left">
+        <button class="icon-btn" type="button" data-sidebar-toggle aria-label="Abrir menú">
+          <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+        </button>
+        <label class="search">
+          <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-3.5-3.5"></path></svg>
+          <input aria-label="Búsqueda principal" placeholder="Buscar..." />
+        </label>
+      </div>
+      <div class="header-right">
+        <button class="icon-btn theme-toggle" type="button" data-theme-toggle aria-label="Cambiar a modo oscuro" aria-pressed="false">
+          <svg class="icon theme-icon theme-icon-moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12.8A8.5 8.5 0 1 1 11.2 3a6.8 6.8 0 0 0 9.8 9.8Z"></path></svg>
+          <svg class="icon theme-icon theme-icon-sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2M12 20v2M2 12h2M20 12h2"></path><path d="m4.93 4.93 1.41 1.41m11.32 11.32 1.41 1.41m0-14.14-1.41 1.41M6.34 17.66l-1.41 1.41"></path></svg>
+        </button>
+        <button class="icon-btn" type="button" aria-label="Notificaciones">
+          <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M15 17h5l-1.4-1.4A2 2 0 0 1 18 14.2V11a6 6 0 1 0-12 0v3.2a2 2 0 0 1-.6 1.4L4 17h5"></path><path d="M10 17a2 2 0 0 0 4 0"></path></svg>
+        </button>
+        <span class="avatar">QA</span>
+      </div>
+    </header>
+
+    <main class="main">
+      <section class="page cut-create-page">
+        <div class="cut-create-heading">
+          <div>
+            <p class="page-eyebrow" data-create-eyebrow>Avisos de corte / Creación</p>
+            <div class="cut-title-line">
+              <h1 class="page-title" data-create-title>Nuevo aviso de corte</h1>
+              <span class="status status-warning" data-draft-state>Borrador sin guardar</span>
+            </div>
+            <p class="page-subtitle" data-create-subtitle>Prepara el plan semanal, revisa las asignaciones y publica una única versión para las áreas involucradas.</p>
+          </div>
+          <div class="page-header-actions cut-create-actions">
+            <a class="btn btn-secondary" href="gestion-avisos-corte.html">Volver</a>
+            <button class="btn btn-secondary" type="button" data-open-drafts>
+              <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h16v14H4z"></path><path d="M8 9h8M8 13h5"></path></svg>
+              Borradores <span class="cut-button-count" data-draft-count>3</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="notice notice-info cut-create-note">
+          <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M12 8v5M12 16h.01"></path></svg>
+          <span>El aviso se publicará como una sola versión. Después de publicarlo, cualquier corrección deberá crear una nueva versión.</span>
+        </div>
+
+        <article class="card cut-header-card">
+          <div class="card-header">
+            <div>
+              <h2 class="card-title">Datos del aviso</h2>
+              <p class="card-subtitle">La versión pertenece al aviso completo y se aplica a todas las asignaciones.</p>
+            </div>
+            <div class="cut-header-identity">
+              <span>Identificador al publicar</span>
+              <strong data-notice-code>AC-2026-032</strong>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="grid cut-header-grid">
+              <div class="field span-3">
+                <label class="label" for="noticeWeek">Semana productiva <span class="required">*</span></label>
+                <select class="select" id="noticeWeek" data-header-field>
+                  <option value="SEM-2026-32">SEM-2026-32</option>
+                  <option value="SEM-2026-33">SEM-2026-33</option>
+                </select>
+              </div>
+              <div class="field span-3">
+                <label class="label" for="noticeType">Tipo de aviso <span class="required">*</span></label>
+                <select class="select" id="noticeType" data-header-field>
+                  <option value="Inicial">Inicial</option>
+                  <option value="Proyectado">Proyectado</option>
+                </select>
+              </div>
+              <div class="field span-3">
+                <label class="label" for="noticeVersion">Versión</label>
+                <input class="input" id="noticeVersion" value="Inicial" readonly />
+              </div>
+              <div class="field span-3">
+                <label class="label" for="noticeCompany">Empresa</label>
+                <input class="input" id="noticeCompany" value="Banasan" readonly />
+                <div class="field-note">Definida por la sesión activa.</div>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <article class="card cut-source-card">
+          <div class="card-header">
+            <div>
+              <div class="cut-card-title-row">
+                <h2 class="card-title">Fuentes de planeación</h2>
+                <span class="tag tag-info">Mejoras aprobadas</span>
+              </div>
+              <p class="card-subtitle">Carga información existente sin publicar automáticamente. Todo resultado queda primero en el borrador.</p>
+            </div>
+          </div>
+          <div class="card-body cut-source-actions">
+            <button class="cut-source-action" type="button" data-source="loading">
+              <span class="cut-source-icon">
+                <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h16v14H4z"></path><path d="M8 9h8M8 13h5"></path></svg>
+              </span>
+              <span><strong>Cargar Loading Plan</strong><small>Compara el pedido del cliente con lo asignado.</small></span>
+              <svg class="icon cut-source-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="m9 18 6-6-6-6"></path></svg>
+            </button>
+            <button class="cut-source-action" type="button" data-source="excel">
+              <span class="cut-source-icon">
+                <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h9l3 3v15H6z"></path><path d="m9 10 6 6m0-6-6 6"></path></svg>
+              </span>
+              <span><strong>Importar aviso desde Excel</strong><small>Mapea el archivo actual y valida antes de agregar filas.</small></span>
+              <svg class="icon cut-source-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="m9 18 6-6-6-6"></path></svg>
+            </button>
+            <button class="cut-source-action" type="button" data-source="paste">
+              <span class="cut-source-icon">
+                <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5h6M9 3h6v4H9zM7 5H5v16h14V5h-2"></path></svg>
+              </span>
+              <span><strong>Pegar filas desde Excel</strong><small>Copia columnas tabuladas directamente a la matriz.</small></span>
+              <svg class="icon cut-source-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="m9 18 6-6-6-6"></path></svg>
+            </button>
+          </div>
+          <div class="cut-source-result is-hidden" data-source-result role="status"></div>
+        </article>
+
+        <div class="cut-workspace-layout">
+          <article class="card cut-create-sheet">
+            <div class="card-header cut-matrix-header">
+              <div>
+                <h2 class="card-title">Asignaciones del aviso</h2>
+                <p class="card-subtitle">Cada fila asigna una referencia a una finca y un día de corte.</p>
+              </div>
+              <div class="card-actions">
+                <span class="chip" data-row-count>0 filas</span>
+                <button class="btn btn-secondary" type="button" data-add-assignment>
+                  <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg>
+                  Agregar fila
+                </button>
+              </div>
+            </div>
+
+            <div class="cut-validation-summary is-hidden" data-validation-summary tabindex="-1"></div>
+
+            <div class="table-wrap cut-create-scroll" tabindex="0" aria-label="Matriz de asignaciones del aviso">
+              <table class="cut-create-table">
+                <colgroup>
+                  <col class="cut-create-col-row" />
+                  <col class="cut-create-col-date" />
+                  <col class="cut-create-col-farm" />
+                  <col class="cut-create-col-group" />
+                  <col class="cut-create-col-sector" />
+                  <col class="cut-create-col-client" />
+                  <col class="cut-create-col-reference" />
+                  <col class="cut-create-col-class" />
+                  <col class="cut-create-col-number" />
+                  <col class="cut-create-col-number" />
+                  <col class="cut-create-col-number" />
+                  <col class="cut-create-col-number" />
+                  <col class="cut-create-col-direct" />
+                  <col class="cut-create-col-line" />
+                  <col class="cut-create-col-state" />
+                  <col class="cut-create-col-actions" />
+                </colgroup>
+                <thead>
+                  <tr class="cut-group-row">
+                    <th class="cut-create-sticky" rowspan="2" scope="col">Fila</th>
+                    <th colspan="4" scope="colgroup">Planeación</th>
+                    <th colspan="3" scope="colgroup">Producto y cliente</th>
+                    <th colspan="4" scope="colgroup">Cantidades</th>
+                    <th colspan="2" scope="colgroup">Logística</th>
+                    <th colspan="2" scope="colgroup">Control</th>
+                  </tr>
+                  <tr>
+                    <th scope="col">Día de corte</th>
+                    <th scope="col">Finca</th>
+                    <th scope="col">Grupo</th>
+                    <th scope="col">Sector</th>
+                    <th scope="col">Cliente</th>
+                    <th scope="col">Referencia</th>
+                    <th scope="col">Clase / certificación</th>
+                    <th scope="col">Palés</th>
+                    <th scope="col">Cajas / palé</th>
+                    <th scope="col">Total cajas</th>
+                    <th scope="col">Racimos</th>
+                    <th scope="col">Directo</th>
+                    <th scope="col">Línea</th>
+                    <th scope="col">Validación</th>
+                    <th scope="col">Acciones</th>
+                  </tr>
+                </thead>
+                <tbody data-assignment-body></tbody>
+              </table>
+            </div>
+
+            <div class="cut-create-statusbar">
+              <span><strong data-status-farms>0</strong> fincas</span>
+              <span><strong data-status-pallets>0</strong> palés</span>
+              <span><strong data-status-boxes>0</strong> cajas</span>
+              <span><strong data-status-blockers>0</strong> bloqueos</span>
+              <span data-last-saved>Sin guardar</span>
+            </div>
+
+            <div class="form-actions cut-create-form-actions">
+              <button class="btn btn-secondary" type="button" data-save-draft>Guardar borrador</button>
+              <button class="btn btn-secondary" type="button" data-validate-notice>Validar aviso</button>
+              <button class="btn btn-primary" type="button" data-open-publish disabled>Publicar aviso</button>
+            </div>
+          </article>
+
+          <aside class="card cut-impact-card" aria-labelledby="impactTitle">
+            <div class="card-header">
+              <div>
+                <div class="cut-card-title-row">
+                  <h2 class="card-title" id="impactTitle">Proyección de impacto</h2>
+                  <span class="tag tag-info">Mejora aprobada</span>
+                </div>
+                <p class="card-subtitle">Estimación previa; no genera pedidos ni programaciones.</p>
+              </div>
+            </div>
+            <div class="card-body cut-impact-body">
+              <div class="cut-impact-primary">
+                <span>Cajas planificadas</span>
+                <strong data-impact-boxes>0</strong>
+                <small data-impact-coverage>Sin Loading Plan cargado</small>
+              </div>
+              <div class="cut-impact-list">
+                <div><span>Palés requeridos</span><strong data-impact-pallets>0</strong></div>
+                <div><span>Cajas de cartón</span><strong data-impact-cartons>0</strong></div>
+                <div><span>Sellos estimados</span><strong data-impact-seals>0</strong></div>
+                <div><span>Movimientos de transporte</span><strong data-impact-trips>0</strong></div>
+              </div>
+              <div class="cut-impact-alerts" data-impact-alerts>
+                <div class="cut-impact-empty">Agrega asignaciones para calcular el impacto.</div>
+              </div>
+            </div>
+          </aside>
+        </div>
+
+        <div class="notice notice-success is-hidden" data-create-success role="status"></div>
+      </section>
+    </main>
+  </div>
+
+  <div class="confirm-backdrop" data-modal-backdrop hidden></div>
+
+  <section class="confirm-dialog cut-source-dialog" data-source-dialog role="dialog" aria-modal="true" aria-labelledby="sourceDialogTitle" aria-describedby="sourceDialogDescription" hidden>
+    <div class="confirm-dialog-head">
+      <div>
+        <h2 id="sourceDialogTitle" data-source-title>Cargar información</h2>
+        <p id="sourceDialogDescription" data-source-description>La información se agregará al borrador actual.</p>
+      </div>
+      <button class="icon-btn" type="button" data-close-modal aria-label="Cerrar">
+        <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m18 6-12 12M6 6l12 12"></path></svg>
+      </button>
+    </div>
+    <div class="confirm-dialog-body">
+      <div data-source-loading class="cut-source-flow is-hidden">
+        <label class="cut-upload-zone" for="loadingPlanFile" data-upload-zone="loading" tabindex="0">
+          <span class="cut-upload-visual" aria-hidden="true">
+            <svg class="icon" viewBox="0 0 24 24"><path d="M12 16V4m0 0-4 4m4-4 4 4"></path><path d="M4 15v5h16v-5"></path></svg>
+          </span>
+          <strong>Seleccionar Loading Plan</strong>
+          <span>Selecciona o arrastra un Excel o CSV · máximo 10 MB</span>
+          <input id="loadingPlanFile" type="file" accept=".xlsx,.xlsm,.csv,.tsv" data-loading-file />
+        </label>
+        <div class="cut-file-summary is-hidden" data-loading-summary aria-live="polite"></div>
+        <div class="cut-import-preview is-hidden" data-loading-preview></div>
+      </div>
+
+      <div data-source-excel class="cut-source-flow is-hidden">
+        <label class="cut-upload-zone" for="cutExcelFile" data-upload-zone="excel" tabindex="0">
+          <span class="cut-upload-visual" aria-hidden="true">
+            <svg class="icon" viewBox="0 0 24 24"><path d="M12 16V4m0 0-4 4m4-4 4 4"></path><path d="M4 15v5h16v-5"></path></svg>
+          </span>
+          <strong>Seleccionar aviso de corte</strong>
+          <span>Selecciona o arrastra un .xlsx, .xlsm, .csv o .tsv · máximo 10 MB</span>
+          <input id="cutExcelFile" type="file" accept=".xlsx,.xlsm,.csv,.tsv" data-excel-file />
+        </label>
+        <div class="cut-file-summary is-hidden" data-excel-summary aria-live="polite"></div>
+        <div class="cut-import-mapping is-hidden" data-excel-mapping>
+          <div class="grid">
+            <div class="field span-6">
+              <label class="label" for="excelSheet">Hoja detectada</label>
+              <select class="select" id="excelSheet" data-excel-sheet>
+                <option>Resumen Pallets</option>
+                <option>Resumen Cajas</option>
+                <option>BD_Aviso</option>
+              </select>
+            </div>
+            <div class="field span-6">
+              <label class="label" for="excelHeader">Fila de encabezados</label>
+              <input class="input" id="excelHeader" type="number" min="1" value="11" />
+            </div>
+          </div>
+          <div class="cut-mapping-grid" data-mapping-grid></div>
+          <div class="notice notice-warning">
+            <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 2 21h20L12 3Z"></path><path d="M12 9v5M12 17h.01"></path></svg>
+            <span>Las filas importadas se contrastarán con fincas, clientes, referencias y certificaciones activas.</span>
+          </div>
+        </div>
+        <div class="cut-import-preview is-hidden" data-excel-preview></div>
+      </div>
+
+      <div data-source-paste class="cut-source-flow is-hidden">
+        <div class="notice notice-info">
+          <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M12 8v5M12 16h.01"></path></svg>
+          <span>Copia: día, finca, grupo, sector, cliente, referencia, palés, cajas por palé y racimos.</span>
+        </div>
+        <label class="label" for="pasteAssignments">Filas copiadas desde Excel</label>
+        <textarea class="textarea cut-source-paste" id="pasteAssignments" rows="9" data-paste-input placeholder="03/08/2026	LA CEIBA	AGROS	SECTOR 01	FYFFES	AGSTDRA	18	54	820"></textarea>
+        <div class="field-note">Las columnas deben estar separadas por tabulaciones.</div>
+      </div>
+    </div>
+    <div class="confirm-dialog-actions">
+      <button class="btn btn-secondary" type="button" data-close-modal>Cancelar</button>
+      <button class="btn btn-primary" type="button" data-source-next>Analizar archivo</button>
+    </div>
+  </section>
+
+  <section class="confirm-dialog cut-drafts-dialog" data-drafts-dialog role="dialog" aria-modal="true" aria-labelledby="draftsTitle" hidden>
+    <div class="confirm-dialog-head">
+      <div>
+        <h2 id="draftsTitle">Borradores incompletos</h2>
+        <p>Retoma avisos guardados sin afectar el borrador actual hasta que confirmes.</p>
+      </div>
+      <button class="icon-btn" type="button" data-close-modal aria-label="Cerrar">
+        <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m18 6-12 12M6 6l12 12"></path></svg>
+      </button>
+    </div>
+    <div class="confirm-dialog-body">
+      <div class="cut-drafts-list" data-drafts-list></div>
+    </div>
+    <div class="confirm-dialog-actions">
+      <button class="btn btn-secondary" type="button" data-close-modal>Cerrar</button>
+    </div>
+  </section>
+
+  <section class="confirm-dialog cut-publish-dialog" data-publish-dialog role="dialog" aria-modal="true" aria-labelledby="publishTitle" aria-describedby="publishDescription" hidden>
+    <div class="confirm-dialog-head">
+      <div>
+        <h2 id="publishTitle">Confirmar publicación</h2>
+        <p id="publishDescription">Revisa el alcance antes de cerrar la versión actual.</p>
+      </div>
+      <button class="icon-btn" type="button" data-close-modal aria-label="Cerrar">
+        <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m18 6-12 12M6 6l12 12"></path></svg>
+      </button>
+    </div>
+    <div class="confirm-dialog-body">
+      <div class="cut-publish-decision">
+        <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"></path><path d="m9 12 2 2 4-4"></path></svg>
+        <div>
+          <strong>El aviso quedará publicado</strong>
+          <p data-publish-message></p>
+        </div>
+      </div>
+      <div class="cut-publish-summary" data-publish-summary></div>
+      <div class="cut-publish-validation" data-publish-validation role="status"></div>
+      <div class="cut-publish-observation">
+        <label for="publishObservation">Nota de publicación <span>Opcional</span></label>
+        <textarea class="textarea" id="publishObservation" rows="2" placeholder="Escribe una indicación breve que deba acompañar esta versión"></textarea>
+        <small>Será visible junto al aviso publicado.</small>
+      </div>
+    </div>
+    <div class="confirm-dialog-actions">
+      <button class="btn btn-secondary" type="button" data-close-modal>Volver a revisar</button>
+      <button class="btn btn-primary" type="button" data-confirm-publish>Publicar versión</button>
+    </div>
+  </section>
+
+  <script src="../shared/sial-core.js"></script>
+  <script src="sial-aviso-corte.js"></script>
+  <script src="sial-aviso-corte-create.js"></script>
+  <script>SIAL.applyShell("crearAviso"); window.SIALCutNoticeCreate.init();</script>
+</body>
+</html>
