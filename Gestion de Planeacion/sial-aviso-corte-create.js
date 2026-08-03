@@ -12,11 +12,11 @@
   };
 
   const references = {
-    AGSTDRA: { className: "CONVENCIONAL", boxes: 54, package: "STD-RA", sealFactor: 1 },
-    "20LD7RA": { className: "CONVENCIONAL", boxes: 55, package: "20L-RA", sealFactor: 1 },
-    "ALGFT18BD": { className: "FAIRTRADE", boxes: 54, package: "FT-18-BD", sealFactor: 1 },
-    "MPBORG303": { className: "ORGANICA FAIRTRADE", boxes: 48, package: "ORG-303", sealFactor: 2 },
-    STDSRA: { className: "CONVENCIONAL", boxes: 54, package: "STD-RA", sealFactor: 1 }
+    AGSTDRA: { className: "CONVENCIONAL", boxes: 54, package: "STD-RA", sealFactor: 1, clients: ["FYFFES", "DOLE"] },
+    "20LD7RA": { className: "CONVENCIONAL", boxes: 55, package: "20L-RA", sealFactor: 1, clients: ["FYFFES", "CHIQUITA"] },
+    "ALGFT18BD": { className: "FAIRTRADE", boxes: 54, package: "FT-18-BD", sealFactor: 1, clients: ["FYFFES"] },
+    "MPBORG303": { className: "ORGANICA FAIRTRADE", boxes: 48, package: "ORG-303", sealFactor: 2, clients: ["DOLE"] },
+    STDSRA: { className: "CONVENCIONAL", boxes: 54, package: "STD-RA", sealFactor: 1, clients: ["GLOBAL FRUIT EXPORT"] }
   };
 
   const clients = ["FYFFES", "DOLE", "CHIQUITA", "GLOBAL FRUIT EXPORT"];
@@ -66,6 +66,21 @@
     let validated = false;
     let published = false;
     let lastTrigger = null;
+    let pendingAction = "publish";
+    const route = new URLSearchParams(window.location.search);
+    const routeMode = route.get("modo");
+    const routeNotice = route.get("aviso");
+    const blockedCorrectionReasons = {
+      "AC-2026-031-02": "La programación de transporte ya inició. Esta versión está disponible únicamente para consulta.",
+      "AC-2026-030-01": "La operación ya fue cerrada. Esta versión está disponible únicamente para trazabilidad."
+    };
+    const isBlockedCorrection = routeMode === "corregir" && Boolean(blockedCorrectionReasons[routeNotice]);
+    const isCorrection = routeMode === "corregir" && !isBlockedCorrection;
+    const isReadOnly = routeMode === "consultar" || isBlockedCorrection;
+    const correctionEditableFields = new Set(["client", "reference", "pallets", "boxes"]);
+    const correctionMetaByNotice = { "AC-2026-032": { originVersion: "Inicial", nextVersion: "Cambio 1", stage: "Preoperativa" }, "AC-2026-031-01": { originVersion: "Versión 2", nextVersion: "Cambio 2", stage: "Preoperativa" } };
+    const correctionMeta = correctionMetaByNotice[routeNotice] || { originVersion: "Versión publicada", nextVersion: "Nueva versión", stage: "Preoperativa" };
+    const originalRows = rows.map((row) => ({ ...row }));
 
     const refs = {
       week: qs("#noticeWeek"),
@@ -95,23 +110,23 @@
       excelMapping: qs("[data-excel-mapping]"),
       excelPreview: qs("[data-excel-preview]"),
       pasteInput: qs("[data-paste-input]"),
-      draftsList: qs("[data-drafts-list]")
+      draftsList: qs("[data-drafts-list]"),
+      editContext: qs("[data-edit-context]"), editNotice: qs("[data-edit-notice]"),
+      editOriginVersion: qs("[data-edit-origin-version]"), editNextVersion: qs("[data-edit-next-version]"), editStage: qs("[data-edit-stage]"),
+      changeReason: qs("[data-change-reason]"), changeSummary: qs("[data-change-summary]"), publishChanges: qs("[data-publish-changes]")
     };
 
-    const route = new URLSearchParams(window.location.search);
-    const routeMode = route.get("modo");
-    const routeNotice = route.get("aviso");
     if (routeMode && routeNotice) {
       const title = qs("[data-create-title]");
       const eyebrow = qs("[data-create-eyebrow]");
       const subtitle = qs("[data-create-subtitle]");
-      const isCorrection = routeMode === "corregir";
-      const isReadOnly = routeMode === "consultar";
       if (title) title.textContent = isCorrection ? "Preparar corrección" : isReadOnly ? "Consultar aviso de corte" : "Continuar borrador";
       if (eyebrow) eyebrow.textContent = `Avisos de corte / ${isCorrection ? "Corrección" : isReadOnly ? "Consulta" : "Edición"}`;
       if (subtitle) {
         subtitle.textContent = isCorrection
           ? "Revisa la versión publicada y prepara únicamente los cambios que formarán una nueva versión."
+          : isBlockedCorrection
+            ? blockedCorrectionReasons[routeNotice]
           : isReadOnly
             ? "Consulta las asignaciones y el impacto de esta versión publicada."
             : "Completa la información pendiente, valida las asignaciones y conserva el avance del borrador.";
@@ -120,6 +135,13 @@
       refs.state.textContent = isCorrection ? "Nueva versión" : isReadOnly ? "Publicado" : "Borrador guardado";
       refs.state.className = `status ${isReadOnly ? "status-active" : "status-warning"}`;
       if (isReadOnly) published = true;
+      if (isCorrection) {
+        refs.type.value = "Corrección"; refs.version.value = correctionMeta.nextVersion; refs.editContext?.classList.remove("is-hidden");
+        refs.editNotice.textContent = routeNotice; refs.editOriginVersion.textContent = correctionMeta.originVersion; refs.editNextVersion.textContent = correctionMeta.nextVersion; refs.editStage.textContent = correctionMeta.stage;
+        qs(".cut-create-note span").textContent = "La versión publicada se conserva. Esta corrección creará una nueva versión del mismo aviso.";
+        qs(".cut-source-card")?.classList.add("is-hidden"); qs("[data-open-drafts]")?.classList.add("is-hidden"); qs("[data-add-assignment]")?.classList.add("is-hidden");
+        qs("[data-save-draft]").textContent = "Guardar corrección"; qs("[data-validate-notice]").textContent = "Validar cambios"; refs.publish.textContent = "Revisar cambios"; qs("[data-confirm-publish]").textContent = "Publicar nueva versión";
+      }
     }
 
     const esc = (value) => String(value ?? "")
@@ -128,6 +150,13 @@
     const formatNumber = (value) => Number(value || 0).toLocaleString("es-CO");
     const totalBoxes = (row) => Number(row.pallets || 0) * Number(row.boxes || 0);
     const unique = (values) => [...new Set(values.filter(Boolean))];
+    const fieldLabels = { client: "Cliente", reference: "Referencia", pallets: "Palés", boxes: "Cajas por palé" };
+    const isFieldLocked = (field) => published || (isCorrection && !correctionEditableFields.has(field));
+    const getChanges = () => {
+      if (!isCorrection) return []; const changes = [];
+      rows.forEach((row, index) => { const original = originalRows.find((item) => item.id === row.id) || originalRows[index]; if (!original) return; correctionEditableFields.forEach((field) => { if (String(row[field] ?? "") !== String(original[field] ?? "")) changes.push({ row: index + 1, farm: row.farm, field, label: fieldLabels[field], before: original[field], after: row[field] }); }); });
+      return changes;
+    };
     const options = (values, current, placeholder) => `${placeholder ? `<option value="">${esc(placeholder)}</option>` : ""}${values.map((value) => `<option value="${esc(value)}"${value === current ? " selected" : ""}>${esc(value)}</option>`).join("")}`;
 
     const getDrafts = () => {
@@ -148,7 +177,7 @@
       if (published) return;
       validated = false;
       refs.publish.disabled = true;
-      refs.state.textContent = "Borrador sin guardar";
+      refs.state.textContent = isCorrection ? "Cambios sin guardar" : "Borrador sin guardar";
       refs.state.className = "status status-warning";
       refs.success.classList.add("is-hidden");
       refs.validationSummary.classList.add("is-hidden");
@@ -176,6 +205,9 @@
         if (row.reference && !reference) result.errors.push("La referencia no está activa.");
         if (farm && reference && !farm.certifications.includes(reference.className)) {
           result.errors.push(`La finca no cuenta con certificación ${reference.className}.`);
+        }
+        if (reference?.clients && row.client && !reference.clients.includes(row.client)) {
+          result.errors.push(`La referencia ${row.reference} no está habilitada para ${row.client}.`);
         }
       });
 
@@ -207,32 +239,27 @@
     function rowTemplate(row, index, results) {
       const reference = references[row.reference];
       const result = results.get(row.id);
-      const locked = published ? " disabled" : "";
+      const lock = (field) => isFieldLocked(field) ? " disabled" : "";
+      const changed = (field) => isCorrection && getChanges().some((change) => change.row === index + 1 && change.field === field) ? " is-changed" : "";
       const issueTitle = [...result.errors, ...result.warnings].join(" ");
       return `
         <tr data-assignment-row="${esc(row.id)}"${result.errors.length ? ' class="has-errors"' : result.warnings.length ? ' class="has-warnings"' : ""}>
           <td class="cut-create-sticky"><strong>${index + 1}</strong></td>
-          <td><input class="input cut-cell-control" type="date" data-field="cutDate" value="${esc(row.cutDate)}"${locked} /></td>
-          <td><select class="select cut-cell-control" data-field="farm"${locked}>${options(Object.keys(farms), row.farm, "Seleccionar")}</select></td>
-          <td><input class="input cut-cell-control" data-field="group" value="${esc(row.group)}"${locked} /></td>
-          <td><input class="input cut-cell-control" data-field="sector" value="${esc(row.sector)}"${locked} /></td>
-          <td><select class="select cut-cell-control" data-field="client"${locked}>${options(clients, row.client, "Seleccionar")}</select></td>
-          <td><select class="select cut-cell-control" data-field="reference"${locked}>${options(Object.keys(references), row.reference, "Seleccionar")}</select></td>
+          <td><input class="input cut-cell-control${changed("cutDate")}" type="date" data-field="cutDate" value="${esc(row.cutDate)}"${lock("cutDate")} /></td>
+          <td><select class="select cut-cell-control${changed("farm")}" data-field="farm"${lock("farm")}>${options(Object.keys(farms), row.farm, "Seleccionar")}</select></td>
+          <td><input class="input cut-cell-control${changed("group")}" data-field="group" value="${esc(row.group)}"${lock("group")} /></td>
+          <td><input class="input cut-cell-control${changed("sector")}" data-field="sector" value="${esc(row.sector)}"${lock("sector")} /></td>
+          <td><select class="select cut-cell-control${changed("client")}" data-field="client"${lock("client")}>${options(clients, row.client, "Seleccionar")}</select></td>
+          <td><select class="select cut-cell-control${changed("reference")}" data-field="reference"${lock("reference")}>${options(Object.keys(references), row.reference, "Seleccionar")}</select></td>
           <td><span class="cut-cell-value">${esc(reference?.className || "-")}</span></td>
-          <td><input class="input cut-cell-control" type="number" min="1" data-field="pallets" value="${esc(row.pallets)}"${locked} /></td>
-          <td><input class="input cut-cell-control" type="number" min="1" data-field="boxes" value="${esc(row.boxes)}"${locked} /></td>
+          <td><input class="input cut-cell-control${changed("pallets")}" type="number" min="1" data-field="pallets" value="${esc(row.pallets)}"${lock("pallets")} /></td>
+          <td><input class="input cut-cell-control${changed("boxes")}" type="number" min="1" data-field="boxes" value="${esc(row.boxes)}"${lock("boxes")} /></td>
           <td><span class="cut-cell-value is-calculated">${formatNumber(totalBoxes(row))}</span></td>
-          <td><input class="input cut-cell-control" type="number" min="1" data-field="bunches" value="${esc(row.bunches)}"${locked} /></td>
-          <td><select class="select cut-cell-control" data-field="direct"${locked}>${options(["No", "Sí"], row.direct)}</select></td>
-          <td><select class="select cut-cell-control" data-field="line"${locked}>${options(lines, row.line)}</select></td>
+          <td><input class="input cut-cell-control${changed("bunches")}" type="number" min="1" data-field="bunches" value="${esc(row.bunches)}"${lock("bunches")} /></td>
+          <td><select class="select cut-cell-control${changed("direct")}" data-field="direct"${lock("direct")}>${options(["No", "Sí"], row.direct)}</select></td>
+          <td><select class="select cut-cell-control${changed("line")}" data-field="line"${lock("line")}>${options(lines, row.line)}</select></td>
           <td title="${esc(issueTitle)}">${rowStatus(result)}</td>
-          <td>
-            <div class="row-actions">
-              <button class="icon-btn danger" type="button" data-remove-row aria-label="Eliminar fila ${index + 1}" title="Eliminar fila"${locked}>
-                <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M9 7V4h6v3m-8 0 1 13h8l1-13M10 11v5m4-5v5"></path></svg>
-              </button>
-            </div>
-          </td>
+          <td><div class="row-actions"><button class="icon-btn danger" type="button" data-remove-row aria-label="Eliminar fila ${index + 1}" title="Eliminar fila"${published || isCorrection ? " disabled" : ""}><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M9 7V4h6v3m-8 0 1 13h8l1-13M10 11v5m4-5v5"></path></svg></button></div></td>
         </tr>`;
     }
 
@@ -305,15 +332,25 @@
       });
     }
 
+    function renderChangeSummary() {
+      if (!isCorrection || !refs.changeSummary) return;
+      const changes = getChanges(); refs.changeSummary.classList.remove("is-hidden");
+      if (!changes.length) { refs.changeSummary.className = "cut-change-summary is-empty"; refs.changeSummary.innerHTML = "<strong>Aún no hay cambios</strong><span>Modifica un campo permitido para preparar la nueva versión.</span>"; return; }
+      const materials = changes.some((change) => ["reference", "pallets", "boxes"].includes(change.field)); const transport = changes.some((change) => ["pallets", "boxes"].includes(change.field));
+      refs.changeSummary.className = "cut-change-summary";
+      refs.changeSummary.innerHTML = `<div class="cut-change-summary-head"><div><strong>${changes.length} ${changes.length === 1 ? "cambio preparado" : "cambios preparados"}</strong><span>Se publicarán como ${esc(correctionMeta.nextVersion)} sin reemplazar ${esc(correctionMeta.originVersion)}.</span></div><span class="status ${validated ? "status-active" : "status-warning"}">${validated ? "Validado" : "Pendiente de validar"}</span></div><div class="cut-change-list">${changes.slice(0, 6).map((change) => `<div><span>Fila ${change.row} · ${esc(change.farm)} · ${esc(change.label)}</span><del>${esc(change.before)}</del><b aria-hidden="true">→</b><ins>${esc(change.after)}</ins></div>`).join("")}${changes.length > 6 ? `<small>Y ${changes.length - 6} cambios más.</small>` : ""}</div><div class="cut-change-impact"><span><strong>Materiales:</strong> ${materials ? "recalcular sugerencias" : "sin cambios"}.</span><span><strong>Transporte:</strong> ${transport ? "revisar capacidad" : "sin cambios"}.</span></div>`;
+    }
+
     function render() {
       const results = validateRows();
       body.innerHTML = rows.length
         ? rows.map((row, index) => rowTemplate(row, index, results)).join("")
         : '<tr><td colspan="16"><div class="empty-state show">Aún no hay asignaciones. Agrega una fila o carga información existente.</div></td></tr>';
       bindRowEvents();
-      renderSummary(results);
-      qsa("[data-header-field]").forEach((control) => { control.disabled = published; });
-      qsa("[data-add-assignment], [data-source], [data-save-draft], [data-validate-notice]").forEach((button) => { button.disabled = published; });
+      renderSummary(results); renderChangeSummary();
+      qsa("[data-header-field]").forEach((control) => { control.disabled = published || isCorrection; });
+      qsa("[data-add-assignment], [data-source]").forEach((button) => { button.disabled = published || isCorrection; });
+      qsa("[data-save-draft], [data-validate-notice]").forEach((button) => { button.disabled = published; });
     }
 
     function newRow(defaults = {}) {
@@ -692,49 +729,46 @@
       const results = validateRows();
       const errors = [...results.values()].flatMap((result) => result.errors);
       const warnings = [...results.values()].flatMap((result) => result.warnings);
-      validated = errors.length === 0 && rows.length > 0;
+      const changes = getChanges();
+      const reasonMissing = isCorrection && !refs.changeReason.value.trim();
+      const changesMissing = isCorrection && changes.length === 0;
+      validated = errors.length === 0 && rows.length > 0 && !reasonMissing && !changesMissing;
       refs.publish.disabled = !validated;
       refs.validationSummary.classList.remove("is-hidden", "is-success", "is-warning");
       refs.validationSummary.classList.add(validated ? (warnings.length ? "is-warning" : "is-success") : "is-warning");
       refs.validationSummary.innerHTML = validated
-        ? `<div><strong>${warnings.length ? `Aviso válido con ${warnings.length} advertencias` : "Aviso listo para publicar"}</strong><span>${warnings.length ? "Revisa las advertencias de mezcla antes de confirmar." : "Fincas, referencias, certificaciones y cantidades fueron validadas."}</span></div><button class="btn btn-primary" type="button" data-summary-publish>Publicar aviso</button>`
-        : `<div><strong>${errors.length || 1} bloqueos impiden publicar</strong><span>${rows.length ? "Revisa las filas marcadas y vuelve a validar." : "Agrega al menos una asignación."}</span></div>`;
+        ? `<div><strong>${warnings.length ? `Aviso válido con ${warnings.length} advertencias` : isCorrection ? "Cambios listos para revisar" : "Aviso listo para publicar"}</strong><span>${warnings.length ? "Revisa las advertencias antes de confirmar." : isCorrection ? "El motivo, las asignaciones y el impacto fueron validados." : "Fincas, referencias, certificaciones y cantidades fueron validadas."}</span></div><button class="btn btn-primary" type="button" data-summary-publish>${isCorrection ? "Revisar cambios" : "Publicar aviso"}</button>`
+        : `<div><strong>${errors.length + Number(reasonMissing) + Number(changesMissing) || 1} bloqueos impiden publicar</strong><span>${reasonMissing ? "Explica el motivo del cambio." : changesMissing ? "Realiza al menos un cambio permitido." : rows.length ? "Revisa las filas marcadas y vuelve a validar." : "Agrega al menos una asignación."}</span></div>`;
       qs("[data-summary-publish]")?.addEventListener("click", openPublish);
-      refs.validationSummary.focus();
-      render();
+      refs.validationSummary.focus(); render(); return validated;
     }
 
-    function openPublish() {
+    function openPublish(action = "publish") {
       if (!validated || published) return;
+      pendingAction = typeof action === "string" ? action : "publish";
       const pallets = rows.reduce((sum, row) => sum + Number(row.pallets || 0), 0);
       const boxes = rows.reduce((sum, row) => sum + totalBoxes(row), 0);
       const warnings = [...validateRows().values()].reduce((sum, result) => sum + result.warnings.length, 0);
-      qs("[data-publish-message]").textContent =
-        `${refs.code.textContent} para ${refs.week.value} se publicará como versión ${refs.version.value}. Después de publicarla, cualquier corrección deberá generar una nueva versión.`;
-      qs("[data-publish-summary]").innerHTML = [
-        ["Fincas", unique(rows.map((row) => row.farm)).length],
-        ["Palés", formatNumber(pallets)],
-        ["Cajas", formatNumber(boxes)]
-      ].map(([label, value]) => `<span><strong>${esc(value)}</strong> ${esc(label.toLowerCase())}</span>`).join("");
+      qs("[data-publish-message]").textContent = isCorrection
+        ? `${refs.code.textContent} conservará su identidad. Los cambios se registrarán como ${correctionMeta.nextVersion} y ${correctionMeta.originVersion} seguirá disponible.`
+        : `${refs.code.textContent} para ${refs.week.value} se publicará como versión ${refs.version.value}. Después de publicarla, cualquier corrección deberá generar una nueva versión.`;
+      qs("[data-publish-dialog] h2").textContent = pendingAction === "save" ? "Confirmar cambios" : isCorrection ? "Confirmar nueva versión" : "Confirmar publicación";
+      qs("[data-confirm-publish]").textContent = pendingAction === "save" ? "Guardar corrección" : isCorrection ? "Publicar nueva versión" : "Publicar versión";
+      qs("[data-publish-summary]").innerHTML = [["Fincas", unique(rows.map((row) => row.farm)).length], ["Palés", formatNumber(pallets)], ["Cajas", formatNumber(boxes)]].map(([label, value]) => `<span><strong>${esc(value)}</strong> ${esc(label.toLowerCase())}</span>`).join("");
+      const changes = getChanges(); refs.publishChanges.classList.toggle("is-hidden", !isCorrection);
+      if (isCorrection) refs.publishChanges.innerHTML = `<strong>Qué cambiará</strong><div>${changes.map((change) => `<span><b>${esc(change.label)}</b> · ${esc(change.farm)}: <del>${esc(change.before)}</del> → <ins>${esc(change.after)}</ins></span>`).join("")}</div><p><b>Motivo:</b> ${esc(refs.changeReason.value.trim())}</p>`;
       qs("[data-publish-validation]").className = `cut-publish-validation ${warnings ? "is-warning" : "is-success"}`;
       qs("[data-publish-validation]").innerHTML = warnings
-        ? `<svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 2 21h20L12 3Z"></path><path d="M12 9v5M12 17h.01"></path></svg><div><strong>${warnings} ${warnings === 1 ? "advertencia identificada" : "advertencias identificadas"}</strong><span>Confirma que fueron revisadas antes de publicar.</span></div>`
-        : `<svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m5 12 4 4L19 6"></path></svg><div><strong>Validación completa</strong><span>Sin errores ni advertencias pendientes.</span></div>`;
+        ? `<svg class="icon" viewBox="0 0 24 24"><path d="M12 3 2 21h20L12 3Z"></path></svg><div><strong>${warnings} advertencias identificadas</strong><span>Confirma que fueron revisadas antes de continuar.</span></div>`
+        : `<svg class="icon" viewBox="0 0 24 24"><path d="m5 12 4 4L19 6"></path></svg><div><strong>Validación completa</strong><span>Sin errores ni advertencias pendientes.</span></div>`;
       openModal(refs.publishDialog, document.activeElement);
     }
 
     function publishNotice() {
-      published = true;
-      closeModals();
-      refs.state.textContent = "Publicado";
-      refs.state.className = "status status-active";
-      refs.publish.disabled = true;
-      refs.validationSummary.classList.add("is-hidden");
-      refs.success.innerHTML = `<strong>${esc(refs.code.textContent)} publicado.</strong> La versión quedó disponible para las áreas autorizadas.`;
-      refs.success.classList.remove("is-hidden");
-      qs("[data-last-saved]").textContent = "Publicado ahora";
-      render();
-      window.scrollTo({ top: 0, behavior: "smooth" });
+      if (pendingAction === "save") { saveDraft(); closeModals(); return; }
+      published = true; closeModals(); refs.state.textContent = "Publicado"; refs.state.className = "status status-active"; refs.publish.disabled = true; refs.validationSummary.classList.add("is-hidden");
+      refs.success.innerHTML = isCorrection ? `<strong>${esc(correctionMeta.nextVersion)} publicada.</strong> El aviso conserva su identificador y la versión anterior permanece disponible.` : `<strong>${esc(refs.code.textContent)} publicado.</strong> La versión quedó disponible para las áreas autorizadas.`;
+      refs.success.classList.remove("is-hidden"); qs("[data-last-saved]").textContent = "Publicado ahora"; render(); window.scrollTo({ top: 0, behavior: "smooth" });
     }
 
     qs("[data-add-assignment]")?.addEventListener("click", () => {
@@ -776,7 +810,7 @@
     refs.sourceNext?.addEventListener("click", handleSourceNext);
     qsa("[data-close-modal]").forEach((button) => button.addEventListener("click", closeModals));
     refs.backdrop?.addEventListener("click", closeModals);
-    qs("[data-save-draft]")?.addEventListener("click", saveDraft);
+    qs("[data-save-draft]")?.addEventListener("click", () => { if (!isCorrection) return saveDraft(); runValidation(); if (validated) openPublish("save"); });
     qs("[data-open-drafts]")?.addEventListener("click", (event) => {
       renderDrafts();
       openModal(refs.draftsDialog, event.currentTarget);
@@ -784,6 +818,7 @@
     qs("[data-validate-notice]")?.addEventListener("click", runValidation);
     refs.publish?.addEventListener("click", openPublish);
     qs("[data-confirm-publish]")?.addEventListener("click", publishNotice);
+    refs.changeReason?.addEventListener("input", markChanged);
     [refs.week, refs.type].forEach((control) => control?.addEventListener("change", () => {
       refs.version.value = refs.type.value;
       refs.code.textContent = `AC-${refs.week.value.replace("SEM-", "")}`;

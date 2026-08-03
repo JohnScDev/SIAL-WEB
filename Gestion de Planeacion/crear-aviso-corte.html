@@ -68,6 +68,34 @@
           <span>El aviso se publicará como una sola versión. Después de publicarlo, cualquier corrección deberá crear una nueva versión.</span>
         </div>
 
+        <section class="cut-edit-context is-hidden" data-edit-context aria-labelledby="editContextTitle">
+          <div class="cut-edit-context-head">
+            <div class="cut-edit-context-icon" aria-hidden="true">
+              <svg class="icon" viewBox="0 0 24 24"><path d="M12 20h9"></path><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"></path></svg>
+            </div>
+            <div>
+              <h2 id="editContextTitle" data-edit-context-title>Preparar nueva versión</h2>
+              <p data-edit-context-copy>La versión publicada se conserva. Solo puedes modificar los campos autorizados.</p>
+            </div>
+            <span class="status status-active" data-edit-eligibility>Edición permitida</span>
+          </div>
+          <dl class="cut-edit-context-meta">
+            <div><dt>Aviso</dt><dd data-edit-notice>—</dd></div>
+            <div><dt>Versión publicada</dt><dd data-edit-origin-version>—</dd></div>
+            <div><dt>Nueva versión</dt><dd data-edit-next-version>—</dd></div>
+            <div><dt>Etapa</dt><dd data-edit-stage>Preoperativa</dd></div>
+          </dl>
+          <div class="cut-edit-rules">
+            <span><strong>Puedes cambiar:</strong> cliente, referencia, palés y cajas por palé.</span>
+            <span><strong>Se conservan:</strong> finca, día de corte, grupo, sector y datos logísticos.</span>
+          </div>
+          <div class="field cut-change-reason">
+            <label class="label" for="changeReason">Motivo del cambio <span class="required">*</span></label>
+            <textarea class="textarea" id="changeReason" rows="2" maxlength="240" data-change-reason placeholder="Explica brevemente por qué debe corregirse esta versión"></textarea>
+            <div class="field-note">El motivo quedará registrado junto con los valores anteriores y nuevos.</div>
+          </div>
+        </section>
+
         <article class="card cut-header-card">
           <div class="card-header">
             <div>
@@ -93,6 +121,7 @@
                 <select class="select" id="noticeType" data-header-field>
                   <option value="Inicial">Inicial</option>
                   <option value="Proyectado">Proyectado</option>
+                  <option value="Corrección">Corrección</option>
                 </select>
               </div>
               <div class="field span-3">
@@ -161,6 +190,7 @@
             </div>
 
             <div class="cut-validation-summary is-hidden" data-validation-summary tabindex="-1"></div>
+            <div class="cut-change-summary is-hidden" data-change-summary aria-live="polite"></div>
 
             <div class="table-wrap cut-create-scroll" tabindex="0" aria-label="Matriz de asignaciones del aviso">
               <table class="cut-create-table">
@@ -375,6 +405,7 @@
         </div>
       </div>
       <div class="cut-publish-summary" data-publish-summary></div>
+      <div class="cut-publish-changes is-hidden" data-publish-changes></div>
       <div class="cut-publish-validation" data-publish-validation role="status"></div>
       <div class="cut-publish-observation">
         <label for="publishObservation">Nota de publicación <span>Opcional</span></label>
