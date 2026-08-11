@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SIAL | Trazabilidad de pallets</title>
+  <script>
+    (function () {
+      const savedTheme = localStorage.getItem("sial-theme");
+      const systemDark = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
+      document.documentElement.dataset.theme = savedTheme || (systemDark ? "dark" : "light");
+    })();
+  </script>
+  <link rel="stylesheet" href="trazabilidad-pallets.css" />
+</head>
+<body data-view-family="gestion">
+  <div class="app-shell">
+    <aside class="sidebar" aria-label="Navegación principal">
+      <div class="brand"><span class="brand-badge">S</span><span>SIAL</span></div>
+      <p class="menu-caption">Puerto</p>
+      <nav data-nav></nav>
+    </aside>
+    <header class="header">
+      <div class="header-left">
+        <button class="icon-btn" type="button" data-sidebar-toggle aria-label="Abrir menu"><svg class="icon" viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
+        <label class="search"><svg class="icon" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-3.5-3.5"></path></svg><input aria-label="Búsqueda principal" placeholder="Buscar..." /></label>
+      </div>
+      <div class="header-right">
+        <button class="icon-btn theme-toggle" type="button" data-theme-toggle aria-label="Cambiar a modo oscuro" aria-pressed="false" title="Cambiar a modo oscuro"><svg class="icon theme-icon theme-icon-moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12.8A8.5 8.5 0 1 1 11.2 3a6.8 6.8 0 0 0 9.8 9.8Z"></path></svg><svg class="icon theme-icon theme-icon-sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2M12 20v2M2 12h2M20 12h2"></path><path d="m4.93 4.93 1.41 1.41m11.32 11.32 1.41 1.41m-12.73 0-1.41 1.41M19.07 4.93l-1.41 1.41"></path></svg></button>
+        <button class="icon-btn" type="button" aria-label="Notificaciones"><svg class="icon" viewBox="0 0 24 24"><path d="M15 17h5l-1.4-1.4A2 2 0 0 1 18 14.2V11a6 6 0 1 0-12 0v3.2a2 2 0 0 1-.6 1.4L4 17h5"></path><path d="M10 17a2 2 0 0 0 4 0"></path></svg></button>
+        <span class="avatar">QA</span>
+      </div>
+    </header>
+    <main class="main">
+      <section class="page" data-pallet-trace-root>
+        <p class="page-eyebrow">Operaciones puerto / Pallets</p>
+        <div class="page-header">
+          <div><h1 class="page-title">Trazabilidad de pallets</h1><p class="page-subtitle">Busca un SSCC y revisa su recorrido desde la finca hasta la operación portuaria.</p></div>
+        </div>
+
+        <article class="card">
+          <div class="card-header">
+            <div><h2 class="card-title">Pallets registrados</h2><p class="card-subtitle">Consulta todos los pallets autorizados o selecciona una finca para acotar el resultado.</p></div>
+            <div class="card-actions">
+              <span class="chip" id="traceCount" aria-live="polite">0 registros visibles</span>
+              <button class="btn btn-secondary" type="button" data-export-table data-export-filename="trazabilidad-pallets" aria-label="Exportar trazabilidad de pallets"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 3h18v4H3zM7 7v13h10V7"></path></svg><span>Exportar</span></button>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="toolbar compact">
+              <input class="input" id="traceSearch" type="search" aria-label="Buscar SSCC, referencia, contenedor u operación" placeholder="Buscar SSCC, referencia, contenedor u operación" />
+              <select class="select" id="traceFarm" aria-label="Filtrar por finca"><option value="all">Todas las fincas</option></select>
+              <select class="select" id="traceStatus" aria-label="Filtrar por estado"><option value="all">Todos los estados</option><option value="farm">En finca</option><option value="transit">En tránsito a ZE</option><option value="ze">Recibido en ZE</option><option value="loaded">Cargado en contenedor</option><option value="exported">Exportado</option><option value="warning">Con novedad</option></select>
+              <select class="select" id="traceWeek" aria-label="Filtrar por semana"><option value="all">Todas las semanas</option><option value="SEM-2026-32">SEM-2026-32</option><option value="SEM-2026-31">SEM-2026-31</option></select>
+            </div>
+          </div>
+          <div class="table-wrap">
+            <table id="traceTable">
+              <thead><tr><th>Pallet</th><th>Origen</th><th>Contenido</th><th>Ubicación actual</th><th>Estado</th><th>Última actualización</th><th>Acciones</th></tr></thead>
+              <tbody data-trace-rows></tbody>
+            </table>
+          </div>
+          <div class="card-body" data-trace-empty-body hidden><div class="empty-state show" data-trace-empty><strong>No encontramos pallets.</strong><br />Ajusta la búsqueda o los filtros para ampliar la consulta.</div></div>
+          <div class="table-pagination" data-trace-pagination aria-label="Paginación de pallets"></div>
+        </article>
+
+        <article class="card trace-detail-card" data-trace-detail hidden aria-live="polite"></article>
+      </section>
+    </main>
+  </div>
+  <script src="../shared/sial-core.js"></script>
+  <script src="sial-puerto.js"></script>
+  <script src="trazabilidad-pallets.js"></script>
+</body>
+</html>

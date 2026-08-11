@@ -155,6 +155,7 @@ const SIALCore = (() => {
           views: [
             { id: "contenedores", label: "Gestion de contenedores", href: "gestion-contenedores.html" },
             { id: "programacionContenedores", label: "Programacion de contenedores", href: "programacion-contenedores.html" },
+            { id: "trazabilidadPallets", label: "Trazabilidad de pallets", href: "trazabilidad-pallets.html" },
             { id: "tipos", label: "Tipos de contenedor", href: "gestion-tipos-contenedor.html" },
             { id: "etapas", label: "Etapas de contenedor", href: "gestion-etapas-contenedor.html" },
             { id: "puertos", label: "Gestion de puertos", href: "gestion-puertos.html" }
@@ -245,8 +246,9 @@ const SIALCore = (() => {
       toggles.forEach((toggle) => {
         toggle.dataset.sidebarToggle = "true";
         toggle.setAttribute("aria-expanded", String(expanded));
-        toggle.setAttribute("aria-label", overlayOpen ? "Cerrar menu" : expanded ? "Contraer menu" : "Expandir menu");
-        toggle.setAttribute("title", overlayOpen ? "Cerrar menu" : expanded ? "Contraer menu" : "Expandir menu");
+        const label = overlayOpen ? "Cerrar menu" : isSmallViewport() ? "Abrir menu" : expanded ? "Contraer menu" : "Expandir menu";
+        toggle.setAttribute("aria-label", label);
+        toggle.setAttribute("title", label);
       });
     }
 
@@ -273,6 +275,11 @@ const SIALCore = (() => {
     }
 
     setSidebarState(storedState);
+    if (isSmallViewport()) {
+      document.documentElement.dataset.sidebarOverlay = "closed";
+      backdrop.hidden = true;
+      syncToggleLabels(false, false);
+    }
 
     toggles.forEach((toggle) => {
       toggle.addEventListener("click", () => {

@@ -1131,6 +1131,8 @@ tbody tr.state-updated {
 .status-active, .tag-success { color: var(--color-success-main); background: var(--color-success-bg); }
 .status-inactive { color: var(--color-error-main); background: var(--color-error-bg); }
 .status-warning, .tag-warning { color: var(--color-warning-text); background: var(--color-warning-bg); }
+.status-info { color: var(--color-info-text); background: var(--color-info-bg); }
+.status-neutral { color: var(--color-text-2); background: var(--color-soft-surface); border: 1px solid var(--color-border-subtle); }
 .chip, .tag {
   border: 1px solid var(--color-border-subtle);
   background: var(--color-primary-100);

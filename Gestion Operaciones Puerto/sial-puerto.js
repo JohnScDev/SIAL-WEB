@@ -13,6 +13,7 @@ const SIAL = (() => {
     const items = [
       ["contenedores", "gestion-contenedores.html", "Gestion de contenedores"],
       ["programacionContenedores", "programacion-contenedores.html", "Programacion de contenedores"],
+      ["trazabilidadPallets", "trazabilidad-pallets.html", "Trazabilidad de pallets"],
       ["tipos", "gestion-tipos-contenedor.html", "Tipos de contenedor"],
       ["etapas", "gestion-etapas-contenedor.html", "Etapas de contenedor"],
       ["puertos", "gestion-puertos.html", "Gestion de puertos"]
