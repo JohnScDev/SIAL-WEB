@@ -169,6 +169,7 @@ const SIALCore = (() => {
           localFolder: "Trazabilidad",
           views: [
             { id: "auditoria", label: "Auditoria operativa", href: "auditoria-operativa.html" },
+            { id: "poma", label: "Generar POMA", href: "generar-documento-poma.html" },
             { id: "tiposInspeccion", label: "Tipos de inspeccion", href: "gestion-tipos-inspeccion.html" },
             { id: "tiposEvento", label: "Tipos de evento trazabilidad", href: "gestion-tipos-evento-trazabilidad.html" }
           ]

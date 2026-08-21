@@ -12,6 +12,7 @@ const SIAL = (() => {
     if (!nav) return;
     const items = [
       ["auditoria", "auditoria-operativa.html", "Auditoria operativa"],
+      ["poma", "generar-documento-poma.html", "Generar POMA"],
       ["tiposInspeccion", "gestion-tipos-inspeccion.html", "Tipos de inspeccion"],
       ["tiposEvento", "gestion-tipos-evento-trazabilidad.html", "Tipos de evento trazabilidad"]
     ];
