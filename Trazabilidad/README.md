@@ -5,6 +5,9 @@ La carpeta fisica se conserva como `Trazabilidad/` para evitar cambios de ruta e
 Archivos:
 
 - `index.html`: entrada del modulo Seguridad.
+- `generar-documento-poma.html`: vista principal de HU337; consolida una salida de finca confirmada, transporte, cargue, sellos, pallets/SSCC, inspecciones, evidencias y auditoría antes de generar el POMA. La acción abre un flujo visual de generación y luego un visor PDF superpuesto.
+- `documento-poma.html`: referencia standalone del espacio reservado para insertar el POMA digitalizado; la interacción activa se resuelve en el visor superpuesto de la vista principal.
+- `HU337-mapa-datos-poma.md`: trazabilidad de fuentes, reglas y contratos existentes/pendientes para la implementación de POMA.
 - `auditoria-operativa.html`: mesa de revision operativa con bandeja por operacion, timeline, evidencias, aprobacion humana para inspecciones, puntos de control, comentarios, firmas, metadatos y tabla exportable.
 - `gestion-tipos-inspeccion.html`: maestra de tipos de inspeccion.
 - `gestion-tipos-evento-trazabilidad.html`: maestra de eventos de trazabilidad.

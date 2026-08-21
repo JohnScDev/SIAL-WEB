@@ -613,6 +613,16 @@ const SIALCatalog = (() => {
     {
       module: "trazabilidad",
       moduleLabel: "Seguridad",
+      title: "Generar documento POMA",
+      family: "registro",
+      status: "implementada",
+      href: "Trazabilidad/generar-documento-poma.html",
+      description: "Vista HU337 para validar la operación de finca, consolidar carga y controles, y generar el POMA digitalizado.",
+      tags: ["HU337", "POMA", "Trazabilidad"]
+    },
+    {
+      module: "trazabilidad",
+      moduleLabel: "Seguridad",
       title: "Tipos de inspeccion",
       family: "configuracion",
       status: "base",

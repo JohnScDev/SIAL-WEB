@@ -1,5 +1,7 @@
 # Perfil Global SIAL Implementation Plan
 
+> **Estado:** sustituido el 21/08/2026 por el diseño de contexto operativo en `../specs/2026-07-09-perfil-global-sial-design.md`. Este plan se conserva como antecedente; no reutilizar el carrusel de fincas.
+
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
 **Goal:** Implementar un perfil global compacto y una vista flotante con carrusel accesible de fincas.

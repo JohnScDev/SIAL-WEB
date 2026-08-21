@@ -1,4 +1,523 @@
 @import url("../shared/sial-core.css");
+
+.poma-placeholder-page {
+  min-height: calc(100vh - var(--header-height));
+  display: grid;
+  place-items: center;
+  padding: clamp(24px, 6vw, 80px);
+}
+
+.poma-placeholder-page p {
+  max-width: min(900px, 100%);
+  margin: 0;
+  color: var(--color-text);
+  font-size: clamp(30px, 5vw, 72px);
+  font-weight: 800;
+  letter-spacing: .025em;
+  line-height: 1.12;
+  text-align: center;
+}
+
+.poma-generation-page {
+  display: grid;
+  gap: 20px;
+}
+
+.poma-operation-card,
+.poma-validation-card,
+.poma-document-card {
+  margin: 0;
+}
+
+.poma-operation-body {
+  display: flex;
+  align-items: end;
+  gap: 12px;
+}
+
+.poma-search-field {
+  flex: 1 1 520px;
+}
+
+.poma-operation-body .btn {
+  min-height: 42px;
+  white-space: nowrap;
+}
+
+.poma-load-action {
+  align-self: flex-start;
+  margin-top: 36px;
+}
+
+.poma-workspace {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.poma-readiness-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.poma-readiness-grid > div {
+  display: grid;
+  gap: 4px;
+  min-width: 0;
+  padding: 13px 14px;
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-control);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-xs);
+}
+
+.poma-readiness-grid span {
+  color: var(--color-text-3);
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.poma-readiness-grid strong {
+  color: var(--color-text);
+  font-size: 14px;
+}
+
+.poma-readiness-grid small {
+  color: var(--color-text-2);
+  font-size: 12px;
+  line-height: 1.35;
+}
+
+.poma-preview-card .card-title {
+  margin-top: 4px;
+}
+
+.poma-preview-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 20px;
+}
+
+.poma-data-group + .poma-data-group {
+  padding-left: 20px;
+  border-left: 1px solid var(--color-border-subtle);
+}
+
+.poma-data-group h3 {
+  margin: 0 0 12px;
+  color: var(--color-text);
+  font-size: 14px;
+}
+
+.poma-operation-detail-grid {
+  display: grid;
+  grid-template-columns: minmax(0, .88fr) minmax(0, 1.12fr);
+  gap: 16px;
+}
+
+.poma-timeline {
+  display: grid;
+  gap: 13px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.poma-timeline li {
+  display: grid;
+  grid-template-columns: 46px minmax(0, 1fr);
+  gap: 12px;
+  padding-bottom: 13px;
+  border-bottom: 1px solid var(--color-border-subtle);
+}
+
+.poma-timeline li:last-child {
+  padding-bottom: 0;
+  border-bottom: 0;
+}
+
+.poma-timeline time {
+  color: var(--color-primary-600);
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.poma-timeline strong,
+.poma-timeline small {
+  display: block;
+}
+
+.poma-timeline strong {
+  color: var(--color-text);
+  font-size: 13px;
+}
+
+.poma-timeline small {
+  margin-top: 3px;
+  color: var(--color-text-2);
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+.poma-key-values {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  margin: 0;
+}
+
+.poma-key-values > div {
+  min-width: 0;
+  padding: 11px 12px;
+  border: 1px solid var(--color-border-subtle);
+  border-radius: 8px;
+  background: var(--color-surface-muted);
+}
+
+.poma-key-values dt,
+.poma-key-values dd {
+  margin: 0;
+}
+
+.poma-data-table {
+  width: 100%;
+  min-width: 780px;
+  border-collapse: collapse;
+  color: var(--color-text);
+  font-size: 13px;
+}
+
+.poma-data-table th,
+.poma-data-table td {
+  padding: 12px 14px;
+  border-bottom: 1px solid var(--color-border-subtle);
+  text-align: left;
+  vertical-align: middle;
+}
+
+.poma-data-table th {
+  background: var(--color-surface-muted);
+  color: var(--color-text-3);
+  font-size: 11px;
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+.poma-data-table tr:last-child td {
+  border-bottom: 0;
+}
+
+.poma-data-table .number {
+  text-align: right;
+}
+
+.poma-key-values dt {
+  color: var(--color-text-3);
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.poma-key-values dd {
+  margin-top: 4px;
+  color: var(--color-text);
+  font-size: 13px;
+  font-weight: 700;
+  overflow-wrap: anywhere;
+}
+
+.poma-validation-list {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.poma-validation-list li {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 12px;
+  border: 1px solid var(--color-border-subtle);
+  border-radius: 8px;
+  background: var(--color-surface-muted);
+}
+
+.poma-check {
+  flex: 0 0 22px;
+  width: 22px;
+  height: 22px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--color-success);
+  color: #fff;
+  font-weight: 800;
+}
+
+.poma-validation-list strong,
+.poma-validation-list small {
+  display: block;
+}
+
+.poma-validation-list strong {
+  color: var(--color-text);
+  font-size: 13px;
+}
+
+.poma-validation-list small {
+  margin-top: 4px;
+  color: var(--color-text-2);
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+.poma-document-body {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+}
+
+.poma-document-body h2 {
+  margin: 4px 0 6px;
+  color: var(--color-text);
+  font-size: 18px;
+}
+
+.poma-document-body p {
+  max-width: 700px;
+  margin: 0;
+  color: var(--color-text-2);
+  font-size: 13px;
+  line-height: 1.55;
+}
+
+.poma-generate-action {
+  flex: 0 0 auto;
+  white-space: nowrap;
+}
+
+.poma-overlay-open {
+  overflow: hidden;
+}
+
+.poma-overlay {
+  position: fixed;
+  z-index: 1200;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  background: rgba(15, 23, 42, .58);
+}
+
+.poma-overlay[hidden] {
+  display: none;
+}
+
+.poma-generation-dialog,
+.poma-pdf-dialog {
+  width: min(100%, 620px);
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-card);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-xl);
+}
+
+.poma-generation-dialog {
+  display: grid;
+  justify-items: center;
+  padding: 32px;
+  text-align: center;
+}
+
+.poma-generation-dialog h2,
+.poma-pdf-header h2 {
+  margin: 5px 0 7px;
+  color: var(--color-text);
+  font-size: 22px;
+}
+
+.poma-generation-dialog > p {
+  max-width: 420px;
+  margin: 0;
+  color: var(--color-text-2);
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.poma-generation-spinner {
+  width: 44px;
+  height: 44px;
+  margin-bottom: 18px;
+  border: 4px solid var(--color-primary-100);
+  border-top-color: var(--color-primary-600);
+  border-radius: 999px;
+  animation: poma-spin .8s linear infinite;
+}
+
+@keyframes poma-spin {
+  to { transform: rotate(360deg); }
+}
+
+.poma-generation-steps {
+  display: grid;
+  gap: 10px;
+  width: 100%;
+  margin: 24px 0 0;
+  padding: 0;
+  list-style: none;
+  text-align: left;
+}
+
+.poma-generation-steps li {
+  position: relative;
+  padding: 10px 12px 10px 36px;
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-control);
+  color: var(--color-text-2);
+  font-size: 13px;
+  transition: border-color var(--motion-duration-base) ease, background-color var(--motion-duration-base) ease, color var(--motion-duration-base) ease;
+}
+
+.poma-generation-steps li::before {
+  position: absolute;
+  top: 50%;
+  left: 13px;
+  width: 12px;
+  height: 12px;
+  content: "";
+  border: 2px solid var(--color-border);
+  border-radius: 50%;
+  transform: translateY(-50%);
+}
+
+.poma-generation-steps li.is-active {
+  border-color: var(--color-primary-300);
+  background: var(--color-primary-50);
+  color: var(--color-text);
+  font-weight: 700;
+}
+
+.poma-generation-steps li.is-active::before {
+  border-color: var(--color-success);
+  background: var(--color-success);
+  box-shadow: inset 0 0 0 2px var(--color-surface);
+}
+
+.poma-pdf-dialog {
+  width: min(1120px, 100%);
+  max-height: calc(100vh - 48px);
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  overflow: hidden;
+}
+
+.poma-pdf-header,
+.poma-pdf-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--color-border-subtle);
+}
+
+.poma-pdf-header .icon-btn {
+  flex: 0 0 auto;
+  font-size: 25px;
+  line-height: 1;
+}
+
+.poma-pdf-canvas {
+  min-height: min(68vh, 700px);
+  display: grid;
+  place-items: center;
+  padding: clamp(28px, 7vw, 90px);
+  background: var(--color-surface-muted);
+}
+
+.poma-pdf-canvas p {
+  max-width: 850px;
+  margin: 0;
+  color: var(--color-text);
+  font-size: clamp(28px, 5vw, 68px);
+  font-weight: 800;
+  letter-spacing: .025em;
+  line-height: 1.12;
+  text-align: center;
+}
+
+.poma-pdf-footer {
+  border-top: 1px solid var(--color-border-subtle);
+  border-bottom: 0;
+  color: var(--color-text-2);
+  font-size: 13px;
+}
+
+@media (max-width: 860px) {
+  .poma-workspace,
+  .poma-validation-list,
+  .poma-operation-detail-grid,
+  .poma-preview-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .poma-readiness-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .poma-data-group + .poma-data-group {
+    padding-top: 18px;
+    padding-left: 0;
+    border-top: 1px solid var(--color-border-subtle);
+    border-left: 0;
+  }
+
+  .poma-operation-body,
+  .poma-document-body {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .poma-search-field {
+    flex-basis: auto;
+  }
+
+  .poma-operation-body .btn,
+  .poma-generate-action {
+    width: 100%;
+  }
+
+  .poma-load-action {
+    margin-top: 0;
+  }
+
+  .poma-overlay {
+    padding: 14px;
+  }
+
+  .poma-pdf-header,
+  .poma-pdf-footer {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .poma-pdf-footer .btn {
+    width: 100%;
+  }
+}
+
+@media (max-width: 520px) {
+  .poma-key-values,
+  .poma-readiness-grid {
+    grid-template-columns: 1fr;
+  }
+
+}
 .audit-toolbar {
   grid-template-columns: minmax(220px, 1.5fr) repeat(2, minmax(145px, .8fr)) repeat(7, minmax(150px, 1fr));
 }
