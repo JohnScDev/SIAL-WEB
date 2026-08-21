@@ -497,15 +497,123 @@
     const drawer = qs("#detailDrawer");
     const backdrop = qs("#detailBackdrop");
     if (!drawer || !backdrop) return;
+    const drawerHead = qs(".drawer-head", drawer);
+    const drawerTitle = qs("h3", drawerHead);
+    const drawerDescription = qs("p", drawerHead);
+    const drawerBody = qs(".drawer-body", drawer);
+    const closeButton = qs("#closeDetail");
+    const originalTitle = drawerTitle?.textContent || "Detalle de programación";
+    const originalDescription = drawerDescription?.textContent || "Consulta lateral de la programación.";
+    const operationIdsByPlate = {
+      "TRK-421": "OP-001",
+      "CAM-101": "OP-002",
+      "CMN-204": "OP-003",
+      "CAM-102": "OP-004",
+      "TRK-422": "OP-005"
+    };
+    let currentRow = null;
+    let lastTrigger = null;
+
+    const Ticket = window.SIALPrintableTicket;
+    if (!Ticket) return;
+    drawer.dataset.sialTicketShell = "";
+    const detailContent = document.createElement("div");
+    detailContent.dataset.sialTicketDetail = "";
+    while (drawerBody.firstChild) detailContent.appendChild(drawerBody.firstChild);
+    drawerBody.appendChild(detailContent);
+
+    const ticket = Ticket.createPreview({
+      id: "operationTicket",
+      brand: "SIAL",
+      verificationHelp: "Consulte la programación con este código en SIAL.",
+      printShell: drawer
+    });
+    drawerBody.appendChild(ticket.element);
+
+    let ticketActions;
+
+    const formatGeneratedAt = () => new Intl.DateTimeFormat("es-CO", {
+      dateStyle: "medium",
+      timeStyle: "short"
+    }).format(new Date());
+
+    const getOperationId = (row) => row?.dataset.operationId || operationIdsByPlate[row?.dataset.plate] || "";
+
+    const resetToDetail = () => {
+      drawer.dataset.view = "detail";
+      ticket.element.hidden = true;
+      detailContent.hidden = false;
+      if (drawerTitle) drawerTitle.textContent = originalTitle;
+      if (drawerDescription) drawerDescription.textContent = originalDescription;
+      ticketActions.setMode("detail");
+      ticketActions.setPrinting(false);
+    };
+
+    const showTicket = () => {
+      if (!currentRow) return;
+      const operationId = getOperationId(currentRow);
+      const vehicle = vehicleData[currentRow.dataset.plate] || {};
+      const generatedAt = formatGeneratedAt();
+      const verificationCode = `${operationId}-${currentRow.dataset.plate || "SIAL"}`;
+      ticket.render({
+        ticketId: `TKT-${operationId}`,
+        eyebrow: "OPERACIÓN DE TRANSPORTE",
+        title: "Ticket de programación",
+        meta: `Programación ${operationId} · Versión 1`,
+        state: currentRow.dataset.state,
+        primaryFields: [
+          { label: "Vehículo", value: currentRow.dataset.plate },
+          { label: "Tipo", value: currentRow.dataset.vehicleType },
+          { label: "Transportadora", value: vehicle.company || "Dato pendiente", wide: true },
+          { label: "Conductor", value: currentRow.dataset.driver, wide: true }
+        ],
+        secondaryFields: [
+          { label: "Destino", value: `${currentRow.dataset.destinationType} · ${currentRow.dataset.destination}`, wide: true },
+          { label: "Fecha programada", value: currentRow.dataset.date, wide: true },
+          { label: "Semana", value: currentRow.dataset.weekLabel },
+          { label: "Generado", value: generatedAt }
+        ],
+        verificationCode,
+        footerNote: "Documento operativo · No reemplaza los registros de trazabilidad."
+      });
+      drawer.dataset.view = "ticket";
+      detailContent.hidden = true;
+      ticket.element.hidden = false;
+      if (drawerTitle) drawerTitle.textContent = "Ticket de programación";
+      if (drawerDescription) drawerDescription.textContent = "Vista previa preparada para impresión térmica o PDF.";
+      ticketActions.setMode("preview");
+      ticketActions.setPrinting(true);
+      ticket.focus();
+      ticket.play().then(() => ticketActions.setPrinting(false));
+    };
+
+    ticketActions = Ticket.createDrawerActions({
+      onGenerate: showTicket,
+      onBack: () => {
+        resetToDetail();
+        ticketActions.focusGenerate();
+      },
+      onPrint: () => {
+        ticket.print();
+        ticketActions.focusPrint();
+      }
+    });
+    drawer.appendChild(ticketActions.element);
+
     const close = () => {
+      resetToDetail();
       drawer.classList.remove("show");
       backdrop.classList.remove("show");
+      lastTrigger?.focus();
     };
     qsa("[data-open-detail]").forEach((button) => {
       button.addEventListener("click", (event) => {
         event.stopPropagation();
         const row = event.target.closest("tr");
         if (!row) return;
+        currentRow = row;
+        lastTrigger = button;
+        resetToDetail();
         qsa("[data-detail-target]").forEach((node) => {
           const key = node.dataset.detailTarget;
           const datasetKey = key.replace(/-([a-z])/g, (_, letter) => letter.toUpperCase());
@@ -525,12 +633,17 @@
             return `<div class="audit-item"><strong>${title || "-"}</strong><div class="muted">${meta || ""}</div></div>`;
           }).join("");
         }
+        const ticketAvailable = Boolean(getOperationId(row) && row.dataset.date && row.dataset.date !== "--");
+        ticketActions.setAvailability(
+          ticketAvailable,
+          "Esta fila no corresponde a una programación persistida; no hay ticket para imprimir."
+        );
         drawer.classList.add("show");
         backdrop.classList.add("show");
-        qs("#closeDetail")?.focus();
+        closeButton?.focus();
       });
     });
-    qs("#closeDetail")?.addEventListener("click", close);
+    closeButton?.addEventListener("click", close);
     backdrop.addEventListener("click", close);
     document.addEventListener("keydown", (event) => {
       if (event.key === "Escape") close();

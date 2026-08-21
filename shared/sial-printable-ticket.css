@@ -1,0 +1,313 @@
+[data-sial-ticket-shell].drawer {
+  grid-template-rows: auto minmax(0, 1fr) auto;
+}
+
+[data-sial-ticket-detail][hidden],
+.sial-ticket-print-stage[hidden] {
+  display: none;
+}
+
+.sial-ticket-actions {
+  padding: 16px 20px 20px;
+  border-top: 1px solid var(--color-border-subtle);
+  background: var(--color-surface-overlay);
+}
+
+.sial-ticket-detail-actions,
+.sial-ticket-preview-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.sial-ticket-detail-actions[hidden],
+.sial-ticket-preview-actions[hidden] {
+  display: none;
+}
+
+.sial-ticket-preview-actions .btn {
+  flex: 1;
+}
+
+.sial-ticket-hint {
+  margin: 0 0 10px;
+  color: var(--color-text-2);
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+.sial-ticket-print-stage {
+  position: relative;
+  isolation: isolate;
+  margin: 0 auto;
+  max-width: 320px;
+  padding-top: 16px;
+}
+
+.sial-ticket-printer {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-sizing: border-box;
+  width: 100%;
+  height: 38px;
+  margin: 0 auto -6px;
+  padding: 0 15px;
+  overflow: hidden;
+  border: 1px solid color-mix(in srgb, var(--color-border-strong) 72%, transparent);
+  border-radius: 5px 5px 2px 2px;
+  background: linear-gradient(180deg, var(--color-surface-raised), var(--color-surface-overlay));
+  box-shadow: 0 6px 12px color-mix(in srgb, #000 16%, transparent);
+}
+
+.sial-ticket-printer::before {
+  position: absolute;
+  right: 14px;
+  bottom: 5px;
+  left: 14px;
+  height: 5px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--color-text-1) 72%, #000);
+  content: "";
+}
+
+.sial-ticket-printer-status {
+  position: relative;
+  z-index: 1;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--color-success-main);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-success-main) 15%, transparent);
+}
+
+.sial-ticket-printer-slot {
+  position: relative;
+  z-index: 1;
+  width: 30px;
+  height: 5px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--color-text-1) 34%, transparent);
+}
+
+.sial-printable-ticket {
+  margin: 0 auto;
+  box-sizing: border-box;
+  max-width: 320px;
+  padding: 22px 20px 18px;
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-control);
+  background: var(--color-surface-raised);
+  box-shadow: var(--shadow-sm);
+  color: var(--color-text-1);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+}
+
+.sial-ticket-print-stage[data-state="printing"] .sial-printable-ticket {
+  transform-origin: top center;
+  animation: sial-ticket-feed 920ms cubic-bezier(.2, .72, .24, 1) both;
+}
+
+.sial-ticket-print-stage[data-state="printing"] .sial-ticket-printer::before {
+  animation: sial-ticket-printer-pulse 920ms ease-in-out both;
+}
+
+@keyframes sial-ticket-feed {
+  0% {
+    clip-path: inset(0 0 calc(100% - 8px) 0);
+    opacity: 1;
+  }
+
+  70% {
+    clip-path: inset(0 0 16% 0);
+  }
+
+  100% {
+    clip-path: inset(0);
+  }
+}
+
+@keyframes sial-ticket-printer-pulse {
+  0%, 100% { opacity: .55; transform: scaleX(.82); }
+  15%, 82% { opacity: 1; transform: scaleX(1); }
+}
+
+.sial-ticket-topline {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  color: var(--color-text-2);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .08em;
+}
+
+.sial-ticket-brand {
+  margin: 22px 0 14px;
+}
+
+.sial-ticket-eyebrow,
+.sial-ticket-meta,
+.sial-ticket-footer-copy {
+  margin: 0;
+  color: var(--color-text-2);
+  font-size: 10px;
+  line-height: 1.5;
+}
+
+.sial-ticket-eyebrow {
+  font-weight: 700;
+  letter-spacing: .08em;
+}
+
+.sial-ticket-brand h4 {
+  margin: 6px 0;
+  color: var(--color-text-1);
+  font-family: inherit;
+  font-size: 20px;
+  line-height: 1.1;
+}
+
+.sial-ticket-state {
+  display: inline-flex;
+  max-width: 100%;
+  padding: 5px 8px;
+  border: 1px solid var(--color-border-strong);
+  border-radius: 2px;
+  color: var(--color-text-1);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .04em;
+  line-height: 1.2;
+}
+
+.sial-ticket-divider {
+  margin: 18px 0;
+  border-top: 1px dashed var(--color-border-strong);
+}
+
+.sial-ticket-data {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 14px 12px;
+  margin: 0;
+}
+
+.sial-ticket-data div {
+  min-width: 0;
+}
+
+.sial-ticket-data-wide {
+  grid-column: 1 / -1;
+}
+
+.sial-ticket-data dt,
+.sial-ticket-verification-label {
+  display: block;
+  margin-bottom: 4px;
+  color: var(--color-text-2);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+
+.sial-ticket-data dd {
+  margin: 0;
+  overflow-wrap: anywhere;
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1.35;
+}
+
+.sial-ticket-verification {
+  margin-top: 20px;
+  padding: 13px 0;
+  border-top: 1px solid var(--color-border-subtle);
+  border-bottom: 1px solid var(--color-border-subtle);
+  text-align: center;
+}
+
+.sial-ticket-verification strong {
+  display: block;
+  margin: 7px 0 5px;
+  font-size: 13px;
+  letter-spacing: .08em;
+}
+
+.sial-ticket-verification p {
+  margin: 0;
+  color: var(--color-text-2);
+  font-family: var(--font-sans, inherit);
+  font-size: 10px;
+  line-height: 1.45;
+}
+
+.sial-ticket-footer-copy {
+  margin-top: 14px;
+  text-align: center;
+}
+
+@media (max-width: 480px) {
+  [data-sial-ticket-shell].drawer {
+    width: 100vw;
+  }
+
+  .sial-ticket-preview-actions {
+    flex-direction: column;
+  }
+}
+
+@media print {
+  @page {
+    size: 80mm auto;
+    margin: 0;
+  }
+
+  body[data-sial-print-ticket] > :not([data-sial-ticket-shell]) {
+    display: none !important;
+  }
+
+  body[data-sial-print-ticket] [data-sial-ticket-shell] {
+    position: static;
+    display: block;
+    width: 80mm;
+    height: auto;
+    min-height: 0;
+    border: 0;
+    box-shadow: none;
+    transform: none;
+  }
+
+  body[data-sial-print-ticket] [data-sial-ticket-shell] .drawer-head,
+  body[data-sial-print-ticket] [data-sial-ticket-detail],
+  body[data-sial-print-ticket] [data-sial-ticket-actions],
+  body[data-sial-print-ticket] [data-sial-ticket-printer] {
+    display: none !important;
+  }
+
+  body[data-sial-print-ticket] [data-sial-ticket-root] {
+    display: block !important;
+    width: 80mm;
+    max-width: none;
+    margin: 0;
+    padding: 6mm 5mm 5mm;
+    border: 0;
+    border-radius: 0;
+    box-shadow: none;
+    color: #000;
+    background: #fff;
+  }
+
+  body[data-sial-print-ticket] [data-sial-ticket-root] * {
+    color: #000 !important;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sial-ticket-print-stage[data-state="printing"] .sial-printable-ticket,
+  .sial-ticket-print-stage[data-state="printing"] .sial-ticket-printer::before {
+    animation: none;
+  }
+}

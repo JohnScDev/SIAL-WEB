@@ -500,151 +500,49 @@ const SIALCore = (() => {
       carouselCleanup: null
     };
 
-    const defaultProfileFarms = [
-      "Finca Santa Isabel",
-      "Finca Las Palmas",
-      "Finca El Retiro",
-      "Finca La Esperanza",
-      "Finca Campo Alegre"
-    ];
+    const parseProfileList = (value) => String(value || "")
+      .split("|")
+      .map((item) => item.trim())
+      .filter(Boolean);
 
-    const parseProfileFarms = (value) => {
-      const farms = String(value || "")
-        .split("|")
-        .map((farm) => farm.trim())
-        .filter(Boolean);
-      return farms.length ? farms : defaultProfileFarms;
+    const normalizeFarms = (farms) => (Array.isArray(farms) ? farms : parseProfileList(farms))
+      .map((farm) => typeof farm === "string" ? { id: farm, name: farm } : farm)
+      .filter((farm) => farm?.name);
+
+    const getInitials = (name, fallback = "US") => {
+      const words = String(name || "").trim().split(/\s+/).filter(Boolean);
+      return words.length
+        ? words.slice(0, 2).map((word) => word[0]).join("").toUpperCase()
+        : fallback;
     };
 
-    const getProfileMonogram = (value, fallback = "FI") => {
-      const words = String(value || "").trim().split(/\s+/).filter(Boolean);
-      if (!words.length) return fallback;
-      const relevantWords = words[0].toLowerCase() === "finca" ? words.slice(1) : words;
-      const initials = relevantWords.slice(0, 2).map((word) => word[0]).join("");
-      return (initials || words[0].slice(0, 2)).toUpperCase();
+    const getProfileData = (avatar) => {
+      const sessionProfile = window.SIALProfile || {};
+      const activeContext = sessionProfile.activeContext || {};
+      const farms = normalizeFarms(activeContext.scope?.farms || sessionProfile.farms || avatar.dataset.profileFarms);
+      const name = sessionProfile.user?.displayName || sessionProfile.name || avatar.dataset.profileName || "Usuario SIAL";
+      const role = activeContext.role?.name || sessionProfile.role || avatar.dataset.profileRole || "Sin contexto operativo";
+      const company = activeContext.company?.name || sessionProfile.company || avatar.dataset.profileCompany || "Empresa no seleccionada";
+      const scope = activeContext.scope?.label || sessionProfile.scope || avatar.dataset.profileScope || (farms.length ? `${farms.length} finca${farms.length === 1 ? "" : "s"} asignada${farms.length === 1 ? "" : "s"}` : "Alcance por definir");
+      return {
+        initials: sessionProfile.user?.initials || sessionProfile.initials || avatar.textContent.trim() || getInitials(name),
+        name,
+        role,
+        company,
+        scope,
+        modules: activeContext.modules || sessionProfile.modules || parseProfileList(avatar.dataset.profileModules),
+        document: sessionProfile.user?.documentMasked || sessionProfile.documentMasked || avatar.dataset.profileDocument || "No disponible",
+        phone: sessionProfile.user?.phone || sessionProfile.phone || avatar.dataset.profilePhone || "No disponible",
+        email: sessionProfile.user?.email || sessionProfile.email || avatar.dataset.profileEmail || "No disponible",
+        farms,
+        memberships: sessionProfile.memberships || [],
+        lastLoginAt: sessionProfile.session?.lastLoginAt || sessionProfile.lastLoginAt || "Sesión actual"
+      };
     };
 
-    const getProfileData = (avatar) => ({
-      initials: avatar.textContent.trim() || "QA",
-      name: avatar.dataset.profileName || "John Salovro",
-      role: avatar.dataset.profileRole || "Administrador",
-      document: avatar.dataset.profileDocument || "1.001.777.496",
-      phone: avatar.dataset.profilePhone || "+57 300 777 7496",
-      email: avatar.dataset.profileEmail || "jsalovro@banasan.com.co",
-      farms: parseProfileFarms(avatar.dataset.profileFarms)
-    });
-
-    const renderCompactFarmItems = (farms) => farms.map((farm) => `
-      <span class="profile-farm-dot" title="${escapeHtml(farm)}" aria-label="${escapeHtml(farm)}">
-        ${escapeHtml(getProfileMonogram(farm))}
-      </span>
-    `).join("");
-
-    const renderProfileFarmCards = (farms) => farms.map((farm) => `
-      <article class="profile-farm-card">
-        <span class="profile-farm-monogram" aria-hidden="true">${escapeHtml(getProfileMonogram(farm))}</span>
-        <strong>${escapeHtml(farm)}</strong>
-      </article>
-    `).join("");
-
-    const renderCompactFarms = (farms) => `
-      <div class="profile-compact-carousel" data-profile-compact-carousel tabindex="0" aria-label="Fincas asignadas">
-        <button class="profile-compact-control" type="button" data-profile-compact-previous aria-label="Ver fincas anteriores">
-          <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m15 18-6-6 6-6"></path></svg>
-        </button>
-        <div class="profile-farm-preview" data-profile-compact-viewport aria-live="polite">
-          <div class="profile-compact-track" data-profile-compact-track>
-            ${renderCompactFarmItems([...farms, ...farms.slice(0, 3)])}
-          </div>
-        </div>
-        <button class="profile-compact-control" type="button" data-profile-compact-next aria-label="Ver fincas siguientes">
-          <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m9 18 6-6-6-6"></path></svg>
-        </button>
-      </div>
-    `;
-
-    const initCompactFarmCarousel = (menu, farms) => {
-      const root = qs("[data-profile-compact-carousel]", menu);
-      const viewport = qs("[data-profile-compact-viewport]", root);
-      const track = qs("[data-profile-compact-track]", root);
-      const previousButton = qs("[data-profile-compact-previous]", root);
-      const nextButton = qs("[data-profile-compact-next]", root);
-      if (!root || !viewport || !track) return;
-
-      const visibleCount = Math.min(3, farms.length);
-      const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-      let currentIndex = 0;
-      let timer = null;
-      let resetTimer = null;
-
-      const stopRotation = () => {
-        if (timer) window.clearInterval(timer);
-        timer = null;
-      };
-      const moveTrack = (animate = true) => {
-        const firstItem = qs(".profile-farm-dot", track);
-        if (!firstItem) return;
-        const gap = Number.parseFloat(getComputedStyle(track).columnGap) || 0;
-        track.classList.toggle("is-resetting", !animate);
-        track.style.transform = `translateX(-${currentIndex * (firstItem.offsetWidth + gap)}px)`;
-      };
-      const moveTo = (nextIndex) => {
-        window.clearTimeout(resetTimer);
-        if (nextIndex < 0) {
-          currentIndex = farms.length;
-          moveTrack(false);
-          window.requestAnimationFrame(() => {
-            currentIndex = farms.length - 1;
-            moveTrack(true);
-          });
-          return;
-        }
-        currentIndex = nextIndex;
-        moveTrack(true);
-        if (currentIndex >= farms.length) {
-          resetTimer = window.setTimeout(() => {
-            currentIndex = 0;
-            moveTrack(false);
-          }, 320);
-        }
-      };
-      const startRotation = () => {
-        stopRotation();
-        if (reduceMotion || farms.length <= visibleCount) return;
-        timer = window.setInterval(() => moveTo(currentIndex + 1), 4000);
-      };
-      const showPrevious = () => {
-        moveTo(currentIndex - 1);
-        startRotation();
-      };
-      const showNext = () => {
-        moveTo(currentIndex + 1);
-        startRotation();
-      };
-
-      previousButton?.addEventListener("click", showPrevious);
-      nextButton?.addEventListener("click", showNext);
-      root.addEventListener("mouseenter", stopRotation);
-      root.addEventListener("mouseleave", startRotation);
-      root.addEventListener("focusin", stopRotation);
-      root.addEventListener("focusout", (event) => {
-        if (!root.contains(event.relatedTarget)) startRotation();
-      });
-      root.addEventListener("keydown", (event) => {
-        if (event.key === "ArrowLeft") {
-          event.preventDefault();
-          showPrevious();
-        }
-        if (event.key === "ArrowRight") {
-          event.preventDefault();
-          showNext();
-        }
-      });
-      previousButton?.toggleAttribute("hidden", farms.length <= visibleCount);
-      nextButton?.toggleAttribute("hidden", farms.length <= visibleCount);
-      moveTrack(false);
-      startRotation();
-    };
+    const renderProfileChips = (items, className = "profile-context-chip") => items.length
+      ? items.map((item) => `<span class="${className}">${escapeHtml(item)}</span>`).join("")
+      : `<span class="${className} is-muted">Sin módulos asignados</span>`;
 
     const setThemeLabel = (button, buttonText) => {
       if (!button) return;
@@ -820,7 +718,7 @@ const SIALCore = (() => {
       dialogState.backdrop.hidden = false;
       dialogState.dialog.hidden = false;
 
-      const firstAction = qsa("[data-profile-theme-toggle], [data-profile-notifications], [data-profile-logout], .confirm-dialog-actions button", dialogState.dialog)[0];
+      const firstAction = qsa("[data-profile-action-close], [data-profile-theme-toggle], [data-profile-notifications], [data-profile-logout], .confirm-dialog-actions button", dialogState.dialog)[0];
       firstAction?.focus();
     };
 
@@ -924,60 +822,92 @@ const SIALCore = (() => {
     };
 
     const openProfileView = (profile) => {
+      const farms = profile.farms.map((farm) => farm.name);
+      const memberships = profile.memberships.length
+        ? profile.memberships.map((membership) => `
+          <article class="profile-membership-item">
+            <strong>${escapeHtml(membership.companyName || membership.company || "Empresa")}</strong>
+            <span>${escapeHtml((membership.roles || []).map((role) => role.name || role).join(", ") || "Sin roles activos")}</span>
+          </article>
+        `).join("")
+        : `<p class="profile-empty-copy">No hay relaciones adicionales para mostrar.</p>`;
       openProfileActionDialog({
         action: "view",
-        title: "Perfil de usuario",
+        title: "Mi perfil",
         description: "",
         showNotice: false,
         contentHtml: `
-          <section class="profile-overview" aria-label="Identidad y contacto">
+          <section class="profile-overview" aria-label="Identidad del usuario">
             <div class="profile-full-identity">
               <span class="avatar profile-action-avatar-xl" aria-hidden="true">${escapeHtml(profile.initials)}</span>
               <div class="profile-action-identity-content">
                 <strong>${escapeHtml(profile.name)}</strong>
                 <span>${escapeHtml(profile.role)}</span>
               </div>
+              <span class="profile-session-chip">Sesión activa</span>
             </div>
-            <div class="profile-contact-grid" aria-label="Datos del usuario">
+          </section>
+          <section class="profile-context-card" aria-labelledby="profileContextTitle">
+            <div class="profile-section-heading">
+              <div>
+                <span class="detail-label">Contexto activo</span>
+                <h3 id="profileContextTitle">${escapeHtml(profile.company)}</h3>
+              </div>
+              <span class="profile-scope-chip">${escapeHtml(profile.scope)}</span>
+            </div>
+            <div class="profile-context-role">
+              <span>Rol actual</span>
+              <strong>${escapeHtml(profile.role)}</strong>
+            </div>
+            <div class="profile-context-modules" aria-label="Módulos disponibles">
+              ${renderProfileChips(profile.modules)}
+            </div>
+          </section>
+          <div class="profile-detail-grid">
+            <section class="profile-detail-section" aria-labelledby="profileFarmsTitle">
+              <div class="profile-section-heading">
+                <div>
+                  <span class="detail-label">Alcance operativo</span>
+                  <h3 id="profileFarmsTitle">Fincas asignadas</h3>
+                </div>
+                <span class="table-count">${farms.length}</span>
+              </div>
+              <div class="profile-chip-list" aria-label="Fincas asignadas">
+                ${renderProfileChips(farms, "profile-farm-chip")}
+              </div>
+            </section>
+            <section class="profile-detail-section" aria-labelledby="profileMembershipsTitle">
+              <div class="profile-section-heading">
+                <div>
+                  <span class="detail-label">Accesos</span>
+                  <h3 id="profileMembershipsTitle">Empresas y roles</h3>
+                </div>
+              </div>
+              <div class="profile-membership-list">${memberships}</div>
+            </section>
+          </div>
+          <section class="profile-contact-section" aria-label="Datos de contacto y sesión">
+            <div class="profile-contact-grid">
               <div class="profile-contact-item">
-                <span>Identificacion</span>
+                <span>Identificación</span>
                 <strong>${escapeHtml(profile.document)}</strong>
               </div>
               <div class="profile-contact-item">
-                <span>Telefono</span>
+                <span>Teléfono</span>
                 <strong>${escapeHtml(profile.phone)}</strong>
               </div>
               <div class="profile-contact-item">
                 <span>Correo</span>
                 <strong>${escapeHtml(profile.email)}</strong>
               </div>
-            </div>
-          </section>
-          <section class="profile-farms-section" aria-labelledby="profileFarmsTitle">
-            <div class="profile-farms-heading">
-              <div>
-                <span class="detail-label">Asignacion operativa</span>
-                <h3 id="profileFarmsTitle">Fincas asignadas</h3>
+              <div class="profile-contact-item">
+                <span>Sesión</span>
+                <strong>${escapeHtml(profile.lastLoginAt)}</strong>
               </div>
-              <span class="table-count">${profile.farms.length} fincas</span>
-            </div>
-            <div class="profile-farm-carousel" data-profile-farm-carousel tabindex="0" aria-label="Carrusel de fincas asignadas">
-              <button class="icon-btn profile-farm-control" type="button" data-profile-farm-previous aria-label="Ver fincas anteriores">
-                <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m15 18-6-6 6-6"></path></svg>
-              </button>
-              <div class="profile-farm-page" data-profile-farm-viewport aria-live="polite">
-                <div class="profile-farm-track" data-profile-farm-track>
-                  ${renderProfileFarmCards([...profile.farms, ...profile.farms.slice(0, 3)])}
-                </div>
-              </div>
-              <button class="icon-btn profile-farm-control" type="button" data-profile-farm-next aria-label="Ver fincas siguientes">
-                <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m9 18 6-6-6-6"></path></svg>
-              </button>
             </div>
           </section>
         `
       });
-      initProfileFarmCarousel(profile.farms);
     };
 
     const openProfileSettings = () => {
@@ -1077,22 +1007,24 @@ const SIALCore = (() => {
                 <span class="profile-role">${escapeHtml(profile.role)}</span>
               </div>
             </div>
-            <div class="profile-summary-meta">
-              <span>Identificacion</span>
-              <strong>${escapeHtml(profile.document)}</strong>
-            </div>
+            <div class="profile-summary-meta"><span>${escapeHtml(profile.company)}</span></div>
           </div>
-          <div class="profile-assignment-preview">
-            <div class="profile-assignment-heading">
-              <span>Fincas asignadas</span>
-              <strong>${profile.farms.length}</strong>
+          <div class="profile-context-preview">
+            <span class="detail-label">Contexto activo</span>
+            <strong>${escapeHtml(profile.role)}</strong>
+            <span>${escapeHtml(profile.scope)}</span>
+            <div class="profile-context-modules">
+              ${renderProfileChips(profile.modules.slice(0, 3))}
             </div>
-            ${renderCompactFarms(profile.farms)}
           </div>
           <div class="profile-menu-list">
             <button class="profile-menu-item" type="button" role="menuitem" data-profile-action="view">
               ${profileActionIcon("view")}
-              <span>Ver perfil</span>
+              <span>Ver mi perfil</span>
+            </button>
+            <button class="profile-menu-item" type="button" role="menuitem" data-profile-action="settings">
+              ${profileActionIcon("settings")}
+              <span>Preferencias</span>
             </button>
             <a class="profile-menu-item profile-menu-item-danger" role="menuitem" href="${escapeHtml(getLoginUrl())}" data-profile-action="logout">
               ${profileActionIcon("logout")}
@@ -1103,7 +1035,6 @@ const SIALCore = (() => {
       `;
       avatar.dataset.profileReady = "true";
       avatar.replaceWith(menu);
-      initCompactFarmCarousel(menu, profile.farms);
 
       const trigger = qs(".profile-trigger", menu);
       const panel = qs(".profile-panel", menu);
@@ -1145,6 +1076,10 @@ const SIALCore = (() => {
           event.preventDefault();
           openProfileView(profile);
           return;
+        }
+        if (action === "settings") {
+          event.preventDefault();
+          openProfileSettings();
         }
       });
     });
