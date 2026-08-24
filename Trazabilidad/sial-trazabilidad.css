@@ -55,40 +55,6 @@
   gap: 16px;
 }
 
-.poma-readiness-grid {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 12px;
-}
-
-.poma-readiness-grid > div {
-  display: grid;
-  gap: 4px;
-  min-width: 0;
-  padding: 13px 14px;
-  border: 1px solid var(--color-border-subtle);
-  border-radius: var(--radius-control);
-  background: var(--color-surface);
-  box-shadow: var(--shadow-xs);
-}
-
-.poma-readiness-grid span {
-  color: var(--color-text-3);
-  font-size: 11px;
-  font-weight: 700;
-}
-
-.poma-readiness-grid strong {
-  color: var(--color-text);
-  font-size: 14px;
-}
-
-.poma-readiness-grid small {
-  color: var(--color-text-2);
-  font-size: 12px;
-  line-height: 1.35;
-}
-
 .poma-preview-card .card-title {
   margin-top: 4px;
 }
@@ -466,10 +432,6 @@
     grid-template-columns: 1fr;
   }
 
-  .poma-readiness-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-
   .poma-data-group + .poma-data-group {
     padding-top: 18px;
     padding-left: 0;
@@ -512,8 +474,7 @@
 }
 
 @media (max-width: 520px) {
-  .poma-key-values,
-  .poma-readiness-grid {
+  .poma-key-values {
     grid-template-columns: 1fr;
   }
 
