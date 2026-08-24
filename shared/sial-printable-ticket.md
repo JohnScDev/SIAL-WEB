@@ -15,7 +15,8 @@ Ambos componentes están en `sial-printable-ticket.js`; sus estilos y reglas de 
 const ticket = SIALPrintableTicket.createPreview({
   id: "deliveryTicket",
   brand: "SIAL",
-  printShell: drawer
+  printShell: drawer,
+  printDuration: 2400
 });
 
 ticket.render({
@@ -33,4 +34,4 @@ ticket.render({
 
 El contenedor del drawer debe llevar `data-sial-ticket-shell` y el contenido que se oculta durante impresión `data-sial-ticket-detail`. El componente maneja `window.print()` y aplica el estado de impresión temporal sobre `body`.
 
-La animación dura 760 ms y el botón de impresión permanece deshabilitado mientras termina. Si el sistema operativo solicita reducir movimiento, el ticket aparece sin animación y la impresión queda disponible inmediatamente.
+Por defecto, la animación dura 2400 ms; `printDuration` permite ajustarla en cada uso. Durante la salida, el ticket se mueve desde detrás de la ranura a velocidad continua, mientras los pulsos del rodillo acompañan la alimentación. El botón de impresión permanece deshabilitado mientras termina. Si el sistema operativo solicita reducir movimiento, el ticket aparece sin animación y la impresión queda disponible inmediatamente.

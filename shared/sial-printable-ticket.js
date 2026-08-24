@@ -22,10 +22,12 @@
    */
   function createPreview(options = {}) {
     const id = options.id || `sialTicket${Date.now()}`;
+    const printDuration = Number.isFinite(options.printDuration) ? options.printDuration : 2400;
     const stage = document.createElement("div");
     stage.className = "sial-ticket-print-stage";
     stage.hidden = true;
     stage.dataset.state = "complete";
+    stage.style.setProperty("--sial-ticket-print-duration", `${printDuration}ms`);
     const printer = document.createElement("div");
     printer.className = "sial-ticket-printer";
     printer.dataset.sialTicketPrinter = "";
@@ -85,7 +87,11 @@
     const footer = document.createElement("p");
     footer.className = "sial-ticket-footer-copy";
     element.append(topline, heading, state, firstDivider, primaryData, secondDivider, secondaryData, verification, footer);
-    stage.append(printer, element);
+    const paperFeed = document.createElement("div");
+    paperFeed.className = "sial-ticket-paper-feed";
+    paperFeed.dataset.sialTicketPaperFeed = "";
+    paperFeed.append(element);
+    stage.append(printer, paperFeed);
 
     function render(data = {}) {
       ticketId.textContent = text(data.ticketId);
@@ -117,7 +123,7 @@
         window.setTimeout(() => {
           stage.dataset.state = "complete";
           resolve();
-        }, 760);
+        }, printDuration);
       });
     }
 

@@ -7,6 +7,7 @@ Libreria compartida para las propuestas HTML del entorno SIAL.
 - `sial-core.css`: tokens, dark mode, layout, shell, cards, botones, formularios, tablas, drawers, estados y patrones comunes.
 - `sial-core.js`: utilidades reutilizables para tema, filtros, drawers, formularios embebidos, estados de campo, confirmacion de acciones de estado y changelog.
 - `componentes.html`: inventario visual para QA de tokens, componentes, indicadores, estados y modo oscuro.
+- `patrones-de-diseno-web.md`: mapa completo de vistas, patrones, candidatos visuales y gobierno de promoción.
 - `brand/isotipo-sial.svg`: isotipo SIAL compartido para la marca del shell y encabezados donde el texto `SIAL` se conserva por separado.
 
 ## Regla de uso
@@ -20,6 +21,8 @@ Cada modulo debe conservar su archivo local, por ejemplo `sial-fincas.css`, pero
 ```
 
 Las reglas locales solo deben agregarse si el modulo necesita una variante especifica no cubierta por la libreria. Antes de crear una regla local, validar si el comportamiento pertenece a un componente reutilizable. Si pertenece al sistema, debe agregarse aqui.
+
+Crear un componente, estilo o composición nueva está permitido cuando la necesidad no está cubierta. Se registra como **candidato visual** con su propósito, estados y accesibilidad; antes de reutilizarlo fuera de la vista origen, Diseño/Producto y revisión técnica deciden si se promueve a esta librería o permanece como dominio local.
 
 ## Componentes centralizados
 

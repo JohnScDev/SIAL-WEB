@@ -104,33 +104,89 @@
   font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
 }
 
+.sial-ticket-paper-feed {
+  position: relative;
+  overflow: visible;
+}
+
+.sial-ticket-print-stage[data-state="printing"] .sial-ticket-paper-feed {
+  overflow: hidden;
+  animation: sial-ticket-paper-feed var(--sial-ticket-print-duration, 2400ms) linear both;
+}
+
 .sial-ticket-print-stage[data-state="printing"] .sial-printable-ticket {
-  transform-origin: top center;
-  animation: sial-ticket-feed 920ms cubic-bezier(.2, .72, .24, 1) both;
+  will-change: transform;
+  animation: sial-ticket-paper-travel var(--sial-ticket-print-duration, 2400ms) linear both;
 }
 
 .sial-ticket-print-stage[data-state="printing"] .sial-ticket-printer::before {
-  animation: sial-ticket-printer-pulse 920ms ease-in-out both;
+  animation: sial-ticket-printer-pulse 280ms ease-in-out infinite;
 }
 
-@keyframes sial-ticket-feed {
+.sial-ticket-print-stage[data-state="printing"] .sial-ticket-printer-slot {
+  animation: sial-ticket-slot-feed 280ms ease-in-out infinite;
+}
+
+@keyframes sial-ticket-paper-feed {
   0% {
-    clip-path: inset(0 0 calc(100% - 8px) 0);
-    opacity: 1;
+    max-height: 8px;
   }
 
-  70% {
-    clip-path: inset(0 0 16% 0);
+  12% {
+    max-height: 14px;
+  }
+
+  28% {
+    max-height: 135px;
+  }
+
+  52% {
+    max-height: 355px;
+  }
+
+  76% {
+    max-height: 625px;
   }
 
   100% {
-    clip-path: inset(0);
+    max-height: 900px;
+  }
+}
+
+@keyframes sial-ticket-paper-travel {
+  0% {
+    transform: translateY(-64px);
+  }
+
+  12% {
+    transform: translateY(-56px);
+  }
+
+  28% {
+    transform: translateY(-45px);
+  }
+
+  52% {
+    transform: translateY(-29px);
+  }
+
+  76% {
+    transform: translateY(-13px);
+  }
+
+  100% {
+    transform: translateY(0);
   }
 }
 
 @keyframes sial-ticket-printer-pulse {
-  0%, 100% { opacity: .55; transform: scaleX(.82); }
-  15%, 82% { opacity: 1; transform: scaleX(1); }
+  0%, 100% { opacity: .5; transform: scaleX(.78); }
+  50% { opacity: 1; transform: scaleX(1); }
+}
+
+@keyframes sial-ticket-slot-feed {
+  0%, 100% { opacity: .52; transform: scaleX(.78); }
+  50% { opacity: 1; transform: scaleX(1); }
 }
 
 .sial-ticket-topline {
@@ -300,14 +356,21 @@
     background: #fff;
   }
 
+  body[data-sial-print-ticket] [data-sial-ticket-paper-feed] {
+    max-height: none !important;
+    overflow: visible !important;
+  }
+
   body[data-sial-print-ticket] [data-sial-ticket-root] * {
     color: #000 !important;
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .sial-ticket-print-stage[data-state="printing"] .sial-ticket-paper-feed,
   .sial-ticket-print-stage[data-state="printing"] .sial-printable-ticket,
-  .sial-ticket-print-stage[data-state="printing"] .sial-ticket-printer::before {
+  .sial-ticket-print-stage[data-state="printing"] .sial-ticket-printer::before,
+  .sial-ticket-print-stage[data-state="printing"] .sial-ticket-printer-slot {
     animation: none;
   }
 }
