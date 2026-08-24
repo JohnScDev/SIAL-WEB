@@ -33,13 +33,28 @@ const SIALAdditionalOrders = (() => {
 
   const model = { lines: [{ material: materials[0].code, quantity: 0 }], reason: "", observation: "" };
 
-  function savedRequest() {
-    try { return JSON.parse(localStorage.getItem(saveKey)); } catch { return null; }
+  function savedRequests() {
+    try {
+      const value = JSON.parse(localStorage.getItem(saveKey));
+      if (Array.isArray(value)) return value;
+      return value ? [value] : [];
+    } catch { return []; }
   }
 
   function requests() {
-    const saved = savedRequest();
-    return saved ? [saved, ...seedRequests.filter((item) => item.id !== saved.id)] : seedRequests;
+    const saved = savedRequests();
+    const savedIds = new Set(saved.map((item) => item.id));
+    return [...saved, ...seedRequests.filter((item) => !savedIds.has(item.id))];
+  }
+
+  function nextSequence() {
+    const current = requests().filter((item) => item.base === baseOrder.id && item.week === baseOrder.week);
+    return current.reduce((max, item) => Math.max(max, Number(item.sequence) || 0), 0) + 1;
+  }
+
+  function requestKey(lines, reason) {
+    const normalized = lines.map((line) => `${line.material}:${Number(line.quantity)}`).sort().join(",");
+    return `${baseOrder.id}|${baseOrder.farmCode}|${reason}|${normalized}`;
   }
 
   function statusChip(value) {
@@ -95,7 +110,7 @@ const SIALAdditionalOrders = (() => {
   }
 
   function sourceChain() {
-    return `<div class="additional-chain" aria-label="Cadena de origen del pedido"><div><span>Aviso de corte</span><strong>${esc(baseOrder.notice)}</strong></div><i aria-hidden="true">→</i><div><span>Pedido base</span><strong>${esc(baseOrder.id)}</strong></div><i aria-hidden="true">→</i><div class="is-current"><span>Nueva solicitud</span><strong>Adicional 3 · ${esc(baseOrder.week)}</strong></div></div>`;
+    return `<div class="additional-chain" aria-label="Cadena de origen del pedido"><div><span>Aviso de corte</span><strong>${esc(baseOrder.notice)}</strong></div><i aria-hidden="true">→</i><div><span>Pedido base</span><strong>${esc(baseOrder.id)}</strong></div><i aria-hidden="true">→</i><div class="is-current"><span>Nueva solicitud</span><strong>Adicional ${nextSequence()} · ${esc(baseOrder.week)}</strong></div></div>`;
   }
 
   function materialOptions(selected, index) {
@@ -121,7 +136,7 @@ const SIALAdditionalOrders = (() => {
     return `
       <a class="additional-back" href="pedidos-adicionales.html">${icon(icons.arrow)} Volver a pedidos adicionales</a>
       ${header("Nuevo pedido adicional", "Registra solo la necesidad que no quedó cubierta por el pedido semanal.")}
-      <div class="notice notice-info additional-create-note" role="note"><div><strong>Solicitud vinculada al corte actual</strong><span>Ya existe 1 pedido adicional esta semana. La frecuencia se muestra para revisión, pero la HU no define un máximo automático.</span></div></div>
+      <div class="notice notice-info additional-create-note" role="note"><div><strong>Solicitud vinculada al corte actual</strong><span>Ya existen ${requests().filter((item) => item.base === baseOrder.id && item.week === baseOrder.week).length} pedidos adicionales esta semana. La HU no define un máximo automático; cada solicitud conserva su propio motivo, actor y trazabilidad.</span></div></div>
       <form class="card additional-create-card" data-additional-form novalidate>
         ${sourceChain()}
         <div class="additional-context"><div><span>Finca</span><strong>${esc(baseOrder.farm)}</strong></div><div><span>Referencia</span><strong>${esc(baseOrder.reference)}</strong></div><div><span>Pedido base</span><strong>${esc(baseOrder.status)}</strong></div><div><span>Responsable</span><strong>QA Materiales · Web</strong></div></div>
@@ -188,11 +203,14 @@ const SIALAdditionalOrders = (() => {
     event.preventDefault();
     const state = formState();
     if (!state.valid) { renderCreateState(); qs(state.blocked ? "[data-line-quantity]" : "#additionalReason")?.focus(); return; }
-    const existing = savedRequest();
-    if (existing) { feedback(`El pedido ${existing.id} ya fue registrado. No se creó un duplicado.`); return; }
+    const idempotencyKey = requestKey(model.lines, model.reason);
+    const existing = savedRequests().find((item) => item.idempotencyKey === idempotencyKey);
+    if (existing) { feedback(`El pedido ${existing.id} ya fue registrado con la misma solicitud. No se creó un duplicado.`); return; }
+    const sequence = nextSequence();
     const total = model.lines.reduce((sum, line) => sum + Number(line.quantity || 0), 0);
-    const saved = { id: "PAD-2026-32-003", base: baseOrder.id, notice: baseOrder.notice, farm: baseOrder.farm, week: baseOrder.week, sequence: 3, lines: model.lines.length, quantity: `${format(total)} en unidades de cada material`, reason: qs("#additionalReason").selectedOptions[0].textContent, reasonCode: model.reason, observation: model.observation, status: "Pendiente de validación", updated: "Hoy, 11:35", document: "Pendiente de clasificación", shortages: state.shortages, detailLines: model.lines.map((line) => ({ ...line, ...materials.find((item) => item.code === line.material) })) };
-    localStorage.setItem(saveKey, JSON.stringify(saved));
+    const now = new Date();
+    const saved = { id: `PAD-2026-32-${String(sequence).padStart(3, "0")}`, base: baseOrder.id, notice: baseOrder.notice, farm: baseOrder.farm, farmCode: baseOrder.farmCode, week: baseOrder.week, reference: baseOrder.reference, sequence, lines: model.lines.length, quantity: `${format(total)} en unidades de cada material`, reason: qs("#additionalReason").selectedOptions[0].textContent, reasonCode: model.reason, observation: model.observation, status: "Pendiente de validación", updated: "Ahora", createdAt: now.toISOString(), actor: "QA Materiales · Web", document: "Pendiente de clasificación", shortages: state.shortages, idempotencyKey, detailLines: model.lines.map((line) => ({ ...line, ...materials.find((item) => item.code === line.material) })) };
+    localStorage.setItem(saveKey, JSON.stringify([...savedRequests(), saved]));
     localStorage.removeItem(draftKey);
     location.href = `pedidos-adicionales.html?pedido=${encodeURIComponent(saved.id)}&creado=1`;
   }
@@ -209,7 +227,7 @@ const SIALAdditionalOrders = (() => {
       ${created ? `<div class="notice notice-success additional-created" role="status">${icon(icons.check)}<div><strong>Pedido adicional registrado</strong><span>La solicitud se creó una sola vez y quedó pendiente de validación.</span></div></div>` : ""}
       <article class="card additional-detail-card">
         <div class="additional-chain" aria-label="Cadena de origen del pedido"><div><span>Aviso de corte</span><strong>${esc(item.notice)}</strong></div><i aria-hidden="true">→</i><div><span>Pedido base</span><strong>${esc(item.base)}</strong></div><i aria-hidden="true">→</i><div class="is-current"><span>Pedido adicional</span><strong>${esc(item.id)}</strong></div></div>
-        <div class="additional-context"><div><span>Finca</span><strong>${esc(item.farm)}</strong></div><div><span>Semana</span><strong>${esc(item.week)}</strong></div><div><span>Motivo</span><strong>${esc(item.reason)}</strong></div><div><span>Documento</span><strong>${esc(item.document)}</strong></div></div>
+        <div class="additional-context"><div><span>Finca</span><strong>${esc(item.farm)}</strong></div><div><span>Semana</span><strong>${esc(item.week)}</strong></div><div><span>Motivo</span><strong>${esc(item.reason)}</strong></div><div><span>Documento</span><strong>${esc(item.document)}</strong></div><div><span>Actor / fecha</span><strong>${esc(item.actor || "Histórico")}</strong><small>${esc(item.createdAt || item.updated)}</small></div><div><span>Idempotencia</span><strong>${esc(item.idempotencyKey || "Histórico")}</strong></div></div>
         <div class="card-header"><div><h2 class="card-title">Materiales solicitados</h2><p class="card-subtitle">Valores registrados al crear la solicitud.</p></div></div>
         <div class="table-wrap"><table class="materials-table additional-detail-table"><thead><tr><th>Material</th><th>Cantidad adicional</th><th>Stock consultado</th><th>Resultado inicial</th></tr></thead><tbody>${lines.map((line) => `<tr><td><div class="materials-record-main"><strong>${esc(line.name)}</strong><span>${esc(line.code || "")}</span></div></td><td>${line.quantity === "—" ? esc(item.quantity) : `${format(Number(line.quantity))} ${esc(line.unit)}`}</td><td>${line.stock === "—" ? "No detallado" : `${format(Number(line.stock))} ${esc(line.unit)}`}</td><td>${line.quantity === "—" ? statusChip("Registrado") : resultMarkup(lineResult({ material: line.code, quantity: line.quantity }))}</td></tr>`).join("")}</tbody></table></div>
         <div class="additional-detail-grid"><section><h2 class="card-title">Seguimiento</h2><div class="additional-timeline">${steps}</div></section><aside><h2 class="card-title">Condiciones de continuidad</h2><div class="additional-conditions"><div>${icon(icons.check)}<span>Origen y responsable registrados</span></div><div>${icon(item.status === "Entregado" ? icons.check : icons.alert)}<span>${item.status === "Entregado" ? "Entrega finalizada con soporte" : "Documento logístico y entrega aún no finalizados"}</span></div><div>${icon(icons.alert)}<span>No puede cerrarse con devolución, novedad o soporte pendiente</span></div></div></aside></div>

@@ -11,6 +11,7 @@ Modulo orquestador para pedidos de materiales, inventario en finca, pallets, ord
 - `HU546`, `HU669`, `HU670`, `HU532`: ordenes de transporte y notificaciones.
 - `HU668`: resumen digital para proveedores externos.
 - `HU681`, `HU682`, `HU547`: entrega movil, POD, foto/firma y recepcion.
+- `HU826`: maestra de materiales y configuración por referencia.
 - `HU559`, `HU560`: pallets completos e incompletos.
 - `HU607`: enlace contextual hacia Seguridad / Auditoria Operativa.
 
@@ -29,6 +30,12 @@ Modulo orquestador para pedidos de materiales, inventario en finca, pallets, ord
 
 ## Reglas de propuesta
 
+- La matriz completa de canales y responsabilidades está en [`MATRIZ_HU_CANALES.md`](./MATRIZ_HU_CANALES.md): web concentra planeación, maestros, gestión, notificaciones y consulta; móvil concentra ejecución/captura en campo, offline y POD cuando la HU lo exige.
+- La web no duplica formularios de recepción, foto, firma ni outbox móvil. En entregas/POD solo consulta, gestiona y audita; la captura efectiva permanece en la app móvil.
+- HU660 no aplica porcentajes ilustrativos: cualquier cambio de cantidad queda bloqueado hasta publicar la matriz oficial de tolerancias, sugerido cero y aprobador.
+- HU666 admite múltiples solicitudes por pedido base, cada una con motivo, actor, fecha y clave de idempotencia; no se impone un máximo automático.
+- HU662 muestra el saldo derivado con reservas, daños y último movimiento; no permite editar un número de stock libre.
+- HU826 expone en el detalle receta/versión, vigencia, desperdicio, sustitutos y redondeo, no solo la referencia.
 - El modulo no reemplaza Seguridad, Transporte ni Pallets; los orquesta y enlaza cuando corresponde.
 - Los archivos manuales externos no son el mecanismo principal de coordinacion; se simula envio digital con auditoria.
 - Las maestras cortas usan formulario embebido.

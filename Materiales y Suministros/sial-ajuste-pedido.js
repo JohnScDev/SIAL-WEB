@@ -6,6 +6,7 @@ const SIALOrderAdjustment = (() => {
   const params = new URLSearchParams(location.search);
   const orderId = params.get("pedido") || "PED-SUG-2026-32-014";
   const stateKey = `sial-hu660-adjustment:${orderId}`;
+  const adjustmentRuleState = "pending";
   const icon = (path) => `<svg class="icon" viewBox="0 0 24 24" aria-hidden="true">${path}</svg>`;
   const icons = {
     arrow: '<path d="m15 18-6-6 6-6"></path>',
@@ -44,7 +45,7 @@ const SIALOrderAdjustment = (() => {
         <span class="status status-warning" data-adjust-order-status>Pendiente de revisión</span>
       </div>
 
-      <div class="notice notice-info adjust-rule-notice" role="note">${icon(icons.alert)}<div><strong>Reglas en validación</strong><span>Los límites del 10% y 15% muestran cómo funcionará el control. Falta confirmar qué materiales usan cada límite y quién aprueba las excepciones.</span></div></div>
+      <div class="notice notice-warning adjust-rule-notice" role="alert">${icon(icons.alert)}<div><strong>Regla de ajuste pendiente</strong><span>La matriz oficial de tolerancias, el tratamiento del sugerido cero y el aprobador aún no están publicados. Esta propuesta bloquea cualquier cambio de cantidad hasta que exista esa configuración.</span></div></div>
 
       <article class="card adjust-card">
         <div class="adjust-context" aria-label="Contexto del pedido">
@@ -64,7 +65,7 @@ const SIALOrderAdjustment = (() => {
             <tbody data-adjust-rows></tbody>
           </table>
         </div>
-        <p class="adjust-rule-footnote">* Los límites se presentan para validar la interacción de la propuesta; su asignación definitiva depende de la matriz de negocio.</p>
+        <p class="adjust-rule-footnote">Los porcentajes de referencia no se aplican como regla operativa. Solo las cantidades sin cambio pueden confirmarse mientras la matriz oficial siga pendiente.</p>
 
         <div class="adjust-review-grid">
           <section class="adjust-fields" aria-labelledby="adjustReasonTitle">
@@ -97,7 +98,8 @@ const SIALOrderAdjustment = (() => {
   function classify(row) {
     const value = Number(row.adjusted);
     if (!Number.isFinite(value) || value < 0 || !Number.isInteger(value)) return { type: "blocked", label: "Cantidad no válida", detail: "Ingresa un número entero igual o mayor que cero." };
-    if (value === row.suggested) return { type: "unchanged", label: "Sin cambio", detail: `Límite ilustrativo: ${row.tolerance}%.` };
+    if (value === row.suggested) return { type: "unchanged", label: "Sin cambio", detail: "No requiere aplicar una tolerancia." };
+    if (adjustmentRuleState !== "confirmed") return { type: "blocked", label: "Regla pendiente", detail: "La tolerancia oficial aún no está configurada." };
     if (row.suggested === 0 && value > 0) return { type: "blocked", label: "Regla pendiente", detail: "Debe definirse cómo solicitar cuando el sugerido es cero." };
     const percent = Math.abs(((value - row.suggested) / row.suggested) * 100);
     if (percent > row.tolerance) return { type: "exception", label: "Requiere aprobación", detail: `Supera el límite ilustrativo del ${row.tolerance}%.` };

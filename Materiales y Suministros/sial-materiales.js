@@ -29,12 +29,13 @@ const SIALMaterials = (() => {
     REVISION: ["status-warning", "Revision"],
     ERROR: ["status-inactive", "Error"]
   };
+  const notificationKey = "sial-materiales-notifications";
 
   const materials = [
-    { id: "MAT-001", code: "MAT-CAR-001", name: "Caja carton corrugado", category: "Cartonera", unit: "unidad", status: "ACTIVO", supplier: "Cartonera Caribe", audit: "Crear - almacen.admin|12/06/2026 08:10" },
-    { id: "MAT-002", code: "MAT-EST-001", name: "Estiba madera exportacion", category: "Estibado", unit: "unidad", status: "ACTIVO", supplier: "Estibas del Norte", audit: "Editar - almacen.admin|14/06/2026 10:35" },
-    { id: "MAT-003", code: "MAT-SEP-001", name: "Separador de pallet", category: "Empaque", unit: "paquete", status: "REVISION", supplier: "Suministros Banasan", audit: "Revision - supervisor.ze|18/06/2026 15:20" },
-    { id: "MAT-004", code: "MAT-ETQ-001", name: "Etiqueta trazabilidad", category: "Identificacion", unit: "rollo", status: "ACTIVO", supplier: "Etiquetas del Caribe", audit: "Crear - almacen.admin|20/06/2026 09:22" }
+    { id: "MAT-001", code: "MAT-CAR-001", name: "Caja carton corrugado", category: "Cartonera", unit: "unidad", status: "ACTIVO", supplier: "Cartonera Caribe", recipeVersion: "REC-AGSTDRA v3", validity: "01/08/2026 — 31/12/2026", waste: "2%", substitutes: "MAT-CAR-002", rounding: "Entero superior", audit: "Crear - almacen.admin|12/06/2026 08:10" },
+    { id: "MAT-002", code: "MAT-EST-001", name: "Estiba madera exportacion", category: "Estibado", unit: "unidad", status: "ACTIVO", supplier: "Estibas del Norte", recipeVersion: "REC-AGSTDRA v3", validity: "01/08/2026 — 31/12/2026", waste: "0%", substitutes: "Ninguno", rounding: "Entero superior", audit: "Editar - almacen.admin|14/06/2026 10:35" },
+    { id: "MAT-003", code: "MAT-SEP-001", name: "Separador de pallet", category: "Empaque", unit: "paquete", status: "REVISION", supplier: "Suministros Banasan", recipeVersion: "Pendiente", validity: "Pendiente", waste: "Pendiente", substitutes: "Pendiente", rounding: "Pendiente", audit: "Revision - supervisor.ze|18/06/2026 15:20" },
+    { id: "MAT-004", code: "MAT-ETQ-001", name: "Etiqueta trazabilidad", category: "Identificacion", unit: "rollo", status: "ACTIVO", supplier: "Etiquetas del Caribe", recipeVersion: "REC-AGSTDRA v3", validity: "01/08/2026 — 31/12/2026", waste: "1%", substitutes: "Ninguno", rounding: "Entero superior", audit: "Crear - almacen.admin|20/06/2026 09:22" }
   ];
 
   const suppliers = [
@@ -44,10 +45,10 @@ const SIALMaterials = (() => {
   ];
 
   const stock = [
-    { id: "STK-001", finca: "Finca Santa Isabel", material: "Caja carton corrugado", available: 1280, unit: "unidad", updated: "28/06/2026 07:40", status: "ACTIVO", coverage: "2.4 dias", source: "HU662" },
-    { id: "STK-002", finca: "Finca El Retiro", material: "Caja carton corrugado", available: 360, unit: "unidad", updated: "28/06/2026 07:50", status: "REVISION", coverage: "0.8 dias", source: "HU662" },
-    { id: "STK-003", finca: "Finca Santa Isabel", material: "Estiba madera exportacion", available: 94, unit: "unidad", updated: "28/06/2026 06:58", status: "ACTIVO", coverage: "3.1 dias", source: "HU662" },
-    { id: "STK-004", finca: "Finca Las Palmas", material: "Separador de pallet", available: 18, unit: "paquete", updated: "27/06/2026 18:12", status: "REVISION", coverage: "Stock bajo", source: "HU662" }
+    { id: "STK-001", finca: "Finca Santa Isabel", material: "Caja carton corrugado", available: 1280, reserved: 120, damaged: 0, unit: "unidad", updated: "28/06/2026 07:40", lastMovement: "Entrada por recepción · MOV-8821", status: "ACTIVO", coverage: "2.4 dias", source: "Movimientos de inventario · HU662" },
+    { id: "STK-002", finca: "Finca El Retiro", material: "Caja carton corrugado", available: 360, reserved: 40, damaged: 12, unit: "unidad", updated: "28/06/2026 07:50", lastMovement: "Ajuste por daño · MOV-8814", status: "REVISION", coverage: "0.8 dias", source: "Movimientos de inventario · HU662" },
+    { id: "STK-003", finca: "Finca Santa Isabel", material: "Estiba madera exportacion", available: 94, reserved: 12, damaged: 2, unit: "unidad", updated: "28/06/2026 06:58", lastMovement: "Salida a orden OTI-546-001", status: "ACTIVO", coverage: "3.1 dias", source: "Movimientos de inventario · HU662" },
+    { id: "STK-004", finca: "Finca Las Palmas", material: "Separador de pallet", available: 18, reserved: 0, damaged: 3, unit: "paquete", updated: "27/06/2026 18:12", lastMovement: "Conteo pendiente · MOV-8792", status: "REVISION", coverage: "Stock bajo", source: "Conteo pendiente · HU662" }
   ];
 
   const orders = [
@@ -89,14 +90,14 @@ const SIALMaterials = (() => {
   ];
 
   const viewConfig = {
-    dashboard: { title: "Materiales y suministros", eyebrow: "Gestion / Materiales y suministros", subtitle: "Centro operativo para pedidos, stock, ordenes, proveedores, entregas y trazabilidad documental.", hu: "HU659, HU662, HU666, HU667, HU546, HU668, HU681, HU682" },
-    pedidos: { title: "Gestion de pedidos de materiales", eyebrow: "Materiales / Pedidos", subtitle: "Pedidos sugeridos, adicionales y estandar vinculados a finca, semana, stock y documento logistico.", hu: "HU659, HU662, HU666, HU667" },
-    inventario: { title: "Inventario por finca", eyebrow: "Materiales / Inventario", subtitle: "Consulta de stock disponible por finca y material antes de confirmar pedidos.", hu: "HU662" },
+    dashboard: { title: "Materiales y suministros", eyebrow: "Gestion / Materiales y suministros", subtitle: "Centro operativo para pedidos, stock, ordenes, proveedores, entregas y trazabilidad documental.", hu: "HU659, HU660, HU662, HU666, HU667, HU826, HU546, HU668, HU681, HU682", channel: "Web gestiona y consulta · móvil ejecuta en campo cuando la HU lo requiere." },
+    pedidos: { title: "Gestion de pedidos de materiales", eyebrow: "Materiales / Pedidos", subtitle: "Pedidos sugeridos, adicionales y estandar vinculados a finca, semana, stock y documento logistico.", hu: "HU659, HU660, HU666, HU667", channel: "Web: genera, ajusta y procesa · móvil: consulta o captura de campo solo cuando aplique." },
+    inventario: { title: "Inventario por finca", eyebrow: "Materiales / Inventario", subtitle: "Consulta de stock disponible por finca y material antes de confirmar pedidos.", hu: "HU662", channel: "Web: consulta de gestión · móvil: consulta complementaria, sin editar saldos." },
     pallets: { title: "Inventario de pallets", eyebrow: "Materiales / Pallets", subtitle: "Pallets completos y mochos para planificar cargues y consolidaciones.", hu: "HU559, HU560" },
-    ordenes: { title: "Ordenes de transporte de insumos", eyebrow: "Materiales / Ordenes", subtitle: "Ordenes con documento logistico, vehiculo, finca destino y notificaciones operativas.", hu: "HU546, HU669, HU670, HU532" },
+    ordenes: { title: "Ordenes de transporte de insumos", eyebrow: "Materiales / Ordenes", subtitle: "Ordenes con documento logistico, vehiculo, finca destino y notificaciones operativas.", hu: "HU546, HU669, HU670, HU532", channel: "Web: registra y notifica · móvil: consulta y ejecuta hitos de campo." },
     proveedores: { title: "Resumen para proveedores externos", eyebrow: "Materiales / Proveedores externos", subtitle: "Generacion y envio digital de resumen para cartoneras y estibaderos.", hu: "HU668" },
-    entregas: { title: "Seguimiento de entregas y POD", eyebrow: "Materiales / Entregas", subtitle: "Consulta de entrega efectiva, evidencia, firma digital y trazabilidad asociada.", hu: "HU681, HU682, HU547, HU607" },
-    materiales: { title: "Gestion de materiales", eyebrow: "Materiales / Maestra", subtitle: "Catalogo minimo de materiales usados por pedidos, stock y ordenes.", hu: "Maestra soporte" },
+    entregas: { title: "Seguimiento de entregas y POD", eyebrow: "Materiales / Entregas", subtitle: "Consulta de entrega efectiva, evidencia, firma digital y trazabilidad asociada.", hu: "HU681, HU682, HU547, HU607", channel: "Web: seguimiento, gestión y auditoría · móvil: captura de recepción, foto y firma." },
+    materiales: { title: "Gestion de materiales", eyebrow: "Materiales / Maestra", subtitle: "Materiales y configuración por referencia para que los pedidos usen reglas vigentes.", hu: "HU826", channel: "Web: administra receta/versionado y configuración · móvil: no administra la maestra." },
     proveedoresMaster: { title: "Gestion de proveedores", eyebrow: "Materiales / Maestra", subtitle: "Proveedores externos para resumenes digitales y coordinacion de entregas.", hu: "HU668 soporte" },
     reglas: { title: "Reglas documentales", eyebrow: "Materiales / Documentos", subtitle: "Parametrizacion de clasificacion automatica para RPT, remision y reserva.", hu: "HU667" }
   };
@@ -187,9 +188,9 @@ const SIALMaterials = (() => {
       <tr ${rowDataset(item, item.finca, item.status)}>
         <td><div class="materials-record-main"><strong>${esc(item.finca)}</strong><span>${esc(item.source)}</span></div></td>
         <td>${esc(item.material)}</td>
-        <td>${esc(item.available)} ${esc(item.unit)}</td>
+        <td><strong>${esc(item.available)} ${esc(item.unit)}</strong><br><span class="muted">Reservado: ${esc(item.reserved)} · Dañado: ${esc(item.damaged)}</span></td>
         <td>${esc(item.coverage)}</td>
-        <td>${esc(item.updated)}</td>
+        <td>${esc(item.lastMovement)}<br><span class="muted">${esc(item.updated)}</span></td>
         <td>${status(item.status)}</td>
         <td class="muted">Sincronizar - sistema<br>${esc(item.updated)}</td>
         <td><div class="row-actions">${detailButton("stock", item.id)}</div></td>
@@ -215,16 +216,18 @@ const SIALMaterials = (() => {
 
   function transportRows() {
     return transportOrders.map((item) => `
+      ${(() => { const notifications = notificationState(item.id); return `
       <tr ${rowDataset(item, item.docType.toLowerCase(), item.status)}>
         <td><div class="materials-record-main"><strong>${esc(item.id)}</strong><span>${esc(item.source)}</span></div></td>
         <td>${documentTag(item.docType)}<br><span class="muted">${esc(item.document)}</span></td>
         <td>${esc(item.finca)}</td>
         <td>${esc(item.vehicle)}<br><span class="muted">${esc(item.driver)}</span></td>
         <td>${esc(item.materials)}<br><span class="muted">${esc(item.quantity)}</span></td>
-        <td>${status(item.status)}</td>
+        <td>${status(item.status)}<br><span class="muted">Transporte: ${notifications.transport ? "notificado" : "pendiente"}<br>Conductor: ${item.driver === "--" ? "sin asignar" : notifications.driver ? "notificado" : "pendiente"}</span></td>
         <td class="muted">${esc(item.audit).replace("|", "<br>")}</td>
-        <td><div class="row-actions">${detailButton("transport", item.id)}${iconButton("Notificar orden", "send", `data-material-action="notify" data-record-id="${esc(item.id)}"`)}${stateButton("Inactivar orden")}</div></td>
+        <td><div class="row-actions">${detailButton("transport", item.id)}${iconButton("Notificar a transporte", "send", `data-material-action="notify-transport" data-record-id="${esc(item.id)}"`)}${iconButton("Notificar al conductor", "send", `data-material-action="notify-driver" data-record-id="${esc(item.id)}" ${item.driver === "--" || item.vehicle === "Sin asignar" ? "disabled" : ""}`)}${stateButton("Inactivar orden")}</div></td>
       </tr>
+      `; })()}
     `).join("");
   }
 
@@ -290,6 +293,18 @@ const SIALMaterials = (() => {
     return `<div class="notice notice-${type}"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M12 8v5"></path><path d="M12 16h.01"></path></svg><span>${esc(text)}</span></div>`;
   }
 
+  function notificationState(id) {
+    try { return JSON.parse(localStorage.getItem(notificationKey) || "{}")[id] || {}; } catch { return {}; }
+  }
+
+  function saveNotification(id, recipient) {
+    let state = {};
+    try { state = JSON.parse(localStorage.getItem(notificationKey) || "{}"); } catch { state = {}; }
+    state[id] = { ...(state[id] || {}), [recipient]: new Date().toISOString() };
+    localStorage.setItem(notificationKey, JSON.stringify(state));
+    return state[id];
+  }
+
   function header(view) {
     const cfg = viewConfig[view] || viewConfig.dashboard;
     return `
@@ -298,6 +313,7 @@ const SIALMaterials = (() => {
         <div><h1 class="page-title">${esc(cfg.title)}</h1><p class="page-subtitle">${esc(cfg.subtitle)}</p></div>
       </div>
       ${notice(`Historias cubiertas: ${cfg.hu}. Esta propuesta es estatica y deja contratos listos para backend futuro.`)}
+      ${cfg.channel ? notice(`Canal y responsabilidad: ${cfg.channel}`, "info") : ""}
     `;
   }
 
@@ -368,12 +384,12 @@ const SIALMaterials = (() => {
     if (view === "dashboard") return dashboard();
     const map = {
       pedidos: ["Pedidos de materiales", "Listado operativo con stock consultado, origen del pedido y documento logistico.", "pedidoCount", "pedidoSearch", "pedidoStatus", "pedidoContext", "Todos los tipos", contextByView.pedidos, ["Pedido", "Tipo", "Finca / semana", "Material / cantidad", "Stock consultado", "Documento", "Estado", "Auditoria"], orderRows(), "pedidos-materiales", '<button class="btn btn-primary" type="button" data-open-inline-form>Pedido adicional</button>', notice("Un pedido adicional debe asociarse a semana de corte, finca y motivo antes de entrar a validacion.", "warning") + inlineForm("pedido")],
-      inventario: ["Stock disponible en finca", "Inventario por finca y material con fecha de ultima actualizacion.", "stockCount", "stockSearch", "stockStatus", "stockContext", "Todas las fincas", contextByView.inventario, ["Finca", "Material", "Cantidad disponible", "Cobertura", "Ultima actualizacion", "Estado", "Auditoria"], stockRows(), "inventario-finca", "", ""],
+      inventario: ["Stock disponible en finca", "Inventario derivado por movimientos, reservas, daños y fecha de actualización.", "stockCount", "stockSearch", "stockStatus", "stockContext", "Todas las fincas", contextByView.inventario, ["Finca", "Material", "Saldo / reservas", "Cobertura", "Último movimiento / actualización", "Estado", "Auditoria"], stockRows(), "inventario-finca", "", notice("El saldo no se edita como un número libre: se consulta desde movimientos, reservas y novedades de inventario.", "info")],
       pallets: ["Pallets completos e incompletos", "Inventario ZE para planificar cargue de contenedores y consolidacion posterior.", "palletCount", "palletSearch", "palletStatus", "palletContext", "Todos los tipos", contextByView.pallets, ["Referencia", "Tipo", "Finca origen", "Pallets", "Cajas restantes", "Destino", "Estado", "Auditoria"], palletRows(), "inventario-pallets", '<a class="btn btn-secondary" href="../pallets/armar-pallet.html">Ver flujo movil</a>', ""],
       ordenes: ["Ordenes de transporte", "Ordenes de insumos con documento, vehiculo, finca destino y notificacion.", "transportCount", "transportSearch", "transportStatus", "transportContext", "Todos los documentos", contextByView.ordenes, ["Orden", "Documento", "Finca destino", "Vehiculo / conductor", "Materiales", "Estado", "Auditoria"], transportRows(), "ordenes-transporte-insumos", '<button class="btn btn-primary" type="button" data-material-action="notify-all">Notificar pendientes</button>', notice("La notificacion reemplaza archivos manuales y correos sueltos como mecanismo principal de coordinacion.", "info")],
       proveedores: ["Resumenes digitales", "Consolidacion por proveedor externo, periodo, materiales, destino y envio.", "summaryCount", "summarySearch", "summaryStatus", "summaryContext", "Todos los proveedores", contextByView.proveedores, ["Proveedor", "Periodo", "Ordenes", "Materiales / cantidades", "Destino", "Estado", "Generacion / envio"], summaryRows(), "resumen-proveedores", '<button class="btn btn-primary" type="button" data-material-action="generate-summary">Generar resumen</button>', ""],
       entregas: ["Entregas y evidencias POD", "Seguimiento read-only de entrega efectiva, responsable, foto/firma y auditoria.", "deliveryCount", "deliverySearch", "deliveryStatus", "deliveryContext", "Todas las fincas", contextByView.entregas, ["Orden", "Documento", "Finca", "Transportista", "Recepcion", "Evidencia", "Estado", "Auditoria"], deliveryRows(), "seguimiento-entregas", '<a class="btn btn-secondary" href="../Trazabilidad/auditoria-operativa.html">Ver auditoria</a>', notice("El historial completo de inspecciones del contenedor se consulta en Seguridad / Auditoria operativa.", "info")],
-      materiales: ["Materiales registrados", "Maestra minima para pedidos, stock, resumenes y ordenes.", "materialCount", "materialSearch", "materialStatus", "materialContext", "Todas las categorias", contextByView.materiales, ["Codigo", "Material", "Categoria", "Unidad", "Proveedor", "Estado", "Auditoria"], materialRows(), "materiales", '<button class="btn btn-primary" type="button" data-open-inline-form>Nuevo material</button>', inlineForm("material")],
+      materiales: ["Materiales registrados", "Maestra con referencia, receta, vigencia, desperdicio, sustitutos y redondeo.", "materialCount", "materialSearch", "materialStatus", "materialContext", "Todas las categorias", contextByView.materiales, ["Codigo", "Material", "Categoria", "Unidad", "Proveedor", "Estado", "Auditoria"], materialRows(), "materiales", '<button class="btn btn-primary" type="button" data-open-inline-form>Nuevo material</button>', notice("HU826 requiere versionar la receta y vigencia antes de usar una referencia en pedidos. Los campos completos se consultan en el detalle.", "info") + inlineForm("material")],
       proveedoresMaster: ["Proveedores registrados", "Maestra minima de proveedores externos para resumen digital.", "supplierCount", "supplierSearch", "supplierStatus", "supplierContext", "Todos los tipos", contextByView.proveedoresMaster, ["Codigo", "Proveedor", "Tipo", "Contacto", "Estado", "Auditoria"], supplierRows(), "proveedores", '<button class="btn btn-primary" type="button" data-open-inline-form>Nuevo proveedor</button>', inlineForm("supplier")],
       reglas: ["Reglas documentales", "Clasificacion automatica para RPT, remision y reserva.", "ruleCount", "ruleSearch", "ruleStatus", "ruleContext", "Todos los resultados", contextByView.reglas, ["Codigo", "Regla", "Resultado", "Condicion", "Estado", "Auditoria"], ruleRows(), "reglas-documentales", '<button class="btn btn-primary" type="button" data-open-inline-form>Nueva regla</button>', inlineForm("rule")]
     };
@@ -449,10 +465,39 @@ const SIALMaterials = (() => {
     qsa("[data-close-material-detail], #materialDetailBackdrop").forEach((node) => node.addEventListener("click", closeDetail));
     qsa("[data-material-action]").forEach((button) => {
       button.addEventListener("click", () => {
+        const action = button.dataset.materialAction;
+        const recordId = button.dataset.recordId;
+        if (action === "notify-driver" && recordId) {
+          const item = transportOrders.find((record) => record.id === recordId);
+          if (!item || item.driver === "--" || item.vehicle === "Sin asignar") { showMaterialFeedback("No se puede notificar al conductor: la orden no tiene conductor y vehículo asignados."); return; }
+          const previous = notificationState(recordId).driver;
+          saveNotification(recordId, "driver");
+          showMaterialFeedback(previous ? "El conductor ya estaba notificado; no se duplicó el aviso." : `Notificación al conductor ${item.driver} registrada con ${item.id}.`);
+          window.setTimeout(() => window.location.reload(), 700);
+          return;
+        }
+        if (action === "notify-transport" && recordId) {
+          const previous = notificationState(recordId).transport;
+          saveNotification(recordId, "transport");
+          showMaterialFeedback(previous ? "Transporte ya estaba notificado; no se duplicó el aviso." : "Notificación a transporte registrada en la trazabilidad.");
+          window.setTimeout(() => window.location.reload(), 700);
+          return;
+        }
+        if (action === "notify-all") {
+          let eligible = 0; let pending = 0;
+          transportOrders.forEach((item) => {
+            saveNotification(item.id, "transport"); eligible += 1;
+            saveNotification(item.id, "farm");
+            if (item.driver !== "--" && item.vehicle !== "Sin asignar") saveNotification(item.id, "driver"); else pending += 1;
+          });
+          showMaterialFeedback(`${eligible} ordenes notificadas a transporte y finca. ${pending ? `${pending} queda pendiente por asignación de conductor/vehículo.` : "Todos los conductores elegibles fueron notificados."}`);
+          window.setTimeout(() => window.location.reload(), 700);
+          return;
+        }
         const table = button.closest(".card") || qs(".page");
         table?.classList.add("materials-generated");
         setTimeout(() => table?.classList.remove("materials-generated"), 1200);
-        const msg = button.dataset.materialAction === "send-summary" || button.dataset.materialAction === "generate-summary"
+        const msg = action === "send-summary" || action === "generate-summary"
           ? "Resumen digital generado/enviado y registrado en auditoria de propuesta."
           : "Notificacion simulada registrada para transporte, conductor, seguridad o finca.";
         const alert = qs("[data-material-runtime-alert]");
@@ -475,6 +520,17 @@ const SIALMaterials = (() => {
         qs("#formOk")?.classList.remove("is-hidden");
       });
     });
+  }
+
+  function showMaterialFeedback(message) {
+    const alert = qs("[data-material-runtime-alert]");
+    if (!alert) return;
+    const text = qs("[data-material-runtime-message]", alert);
+    if (!text) return;
+    text.textContent = message;
+    alert.hidden = false;
+    window.clearTimeout(alert.runtimeTimer);
+    alert.runtimeTimer = window.setTimeout(() => { alert.hidden = true; text.textContent = ""; }, 3200);
   }
 
   function initFilters(view) {
