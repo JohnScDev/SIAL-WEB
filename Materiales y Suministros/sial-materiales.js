@@ -223,7 +223,7 @@ const SIALMaterials = (() => {
         <td>${esc(item.finca)}</td>
         <td>${esc(item.vehicle)}<br><span class="muted">${esc(item.driver)}</span></td>
         <td>${esc(item.materials)}<br><span class="muted">${esc(item.quantity)}</span></td>
-        <td>${status(item.status)}<br><span class="muted">Transporte: ${notifications.transport ? "notificado" : "pendiente"}<br>Conductor: ${item.driver === "--" ? "sin asignar" : notifications.driver ? "notificado" : "pendiente"}</span></td>
+        <td>${status(item.status)}<br><span class="muted">Transporte: ${hasNotification(item, "transport") ? "notificado" : "pendiente"}<br>Conductor: ${item.driver === "--" ? "sin asignar" : hasNotification(item, "driver") ? "notificado" : "pendiente"}</span></td>
         <td class="muted">${esc(item.audit).replace("|", "<br>")}</td>
         <td><div class="row-actions">${detailButton("transport", item.id)}${iconButton("Notificar a transporte", "send", `data-material-action="notify-transport" data-record-id="${esc(item.id)}"`)}${iconButton("Notificar al conductor", "send", `data-material-action="notify-driver" data-record-id="${esc(item.id)}" ${item.driver === "--" || item.vehicle === "Sin asignar" ? "disabled" : ""}`)}${stateButton("Inactivar orden")}</div></td>
       </tr>
@@ -295,6 +295,12 @@ const SIALMaterials = (() => {
 
   function notificationState(id) {
     try { return JSON.parse(localStorage.getItem(notificationKey) || "{}")[id] || {}; } catch { return {}; }
+  }
+
+  function hasNotification(item, recipient) {
+    if (notificationState(item.id)[recipient]) return true;
+    const seed = String(item.notified || "");
+    return recipient === "transport" ? seed.includes("Transporte") : recipient === "driver" ? seed.includes("Conductor") : recipient === "farm" ? seed.includes("Finca") : false;
   }
 
   function saveNotification(id, recipient) {
@@ -470,14 +476,14 @@ const SIALMaterials = (() => {
         if (action === "notify-driver" && recordId) {
           const item = transportOrders.find((record) => record.id === recordId);
           if (!item || item.driver === "--" || item.vehicle === "Sin asignar") { showMaterialFeedback("No se puede notificar al conductor: la orden no tiene conductor y vehículo asignados."); return; }
-          const previous = notificationState(recordId).driver;
+          const previous = hasNotification(item, "driver");
           saveNotification(recordId, "driver");
           showMaterialFeedback(previous ? "El conductor ya estaba notificado; no se duplicó el aviso." : `Notificación al conductor ${item.driver} registrada con ${item.id}.`);
           window.setTimeout(() => window.location.reload(), 700);
           return;
         }
         if (action === "notify-transport" && recordId) {
-          const previous = notificationState(recordId).transport;
+          const previous = hasNotification(transportOrders.find((record) => record.id === recordId) || { id: recordId }, "transport");
           saveNotification(recordId, "transport");
           showMaterialFeedback(previous ? "Transporte ya estaba notificado; no se duplicó el aviso." : "Notificación a transporte registrada en la trazabilidad.");
           window.setTimeout(() => window.location.reload(), 700);

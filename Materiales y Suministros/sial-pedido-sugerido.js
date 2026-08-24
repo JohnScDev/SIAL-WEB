@@ -58,6 +58,7 @@ const SIALSuggestedOrder = (() => {
         <div><h1 class="page-title">Pedido sugerido por finca</h1><p class="page-subtitle">Calcula la necesidad de materiales desde el aviso de corte, la receta vigente y el inventario disponible.</p></div>
         <a class="btn btn-secondary" href="pedidos-adicionales.html">Pedidos adicionales</a>
       </div>
+      <div class="notice notice-info" role="note">Web: genera y consulta el pedido sugerido. Móvil solo consulta el resultado cuando el rol de campo lo necesita; no duplica este cálculo.</div>
 
       <article class="card suggest-selector-card">
         <div class="card-header">
