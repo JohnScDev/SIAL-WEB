@@ -30,13 +30,24 @@ const SIALMaterials = (() => {
     ERROR: ["status-inactive", "Error"]
   };
   const notificationKey = "sial-materiales-notifications";
+  const hu826ConfigKey = "sial-hu826-configurations";
 
+  // Muestra fiel de la fuente real PARAMETROS de la hoja "Parametros Explosion de Materiales".
+  // Los campos de HU826 que no existen en la fuente quedan pendientes de parametrización;
+  // no se inventan valores para permitir una activación.
   const materials = [
-    { id: "MAT-001", code: "MAT-CAR-001", name: "Caja carton corrugado", category: "Cartonera", unit: "unidad", status: "ACTIVO", supplier: "Cartonera Caribe", recipeVersion: "REC-AGSTDRA v3", validity: "01/08/2026 — 31/12/2026", waste: "2%", substitutes: "MAT-CAR-002", rounding: "Entero superior", audit: "Crear - almacen.admin|12/06/2026 08:10" },
-    { id: "MAT-002", code: "MAT-EST-001", name: "Estiba madera exportacion", category: "Estibado", unit: "unidad", status: "ACTIVO", supplier: "Estibas del Norte", recipeVersion: "REC-AGSTDRA v3", validity: "01/08/2026 — 31/12/2026", waste: "0%", substitutes: "Ninguno", rounding: "Entero superior", audit: "Editar - almacen.admin|14/06/2026 10:35" },
-    { id: "MAT-003", code: "MAT-SEP-001", name: "Separador de pallet", category: "Empaque", unit: "paquete", status: "REVISION", supplier: "Suministros Banasan", recipeVersion: "Pendiente", validity: "Pendiente", waste: "Pendiente", substitutes: "Pendiente", rounding: "Pendiente", audit: "Revision - supervisor.ze|18/06/2026 15:20" },
-    { id: "MAT-004", code: "MAT-ETQ-001", name: "Etiqueta trazabilidad", category: "Identificacion", unit: "rollo", status: "ACTIVO", supplier: "Etiquetas del Caribe", recipeVersion: "REC-AGSTDRA v3", validity: "01/08/2026 — 31/12/2026", waste: "1%", substitutes: "Ninguno", rounding: "Entero superior", audit: "Crear - almacen.admin|20/06/2026 09:22" }
+    { id: "PAR-16FT7BD-8-101279", reference: "16FT7BD-8", sapMaterial: "101279", name: "BASE BBS11 FYFFES 13 KG (20 UND) V2", quantityPerBox: "1", unit: "UN", classification: "CONVENCIONAL FAIRTRADE", referenceList: "16FT7BD-8", recipeVersion: "", validityStart: "", validityEnd: "", waste: "", substitutes: "", rounding: "", status: "REVISION", source: "PARAMETROS", audit: "Carga fuente - hoja PARAMETROS|24/08/2026" },
+    { id: "PAR-16FT7BD-8-102247", reference: "16FT7BD-8", sapMaterial: "102247", name: "TAPA BLD98 FYF FT BLANCA 13KG (30 UND)V3", quantityPerBox: "1", unit: "UN", classification: "CONVENCIONAL FAIRTRADE", referenceList: "20LD7RA-20", recipeVersion: "", validityStart: "", validityEnd: "", waste: "", substitutes: "", rounding: "", status: "REVISION", source: "PARAMETROS", audit: "Carga fuente - hoja PARAMETROS|24/08/2026" },
+    { id: "PAR-16FT7BD-8-1970", reference: "16FT7BD-8", sapMaterial: "1970", name: "ESTIBAS FYFFES 1.02X1.20 MTS (MQ)", quantityPerBox: "0,01516", unit: "UN", classification: "CONVENCIONAL FAIRTRADE", referenceList: "21X5BDOF", recipeVersion: "", validityStart: "", validityEnd: "", waste: "", substitutes: "", rounding: "", status: "REVISION", source: "PARAMETROS", audit: "Carga fuente - hoja PARAMETROS|24/08/2026" },
+    { id: "PAR-16FT7BD-8-5418", reference: "16FT7BD-8", sapMaterial: "5418", name: "ESQUINERO KRAFT 2.13 MTS (20 UND)", quantityPerBox: "0,06061", unit: "UN", classification: "CONVENCIONAL FAIRTRADE", referenceList: "544 - PR TROPY 54-0", recipeVersion: "", validityStart: "", validityEnd: "", waste: "", substitutes: "", rounding: "", status: "REVISION", source: "PARAMETROS", audit: "Carga fuente - hoja PARAMETROS|24/08/2026" },
+    { id: "PAR-16FT7BD-8-322", reference: "16FT7BD-8", sapMaterial: "322", name: "ESQUINERO KRAFT 1.95 MTS (20 UND)", quantityPerBox: "0,06060606061", unit: "UN", classification: "CONVENCIONAL FAIRTRADE", referenceList: "AGSTDBVRA-1", recipeVersion: "", validityStart: "", validityEnd: "", waste: "", substitutes: "", rounding: "", status: "REVISION", source: "PARAMETROS", audit: "Carga fuente - hoja PARAMETROS|24/08/2026" },
+    { id: "PAR-16FT7BD-8-4925", reference: "16FT7BD-8", sapMaterial: "4925", name: "ZUNCHO AMARILLO SIN IMPRESIÓN", quantityPerBox: "0,8", unit: "M", classification: "CONVENCIONAL FAIRTRADE", referenceList: "AGSTDRA-1", recipeVersion: "", validityStart: "", validityEnd: "", waste: "", substitutes: "", rounding: "", status: "REVISION", source: "PARAMETROS", audit: "Carga fuente - hoja PARAMETROS|24/08/2026" }
   ];
+
+  try {
+    const savedConfigurations = JSON.parse(localStorage.getItem(hu826ConfigKey) || "[]");
+    if (Array.isArray(savedConfigurations)) materials.unshift(...savedConfigurations);
+  } catch { /* La propuesta continúa usando la fuente semilla si el almacenamiento local no es legible. */ }
 
   const suppliers = [
     { id: "PRO-001", code: "PRV-CAR-01", name: "Cartonera Caribe", type: "Cartonera", contact: "operaciones@cartonera.example", status: "ACTIVO", audit: "Crear - compras.sial|08/06/2026 11:05" },
@@ -264,9 +275,9 @@ const SIALMaterials = (() => {
 
   function materialRows() {
     return materials.map((item) => `
-      <tr ${rowDataset(item, item.category, item.status)}>
-        <td>${esc(item.code)}</td><td>${esc(item.name)}</td><td>${esc(item.category)}</td><td>${esc(item.unit)}</td><td>${esc(item.supplier)}</td><td>${status(item.status)}</td><td class="muted">${esc(item.audit).replace("|", "<br>")}</td>
-        <td><div class="row-actions">${detailButton("material", item.id)}${iconButton("Editar material", "edit", "data-edit-inline")}${stateButton(item.status === "INACTIVO" ? "Activar material" : "Inactivar material")}</div></td>
+      <tr ${rowDataset(item, item.classification, item.status)}>
+        <td><div class="materials-record-main"><strong>${esc(item.reference)}</strong><span>${esc(item.referenceList)}</span></div></td><td>${esc(item.sapMaterial)}</td><td>${esc(item.name)}</td><td>${esc(item.quantityPerBox)}</td><td>${esc(item.unit)}</td><td>${esc(item.classification)}</td><td>${status(item.status)}</td><td class="muted">${esc(item.audit).replace("|", "<br>")}</td>
+        <td><div class="row-actions">${detailButton("material", item.id)}${iconButton("Editar configuración", "edit", "data-edit-inline")}${stateButton(item.status === "INACTIVO" ? "Activar configuración" : "Inactivar configuración")}</div></td>
       </tr>
     `).join("");
   }
@@ -334,13 +345,14 @@ const SIALMaterials = (() => {
       </section>
       <section class="materials-command-grid">
         <article class="card">
-          <div class="card-header"><div><h2 class="card-title">Secuencia funcional</h2><p class="card-subtitle">Relaciones entre HU sin duplicar modulos existentes.</p></div></div>
+          <div class="card-header"><div><h2 class="card-title">Secuencia funcional</h2><p class="card-subtitle">La configuración de materiales habilita el pedido; no es una operación móvil.</p></div></div>
           <div class="card-body materials-flow">
-            ${["Pedido sugerido desde aviso de corte", "Consulta stock finca/material", "Pedido adicional y validacion", "Clasificacion RPT / remision / reserva", "Orden de transporte y notificaciones", "Entrega movil + POD", "Auditoria operativa / evidencias"].map((label, index) => `<div class="materials-flow-step"><span class="materials-flow-index">${index + 1}</span><div><strong>${esc(label)}</strong><small>${esc(["HU659", "HU662", "HU666", "HU667", "HU546/HU669/HU670/HU532", "HU681/HU682/HU547", "HU607"][index])}</small></div>${status(index < 2 ? "CONSULTADO" : index < 5 ? "VALIDADO" : "EN_TRANSITO")}</div>`).join("")}
+            ${["Configurar materiales por referencia", "Consultar stock en finca", "Generar pedido sugerido", "Ajustar y validar cantidades", "Gestionar pedido adicional", "Clasificar documento y preparar transporte", "Ordenar transporte y notificar", "Registrar entrega y capturar POD", "Consultar auditoria y trazabilidad"].map((label, index) => `<div class="materials-flow-step"><span class="materials-flow-index">${index + 1}</span><div><strong>${esc(label)}</strong><small>${esc(["HU826", "HU662", "HU659", "HU660", "HU666", "HU667", "HU546/HU669/HU670", "HU547/HU681/HU682", "HU607"][index])}</small></div>${status(index === 0 ? "REVISION" : index < 3 ? "CONSULTADO" : index < 7 ? "VALIDADO" : "ENTREGADA")}</div>`).join("")}
           </div>
         </article>
         <aside class="materials-action-panel">
           <span class="materials-mini-label">Accesos clave</span>
+          <a class="btn btn-secondary" href="gestion-materiales.html">Configurar materiales (HU826)</a>
           <a class="btn btn-primary" href="gestion-pedidos-materiales.html">Revisar pedidos</a>
           <a class="btn btn-secondary" href="ordenes-transporte-insumos.html">Ordenes de transporte</a>
           <a class="btn btn-secondary" href="resumen-proveedores.html">Resumen proveedores</a>
@@ -352,9 +364,53 @@ const SIALMaterials = (() => {
   }
 
   function inlineForm(kind) {
+    if (kind === "material") {
+      return `
+        <div class="inline-form-panel materials-inline-form is-hidden" id="materialInlineForm" data-inline-form-panel>
+          <div class="form-heading"><h2 data-inline-form-title>Configurar referencia</h2><p>HU826 · la referencia solo queda disponible para pedidos cuando la configuración está completa y validada.</p></div>
+          <div class="form-body">
+            <div class="notice notice-info">La fuente real usa la hoja PARAMETROS. Los campos de receta, vigencia, desperdicio, sustitutos y redondeo son controles de HU826 y deben completarse antes de activar.</div>
+            <form data-material-form data-hu826-form novalidate>
+              <section class="section"><div class="section-heading"><div><p class="section-kicker">Datos de PARAMETROS</p><h3>Identidad de la configuración</h3></div><span class="tag">Fuente real</span></div><div class="grid">
+                <div class="field span-3"><label class="label" for="hu826Reference">Referencia <span class="required">*</span></label><input class="input" id="hu826Reference" name="reference" data-material-field="reference" required placeholder="16FT7BD-8"><div class="field-note">Columna Referencia.</div></div>
+                <div class="field span-3"><label class="label" for="hu826SapMaterial">Material SAP <span class="required">*</span></label><input class="input" id="hu826SapMaterial" name="sapMaterial" data-material-field="sapMaterial" required placeholder="101279"><div class="field-note">Columna Material SAP.</div></div>
+                <div class="field span-6"><label class="label" for="hu826Name">Nombre del material <span class="required">*</span></label><input class="input" id="hu826Name" name="name" data-material-field="name" required placeholder="BASE BBS11 FYFFES 13 KG (20 UND) V2"><div class="field-note">Debe corresponder al catálogo real.</div></div>
+                <div class="field span-3"><label class="label" for="hu826Quantity">Cantidad/Caja <span class="required">*</span></label><input class="input" id="hu826Quantity" name="quantityPerBox" data-material-field="quantityPerBox" required inputmode="decimal" placeholder="0,06061"><div class="field-note">Se conserva la precisión de la fuente.</div></div>
+                <div class="field span-3"><label class="label" for="hu826Unit">Unidad de medida SAP <span class="required">*</span></label><input class="input" id="hu826Unit" name="unit" data-material-field="unit" required placeholder="UN"><div class="field-note">Columna Unidad de medida en SAP.</div></div>
+                <div class="field span-3"><label class="label" for="hu826Classification">Clasificación <span class="required">*</span></label><input class="input" id="hu826Classification" name="classification" data-material-field="classification" required value="CONVENCIONAL FAIRTRADE"><div class="field-note">Clasificación que aplica a la referencia.</div></div>
+                <div class="field span-3"><label class="label" for="hu826ReferenceList">Listado de referencias <span class="required">*</span></label><input class="input" id="hu826ReferenceList" name="referenceList" data-material-field="referenceList" required placeholder="16FT7BD-8"><div class="field-note">Relación de referencias de la fuente.</div></div>
+              </div></section>
+              <section class="section"><div class="section-heading"><div><p class="section-kicker">Reglas de HU826</p><h3>Versión y vigencia</h3></div><span class="tag tag-warning">Requerido para activar</span></div><div class="grid">
+                <div class="field span-3"><label class="label" for="hu826Recipe">Receta / versión <span class="required">*</span></label><input class="input" id="hu826Recipe" name="recipeVersion" data-material-field="recipeVersion" required placeholder="REC-16FT7BD-8 v1"><div class="field-note">No se toma de un valor inventado.</div></div>
+                <div class="field span-3"><label class="label" for="hu826Start">Vigencia desde <span class="required">*</span></label><input class="input" id="hu826Start" name="validityStart" data-material-field="validityStart" required type="date"><div class="field-note">Inicio de vigencia de la configuración.</div></div>
+                <div class="field span-3"><label class="label" for="hu826End">Vigencia hasta <span class="required">*</span></label><input class="input" id="hu826End" name="validityEnd" data-material-field="validityEnd" required type="date"><div class="field-note">Debe ser posterior al inicio.</div></div>
+                <div class="field span-3"><label class="label" for="hu826Waste">Desperdicio (%) <span class="required">*</span></label><input class="input" id="hu826Waste" name="waste" data-material-field="waste" required type="number" min="0" max="100" step="0.01" placeholder="0"><div class="field-note">Entre 0 y 100.</div></div>
+                <div class="field span-4"><label class="label" for="hu826Substitutes">Sustitutos <span class="required">*</span></label><input class="input" id="hu826Substitutes" name="substitutes" data-material-field="substitutes" required placeholder="Ninguno o Material SAP relacionado"><div class="field-note">No se activa sin declarar sustitución o ausencia.</div></div>
+                <div class="field span-4"><label class="label" for="hu826Rounding">Regla de redondeo <span class="required">*</span></label><input class="input" id="hu826Rounding" name="rounding" data-material-field="rounding" required placeholder="Entero superior"><div class="field-note">Regla aplicada al pedido sugerido.</div></div>
+                <div class="field span-4"><label class="label" for="hu826Status">Estado de configuración <span class="required">*</span></label><select class="select" id="hu826Status" name="status" data-material-field="status" required><option value="REVISION">Guardar en revisión</option><option value="ACTIVO">Activar configuración</option></select><div class="field-note">Activar requiere pasar todas las validaciones.</div></div>
+              </div></section>
+              <section class="section"><div class="section-heading"><div><p class="section-kicker">Contexto operativo</p><h3>Relación con pedido y finca</h3></div><span class="tag">Trazabilidad HU826</span></div><div class="grid">
+                <div class="field span-4"><label class="label" for="hu826Farm">Finca <span class="required">*</span></label><select class="select" id="hu826Farm" name="farm" data-material-field="farm" required><option value="">Seleccionar finca</option><option>ANGELES</option><option>ARENAL</option><option>BUENAVISTA</option><option>DESPENSA</option><option>FABLISKA</option><option>GISELLE BEATRIZ</option><option>MANANTIAL</option></select><div class="field-note">Catálogo FINCAS.</div></div>
+                <div class="field span-4"><label class="label" for="hu826OrderType">Tipo de pedido <span class="required">*</span></label><select class="select" id="hu826OrderType" name="orderType" data-material-field="orderType" required><option value="">Seleccionar tipo</option><option>Estibas</option><option>Normal</option><option>Prioritario</option><option>Adicional</option></select><div class="field-note">Catálogo FINCAS.</div></div>
+                <div class="field span-4"><label class="label" for="hu826Week">Semana <span class="required">*</span></label><select class="select" id="hu826Week" name="week" data-material-field="week" required><option value="">Seleccionar semana</option>${Array.from({ length: 7 }, (_, index) => `<option>${index + 1}</option>`).join("")}</select><div class="field-note">Semanas disponibles en la fuente.</div></div>
+                <div class="field span-4"><label class="label" for="hu826SourceRequest">Aviso de corte o pedido <span class="required">*</span></label><input class="input" id="hu826SourceRequest" name="sourceRequest" data-material-field="sourceRequest" required placeholder="PED-071 / aviso de corte"><div class="field-note">Entidad que origina la necesidad.</div></div>
+                <div class="field span-4"><label class="label" for="hu826Document">Documento logístico <span class="required">*</span></label><select class="select" id="hu826Document" name="logisticDocument" data-material-field="logisticDocument" required><option value="">Seleccionar documento</option><option>RPT</option><option>Remisión</option><option>Reserva</option></select><div class="field-note">Documento aplicable al contexto.</div></div>
+                <div class="field span-4"><label class="label" for="hu826Rule">Regla de validación <span class="required">*</span></label><select class="select" id="hu826Rule" name="validationRule" data-material-field="validationRule" required><option value="">Seleccionar regla</option><option>Stock disponible</option><option>Configuración vigente</option><option>Excepción por tolerancia</option></select><div class="field-note">Regla que habilita el siguiente paso.</div></div>
+                <div class="field span-3"><label class="label" for="hu826Suggested">Cantidad sugerida <span class="required">*</span></label><input class="input" id="hu826Suggested" name="suggestedQuantity" data-material-field="suggestedQuantity" required type="number" min="0" step="0.00001"><div class="field-note">Cantidad calculada para el contexto.</div></div>
+                <div class="field span-3"><label class="label" for="hu826Adjusted">Cantidad ajustada <span class="required">*</span></label><input class="input" id="hu826Adjusted" name="adjustedQuantity" data-material-field="adjustedQuantity" required type="number" min="0" step="0.00001"><div class="field-note">Cantidad confirmada o ajustada.</div></div>
+                <div class="field span-3"><label class="label" for="hu826Stock">Stock disponible <span class="required">*</span></label><input class="input" id="hu826Stock" name="availableStock" data-material-field="availableStock" required type="number" min="0" step="0.00001"><div class="field-note">No se edita como saldo libre.</div></div>
+                <div class="field span-3"><label class="label" for="hu826User">Usuario responsable <span class="required">*</span></label><input class="input" id="hu826User" name="responsibleUser" data-material-field="responsibleUser" required value="almacen.admin"><div class="field-note">Se registra en auditoría.</div></div>
+                <div class="field span-12"><label class="label" for="hu826Observation">Observación / motivo <span class="required">*</span></label><textarea class="input" id="hu826Observation" name="observation" data-material-field="observation" required rows="3" placeholder="Explique la configuración, ajuste o novedad."></textarea><div class="field-note">Obligatoria para trazabilidad y casos de excepción.</div></div>
+              </div></section>
+              <div class="notice notice-warning" data-hu826-form-message role="status" hidden></div>
+              <div class="form-actions"><button class="btn btn-secondary" type="button" data-cancel-inline-form>Cancelar</button><button class="btn btn-primary" type="submit">Guardar configuración</button></div>
+            </form>
+          </div>
+        </div>
+      `;
+    }
     const config = {
       pedido: ["Nuevo pedido adicional", "Guardar pedido adicional", [["Semana de corte", "Semana 27 - 2026"], ["Finca", "Finca El Retiro"], ["Pedido base", "PED-071"], ["Motivo", "Necesidad extraordinaria de corte"]]],
-      material: ["Nuevo material", "Guardar material", [["Codigo", "MAT-CAR-002"], ["Nombre", "Bolsas protectoras"], ["Unidad", "unidad"], ["Proveedor", "Cartonera Caribe"]]],
       supplier: ["Nuevo proveedor", "Guardar proveedor", [["Codigo", "PRV-NUE-01"], ["Nombre proveedor", "Proveedor externo"], ["Tipo", "Cartonera"], ["Contacto", "contacto@proveedor.example"]]],
       rule: ["Nueva regla documental", "Guardar regla", [["Codigo", "DOC-NUE"], ["Nombre regla", "Regla de clasificacion"], ["Resultado", "RPT"], ["Condicion", "Pedido validado con stock disponible"]]]
     }[kind];
@@ -381,7 +437,7 @@ const SIALMaterials = (() => {
     ordenes: [{ value: "rpt", label: "RPT" }, { value: "remision", label: "Remision" }, { value: "reserva", label: "Reserva" }],
     proveedores: suppliers.map((item) => ({ value: item.name, label: item.name })),
     entregas: [{ value: "Finca Santa Isabel", label: "Finca Santa Isabel" }, { value: "Finca El Retiro", label: "Finca El Retiro" }, { value: "Finca Las Palmas", label: "Finca Las Palmas" }],
-    materiales: [{ value: "Cartonera", label: "Cartonera" }, { value: "Estibado", label: "Estibado" }, { value: "Empaque", label: "Empaque" }, { value: "Identificacion", label: "Identificacion" }],
+    materiales: [{ value: "CONVENCIONAL FAIRTRADE", label: "Convencional Fairtrade" }],
     proveedoresMaster: [{ value: "Cartonera", label: "Cartonera" }, { value: "Estibadero", label: "Estibadero" }, { value: "Proveedor material", label: "Proveedor material" }],
     reglas: [{ value: "rpt", label: "RPT" }, { value: "remision", label: "Remision" }, { value: "reserva", label: "Reserva" }]
   };
@@ -395,7 +451,7 @@ const SIALMaterials = (() => {
       ordenes: ["Ordenes de transporte", "Ordenes de insumos con documento, vehiculo, finca destino y notificacion.", "transportCount", "transportSearch", "transportStatus", "transportContext", "Todos los documentos", contextByView.ordenes, ["Orden", "Documento", "Finca destino", "Vehiculo / conductor", "Materiales", "Estado", "Auditoria"], transportRows(), "ordenes-transporte-insumos", '<button class="btn btn-primary" type="button" data-material-action="notify-all">Notificar pendientes</button>', notice("La notificacion reemplaza archivos manuales y correos sueltos como mecanismo principal de coordinacion.", "info")],
       proveedores: ["Resumenes digitales", "Consolidacion por proveedor externo, periodo, materiales, destino y envio.", "summaryCount", "summarySearch", "summaryStatus", "summaryContext", "Todos los proveedores", contextByView.proveedores, ["Proveedor", "Periodo", "Ordenes", "Materiales / cantidades", "Destino", "Estado", "Generacion / envio"], summaryRows(), "resumen-proveedores", '<button class="btn btn-primary" type="button" data-material-action="generate-summary">Generar resumen</button>', ""],
       entregas: ["Entregas y evidencias POD", "Seguimiento read-only de entrega efectiva, responsable, foto/firma y auditoria.", "deliveryCount", "deliverySearch", "deliveryStatus", "deliveryContext", "Todas las fincas", contextByView.entregas, ["Orden", "Documento", "Finca", "Transportista", "Recepcion", "Evidencia", "Estado", "Auditoria"], deliveryRows(), "seguimiento-entregas", '<a class="btn btn-secondary" href="../Trazabilidad/auditoria-operativa.html">Ver auditoria</a>', notice("El historial completo de inspecciones del contenedor se consulta en Seguridad / Auditoria operativa.", "info")],
-      materiales: ["Materiales registrados", "Maestra con referencia, receta, vigencia, desperdicio, sustitutos y redondeo.", "materialCount", "materialSearch", "materialStatus", "materialContext", "Todas las categorias", contextByView.materiales, ["Codigo", "Material", "Categoria", "Unidad", "Proveedor", "Estado", "Auditoria"], materialRows(), "materiales", '<button class="btn btn-primary" type="button" data-open-inline-form>Nuevo material</button>', notice("HU826 requiere versionar la receta y vigencia antes de usar una referencia en pedidos. Los campos completos se consultan en el detalle.", "info") + inlineForm("material")],
+      materiales: ["Configuración de materiales por referencia", "Fuente PARAMETROS: referencia, material SAP, unidad, cantidad/caja, clasificación y listado de referencias.", "materialCount", "materialSearch", "materialStatus", "materialContext", "Todas las clasificaciones", contextByView.materiales, ["Referencia", "Material SAP", "Nombre del material", "Cantidad/Caja", "Unidad SAP", "Clasificación", "Estado", "Auditoria"], materialRows(), "parametros-materiales", '<button class="btn btn-primary" type="button" data-open-inline-form>Configurar referencia</button>', notice("HU826 no se activa con datos incompletos. La configuración debe tener versión de receta, vigencia, desperdicio, sustitutos y redondeo; los datos faltantes quedan en revisión.", "warning") + inlineForm("material")],
       proveedoresMaster: ["Proveedores registrados", "Maestra minima de proveedores externos para resumen digital.", "supplierCount", "supplierSearch", "supplierStatus", "supplierContext", "Todos los tipos", contextByView.proveedoresMaster, ["Codigo", "Proveedor", "Tipo", "Contacto", "Estado", "Auditoria"], supplierRows(), "proveedores", '<button class="btn btn-primary" type="button" data-open-inline-form>Nuevo proveedor</button>', inlineForm("supplier")],
       reglas: ["Reglas documentales", "Clasificacion automatica para RPT, remision y reserva.", "ruleCount", "ruleSearch", "ruleStatus", "ruleContext", "Todos los resultados", contextByView.reglas, ["Codigo", "Regla", "Resultado", "Condicion", "Estado", "Auditoria"], ruleRows(), "reglas-documentales", '<button class="btn btn-primary" type="button" data-open-inline-form>Nueva regla</button>', inlineForm("rule")]
     };
@@ -425,7 +481,7 @@ const SIALMaterials = (() => {
 
   function detailRows(record) {
     return Object.entries(record || {}).filter(([key]) => !["audit"].includes(key)).map(([key, value]) => `
-      <div class="detail-group"><span class="detail-label">${esc(key.replace(/([A-Z])/g, " $1"))}</span><div class="detail-value">${esc(value)}</div></div>
+      <div class="detail-group"><span class="detail-label">${esc(key.replace(/([A-Z])/g, " $1"))}</span><div class="detail-value">${value === "" || value == null ? status("REVISION") : esc(value)}</div></div>
     `).join("");
   }
 
@@ -539,6 +595,73 @@ const SIALMaterials = (() => {
     alert.runtimeTimer = window.setTimeout(() => { alert.hidden = true; text.textContent = ""; }, 3200);
   }
 
+  function initHu826Form() {
+    const form = qs("[data-hu826-form]");
+    const message = qs("[data-hu826-form-message]");
+    if (!form) return;
+
+    const readFields = () => Object.fromEntries(qsa("[data-material-field]", form).map((field) => [field.dataset.materialField, field.value.trim()]));
+    const numberValue = (value) => Number(String(value).replace(",", "."));
+    const showMessage = (text, type = "warning") => {
+      if (!message) return;
+      message.className = `notice notice-${type}`;
+      message.textContent = text;
+      message.hidden = false;
+    };
+
+    form.addEventListener("submit", (event) => {
+      event.preventDefault();
+      const data = readFields();
+      const errors = [];
+      const required = ["reference", "sapMaterial", "name", "quantityPerBox", "unit", "classification", "referenceList", "recipeVersion", "validityStart", "validityEnd", "waste", "substitutes", "rounding", "status", "farm", "orderType", "week", "sourceRequest", "logisticDocument", "validationRule", "suggestedQuantity", "adjustedQuantity", "availableStock", "responsibleUser", "observation"];
+      required.forEach((field) => { if (!data[field]) errors.push(`Falta ${field}.`); });
+
+      const quantityPerBox = numberValue(data.quantityPerBox);
+      const waste = numberValue(data.waste);
+      const suggested = numberValue(data.suggestedQuantity);
+      const adjusted = numberValue(data.adjustedQuantity);
+      const stock = numberValue(data.availableStock);
+      if (data.quantityPerBox && (!Number.isFinite(quantityPerBox) || quantityPerBox < 0)) errors.push("Cantidad/Caja debe ser un número mayor o igual a cero.");
+      if (data.waste && (!Number.isFinite(waste) || waste < 0 || waste > 100)) errors.push("El desperdicio debe estar entre 0 y 100%.");
+      ["suggestedQuantity", "adjustedQuantity", "availableStock"].forEach((field) => { if (data[field] && (!Number.isFinite(numberValue(data[field])) || numberValue(data[field]) < 0)) errors.push(`${field} debe ser un número mayor o igual a cero.`); });
+      if (data.validityStart && data.validityEnd && data.validityEnd < data.validityStart) errors.push("La vigencia hasta no puede ser anterior a la vigencia desde.");
+      if (data.adjustedQuantity && data.suggestedQuantity && adjusted !== suggested && data.validationRule !== "Excepción por tolerancia") errors.push("Un ajuste diferente al sugerido debe usar la regla Excepción por tolerancia.");
+
+      const duplicate = materials.find((item) => item.reference === data.reference && item.sapMaterial === data.sapMaterial && item.recipeVersion === data.recipeVersion);
+      if (duplicate) errors.push("Ya existe una configuración con la misma referencia, Material SAP y versión de receta.");
+
+      const idempotencyKey = [data.reference, data.sapMaterial, data.recipeVersion, data.farm, data.week, data.sourceRequest].join("|");
+      let savedKeys = {};
+      try { savedKeys = JSON.parse(localStorage.getItem(`${hu826ConfigKey}:keys`) || "{}"); } catch { savedKeys = {}; }
+      if (savedKeys[idempotencyKey]) errors.push("La misma configuración ya fue registrada; no se duplicó la operación.");
+
+      if (errors.length) {
+        showMessage(errors.join(" "), "warning");
+        return;
+      }
+
+      const now = new Date();
+      const configuration = {
+        id: `HU826-${data.reference}-${data.sapMaterial}-${Date.now()}`,
+        ...data,
+        category: data.classification,
+        code: data.sapMaterial,
+        source: "HU826 · configuración propuesta",
+        audit: `Configurar - ${data.responsibleUser}|${now.toLocaleString("es-CO")}`,
+        status: data.status
+      };
+      materials.unshift(configuration);
+      try {
+        const previous = JSON.parse(localStorage.getItem(hu826ConfigKey) || "[]");
+        localStorage.setItem(hu826ConfigKey, JSON.stringify([configuration, ...(Array.isArray(previous) ? previous : [])].slice(0, 50)));
+        savedKeys[idempotencyKey] = now.toISOString();
+        localStorage.setItem(`${hu826ConfigKey}:keys`, JSON.stringify(savedKeys));
+      } catch { /* La evidencia de la propuesta permanece visible durante la sesión. */ }
+      showMessage(data.status === "ACTIVO" ? "Configuración validada y activada para el contexto seleccionado." : "Configuración guardada en revisión; todavía no está disponible para HU659.", "success");
+      form.reset();
+    });
+  }
+
   function initFilters(view) {
     if (view === "dashboard") return;
     const cfg = {
@@ -581,6 +704,7 @@ const SIALMaterials = (() => {
       SIALCore.initEmbeddedForm({ panel: "#materialInlineForm", openButton: "[data-open-inline-form]", cancelButton: "[data-cancel-inline-form]", title: "[data-inline-form-title]" });
     }
     initActions();
+    initHu826Form();
   }
 
   return { init };
