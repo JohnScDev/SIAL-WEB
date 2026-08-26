@@ -19,12 +19,14 @@ Modulo orquestador para pedidos de materiales, inventario en finca, pallets, ord
 
 - `index.html`: tablero operativo del modulo.
 - `gestion-pedidos-materiales.html`: pedidos sugeridos, adicionales y estandar.
-- `inventario-materiales-finca.html`: stock por finca y material.
+- `inventario-materiales-finca.html`: existencias por finca y material, con disponible, reservado, total informado y acceso al historial.
+- `movimientos-inventario.html`: historial de entradas, salidas y ajustes, con filtros por material, tipo y fechas.
 - `inventario-pallets.html`: pallets completos y mochos.
 - `ordenes-transporte-insumos.html`: ordenes de transporte y notificaciones.
 - `resumen-proveedores.html`: generacion y envio digital a proveedores externos.
 - `seguimiento-entregas.html`: entrega, POD y evidencia consultable.
-- `gestion-materiales.html`: maestra minima de materiales.
+- `gestion-materiales.html`: catálogo de materiales (código SAP, nombre, unidad de medida y estado).
+- `recetas-materiales.html`: recetas por combinación Referencia + Versión y cantidades sugeridas por caja.
 - `gestion-proveedores.html`: maestra minima de proveedores.
 - `reglas-documentales.html`: reglas para clasificacion documental.
 
@@ -34,8 +36,8 @@ Modulo orquestador para pedidos de materiales, inventario en finca, pallets, ord
 - La web no duplica formularios de recepción, foto, firma ni outbox móvil. En entregas/POD solo consulta, gestiona y audita; la captura efectiva permanece en la app móvil.
 - HU660 no aplica porcentajes ilustrativos: cualquier cambio de cantidad queda bloqueado hasta publicar la matriz oficial de tolerancias, sugerido cero y aprobador.
 - HU666 admite múltiples solicitudes por pedido base, cada una con motivo, actor, fecha y clave de idempotencia; no se impone un máximo automático.
-- HU662 muestra el saldo derivado con reservas, daños y último movimiento; no permite editar un número de stock libre.
-- HU826 expone en el detalle receta/versión, vigencia, desperdicio, sustitutos y redondeo, no solo la referencia.
+- HU662 muestra existencias por finca con saldo disponible, reservado y total informado; no permite editar un número de stock libre y enlaza su historial de movimientos.
+- HU826 separa el catálogo de la receta: la receta se identifica por Referencia + Versión y sus líneas conservan la cantidad sugerida por caja.
 - El modulo no reemplaza Seguridad, Transporte ni Pallets; los orquesta y enlaza cuando corresponde.
 - Los archivos manuales externos no son el mecanismo principal de coordinacion; se simula envio digital con auditoria.
 - Las maestras cortas usan formulario embebido.

@@ -136,12 +136,14 @@ const SIALCore = (() => {
           views: [
             { id: "dashboard", label: "Tablero materiales", href: "index.html" },
             { id: "pedidos", label: "Gestion de pedidos", href: "gestion-pedidos-materiales.html" },
-            { id: "inventario", label: "Inventario por finca", href: "inventario-materiales-finca.html" },
+            { id: "inventario", label: "Inventario de materiales", href: "inventario-materiales-finca.html" },
+            { id: "movimientos", label: "Movimientos de inventario", href: "movimientos-inventario.html" },
             { id: "pallets", label: "Inventario de pallets", href: "inventario-pallets.html" },
             { id: "ordenes", label: "Ordenes de transporte", href: "ordenes-transporte-insumos.html" },
             { id: "proveedores", label: "Resumen proveedores", href: "resumen-proveedores.html" },
             { id: "entregas", label: "Seguimiento entregas", href: "seguimiento-entregas.html" },
-            { id: "materiales", label: "Gestion de materiales", href: "gestion-materiales.html" },
+            { id: "materiales", label: "Catálogo de materiales", href: "gestion-materiales.html" },
+            { id: "recetas", label: "Recetas de materiales", href: "recetas-materiales.html" },
             { id: "proveedoresMaster", label: "Gestion de proveedores", href: "gestion-proveedores.html" },
             { id: "reglas", label: "Reglas documentales", href: "reglas-documentales.html" }
           ]

@@ -31,6 +31,7 @@ const SIALMaterials = (() => {
   };
   const notificationKey = "sial-materiales-notifications";
   const hu826ConfigKey = "sial-hu826-configurations";
+  let recipeLineSequence = 0;
 
   // Muestra fiel de la fuente real PARAMETROS de la hoja "Parametros Explosion de Materiales".
   // Los campos de HU826 que no existen en la fuente quedan pendientes de parametrización;
@@ -56,10 +57,25 @@ const SIALMaterials = (() => {
   ];
 
   const stock = [
-    { id: "STK-001", finca: "Finca Santa Isabel", material: "Caja carton corrugado", available: 1280, reserved: 120, damaged: 0, unit: "unidad", updated: "28/06/2026 07:40", lastMovement: "Entrada por recepción · MOV-8821", status: "ACTIVO", coverage: "2.4 dias", source: "Movimientos de inventario · HU662" },
-    { id: "STK-002", finca: "Finca El Retiro", material: "Caja carton corrugado", available: 360, reserved: 40, damaged: 12, unit: "unidad", updated: "28/06/2026 07:50", lastMovement: "Ajuste por daño · MOV-8814", status: "REVISION", coverage: "0.8 dias", source: "Movimientos de inventario · HU662" },
-    { id: "STK-003", finca: "Finca Santa Isabel", material: "Estiba madera exportacion", available: 94, reserved: 12, damaged: 2, unit: "unidad", updated: "28/06/2026 06:58", lastMovement: "Salida a orden OTI-546-001", status: "ACTIVO", coverage: "3.1 dias", source: "Movimientos de inventario · HU662" },
-    { id: "STK-004", finca: "Finca Las Palmas", material: "Separador de pallet", available: 18, reserved: 0, damaged: 3, unit: "paquete", updated: "27/06/2026 18:12", lastMovement: "Conteo pendiente · MOV-8792", status: "REVISION", coverage: "Stock bajo", source: "Conteo pendiente · HU662" }
+    { id: "STK-001", finca: "Finca Santa Isabel", sapMaterial: "101279", material: "Caja carton corrugado", available: 1280, reserved: 120, total: 1400, damaged: 0, unit: "unidad", updated: "28/06/2026 07:40", lastMovement: "Entrada por recepción · MOV-8821", status: "ACTIVO", coverage: "2.4 dias", source: "Movimientos de inventario · HU662" },
+    { id: "STK-002", finca: "Finca El Retiro", sapMaterial: "101279", material: "Caja carton corrugado", available: 360, reserved: 40, total: 412, damaged: 12, unit: "unidad", updated: "28/06/2026 07:50", lastMovement: "Ajuste por daño · MOV-8814", status: "REVISION", coverage: "0.8 dias", source: "Movimientos de inventario · HU662" },
+    { id: "STK-003", finca: "Finca Santa Isabel", sapMaterial: "1970", material: "Estiba madera exportacion", available: 94, reserved: 12, total: 106, damaged: 2, unit: "unidad", updated: "28/06/2026 06:58", lastMovement: "Salida a orden OTI-546-001", status: "ACTIVO", coverage: "3.1 dias", source: "Movimientos de inventario · HU662" },
+    { id: "STK-004", finca: "Finca Las Palmas", sapMaterial: "5418", material: "Separador de pallet", available: 18, reserved: 0, total: 21, damaged: 3, unit: "paquete", updated: "27/06/2026 18:12", lastMovement: "Conteo pendiente · MOV-8792", status: "REVISION", coverage: "Stock bajo", source: "Conteo pendiente · HU662" }
+  ];
+
+  // Datos de muestra para separar claramente la receta del catálogo de materiales.
+  // La cantidad total de inventario se recibe del contrato de saldo; no se calcula en la interfaz.
+  const recipes = [
+    { id: "REC-16FT7BD-8-V1", reference: "16FT7BD-8", version: "V1", materials: [{ sapMaterial: "101279", name: "BASE BBS11 FYFFES 13 KG (20 UND) V2", quantityPerBox: "1", unit: "UN" }, { sapMaterial: "102247", name: "TAPA BLD98 FYF FT BLANCA 13KG (30 UND)V3", quantityPerBox: "1", unit: "UN" }, { sapMaterial: "1970", name: "ESTIBAS FYFFES 1.02X1.20 MTS (MQ)", quantityPerBox: "0,01516", unit: "UN" }], status: "ACTIVO", source: "HU826 · receta por referencia y versión", audit: "Crear - configuracion.materiales|24/08/2026 10:20" },
+    { id: "REC-20LD7RA-20-V2", reference: "20LD7RA-20", version: "V2", materials: [{ sapMaterial: "102247", name: "TAPA BLD98 FYF FT BLANCA 13KG (30 UND)V3", quantityPerBox: "1", unit: "UN" }, { sapMaterial: "5418", name: "ESQUINERO KRAFT 2.13 MTS (20 UND)", quantityPerBox: "0,06061", unit: "UN" }, { sapMaterial: "4925", name: "ZUNCHO AMARILLO SIN IMPRESIÓN", quantityPerBox: "0,8", unit: "M" }], status: "ACTIVO", source: "HU826 · receta por referencia y versión", audit: "Editar - configuracion.materiales|25/08/2026 15:10" },
+    { id: "REC-21X5BDOF-V1", reference: "21X5BDOF", version: "V1", materials: [{ sapMaterial: "1970", name: "ESTIBAS FYFFES 1.02X1.20 MTS (MQ)", quantityPerBox: "0,01516", unit: "UN" }, { sapMaterial: "322", name: "ESQUINERO KRAFT 1.95 MTS (20 UND)", quantityPerBox: "0,06060606061", unit: "UN" }], status: "REVISION", source: "HU826 · receta por referencia y versión", audit: "Crear - configuracion.materiales|26/08/2026 08:35" }
+  ];
+
+  const movements = [
+    { id: "MOV-8821", sapMaterial: "101279", material: "Caja carton corrugado", type: "ENTRADA", quantity: 1400, unit: "unidad", date: "2026-06-28", dateLabel: "28/06/2026 07:40", reason: "Recepción de proveedor", user: "almacen.santa-isabel", finca: "Finca Santa Isabel", status: "ACTIVO", source: "HU662 · movimiento de inventario", audit: "Registrar entrada - almacen.santa-isabel|28/06/2026 07:40" },
+    { id: "MOV-8814", sapMaterial: "101279", material: "Caja carton corrugado", type: "AJUSTE", quantity: -12, unit: "unidad", date: "2026-06-28", dateLabel: "28/06/2026 07:50", reason: "Daño identificado en conteo", user: "almacen.el-retiro", finca: "Finca El Retiro", status: "REVISION", source: "HU662 · movimiento de inventario", audit: "Registrar ajuste - almacen.el-retiro|28/06/2026 07:50" },
+    { id: "MOV-8808", sapMaterial: "1970", material: "Estiba madera exportacion", type: "SALIDA", quantity: -80, unit: "unidad", date: "2026-06-28", dateLabel: "28/06/2026 06:58", reason: "Despacho de orden OTI-546-001", user: "supervisor.almacen", finca: "Finca Santa Isabel", status: "ACTIVO", source: "HU662 · movimiento de inventario", audit: "Registrar salida - supervisor.almacen|28/06/2026 06:58" },
+    { id: "MOV-8792", sapMaterial: "5418", material: "Separador de pallet", type: "AJUSTE", quantity: -3, unit: "paquete", date: "2026-06-27", dateLabel: "27/06/2026 18:12", reason: "Conteo físico pendiente de validación", user: "almacen.las-palmas", finca: "Finca Las Palmas", status: "REVISION", source: "HU662 · movimiento de inventario", audit: "Registrar ajuste - almacen.las-palmas|27/06/2026 18:12" }
   ];
 
   const orders = [
@@ -103,12 +119,14 @@ const SIALMaterials = (() => {
   const viewConfig = {
     dashboard: { title: "Materiales y suministros", eyebrow: "Gestion / Materiales y suministros", subtitle: "Centro operativo para pedidos, stock, ordenes, proveedores, entregas y trazabilidad documental.", hu: "HU659, HU660, HU662, HU666, HU667, HU826, HU546, HU668, HU681, HU682", channel: "Web gestiona y consulta · móvil ejecuta en campo cuando la HU lo requiere." },
     pedidos: { title: "Gestion de pedidos de materiales", eyebrow: "Materiales / Pedidos", subtitle: "Pedidos sugeridos, adicionales y estandar vinculados a finca, semana, stock y documento logistico.", hu: "HU659, HU660, HU666, HU667", channel: "Web: genera, ajusta y procesa · móvil: consulta o captura de campo solo cuando aplique." },
-    inventario: { title: "Inventario por finca", eyebrow: "Materiales / Inventario", subtitle: "Consulta de stock disponible por finca y material antes de confirmar pedidos.", hu: "HU662", channel: "Web: consulta de gestión · móvil: consulta complementaria, sin editar saldos." },
+    inventario: { title: "Inventario de materiales", eyebrow: "Materiales / Inventario", subtitle: "Consulta existencias disponibles, reservadas y totales por material y finca.", hu: "HU662", channel: "Web: consulta de gestión · móvil: consulta complementaria, sin editar saldos." },
     pallets: { title: "Inventario de pallets", eyebrow: "Materiales / Pallets", subtitle: "Pallets completos y mochos para planificar cargues y consolidaciones.", hu: "HU559, HU560" },
     ordenes: { title: "Ordenes de transporte de insumos", eyebrow: "Materiales / Ordenes", subtitle: "Ordenes con documento logistico, vehiculo, finca destino y notificaciones operativas.", hu: "HU546, HU669, HU670, HU532", channel: "Web: registra y notifica · móvil: consulta y ejecuta hitos de campo." },
     proveedores: { title: "Resumen para proveedores externos", eyebrow: "Materiales / Proveedores externos", subtitle: "Generacion y envio digital de resumen para cartoneras y estibaderos.", hu: "HU668" },
     entregas: { title: "Seguimiento de entregas y POD", eyebrow: "Materiales / Entregas", subtitle: "Consulta de entrega efectiva, evidencia, firma digital y trazabilidad asociada.", hu: "HU681, HU682, HU547, HU607", channel: "Web: seguimiento, gestión y auditoría · móvil: captura de recepción, foto y firma." },
-    materiales: { title: "Gestion de materiales", eyebrow: "Materiales / Maestra", subtitle: "Materiales y configuración por referencia para que los pedidos usen reglas vigentes.", hu: "HU826", channel: "Web: administra receta/versionado y configuración · móvil: no administra la maestra." },
+    materiales: { title: "Catálogo de materiales", eyebrow: "Materiales / Catálogo", subtitle: "Maestra de materiales con código SAP, nombre, unidad de medida y estado.", hu: "HU826", channel: "Web: administra el catálogo y las recetas · móvil: no administra la maestra." },
+    movimientos: { title: "Movimientos de inventario", eyebrow: "Materiales / Inventario", subtitle: "Historial auditable de entradas, salidas y ajustes de materiales.", hu: "HU662", channel: "Web: consulta y seguimiento de movimientos · móvil: consulta complementaria cuando el rol operativo lo requiera." },
+    recetas: { title: "Recetas de materiales", eyebrow: "Materiales / Recetas", subtitle: "Configuración de materiales requerida por caja, asociada a una combinación de Referencia + Versión.", hu: "HU826", channel: "Web: crea, edita, consulta y activa recetas · móvil: no administra la maestra." },
     proveedoresMaster: { title: "Gestion de proveedores", eyebrow: "Materiales / Maestra", subtitle: "Proveedores externos para resumenes digitales y coordinacion de entregas.", hu: "HU668 soporte" },
     reglas: { title: "Reglas documentales", eyebrow: "Materiales / Documentos", subtitle: "Parametrizacion de clasificacion automatica para RPT, remision y reserva.", hu: "HU667" }
   };
@@ -135,7 +153,7 @@ const SIALMaterials = (() => {
     return iconButton(label, icon);
   }
 
-  function tableShell({ title, subtitle, countId, searchId, statusId, contextId, contextLabel, contextOptions, rows, headers, body, filename, primary = "", notice = "" }) {
+  function tableShell({ title, subtitle, countId, searchId, statusId, contextId, contextLabel, contextOptions, rows, headers, body, filename, primary = "", notice = "", extraFilters = "", embeddedForm = "" }) {
     return `
       ${notice}
       <article class="card mt-24">
@@ -160,8 +178,10 @@ const SIALMaterials = (() => {
               <option value="all">${esc(contextLabel)}</option>
               ${contextOptions.map((item) => `<option value="${esc(item.value)}">${esc(item.label)}</option>`).join("")}
             </select>
+            ${extraFilters}
           </div>
         </div>
+        ${embeddedForm}
         <div class="table-wrap">
           <table class="materials-table" data-material-table="${esc(rows)}">
             <thead><tr>${headers.map((item) => `<th>${esc(item)}</th>`).join("")}<th>Acciones</th></tr></thead>
@@ -197,14 +217,11 @@ const SIALMaterials = (() => {
   function stockRows() {
     return stock.map((item) => `
       <tr ${rowDataset(item, item.finca, item.status)}>
-        <td><div class="materials-record-main"><strong>${esc(item.finca)}</strong><span>${esc(item.source)}</span></div></td>
-        <td>${esc(item.material)}</td>
-        <td><strong>${esc(item.available)} ${esc(item.unit)}</strong><br><span class="muted">Reservado: ${esc(item.reserved)} · Dañado: ${esc(item.damaged)}</span></td>
-        <td>${esc(item.coverage)}</td>
+        <td><div class="materials-record-main"><strong>${esc(item.sapMaterial)}</strong><span>${esc(item.finca)}</span></div></td>
+        <td>${esc(item.material)}</td><td>${esc(item.unit)}</td>
+        <td><strong>${esc(item.available)}</strong></td><td>${esc(item.reserved)}</td><td><strong>${esc(item.total)}</strong><br><span class="muted">Informado por saldo</span></td>
         <td>${esc(item.lastMovement)}<br><span class="muted">${esc(item.updated)}</span></td>
-        <td>${status(item.status)}</td>
-        <td class="muted">Sincronizar - sistema<br>${esc(item.updated)}</td>
-        <td><div class="row-actions">${detailButton("stock", item.id)}</div></td>
+        <td><div class="row-actions">${detailButton("stock", item.id)}<a class="icon-btn" href="movimientos-inventario.html?material=${encodeURIComponent(item.sapMaterial)}" aria-label="Ver movimientos del material" title="Ver movimientos del material"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true">${icons.eye}</svg></a></div></td>
       </tr>
     `).join("");
   }
@@ -275,9 +292,35 @@ const SIALMaterials = (() => {
 
   function materialRows() {
     return materials.map((item) => `
-      <tr ${rowDataset(item, item.classification, item.status)}>
-        <td><div class="materials-record-main"><strong>${esc(item.reference)}</strong><span>${esc(item.referenceList)}</span></div></td><td>${esc(item.sapMaterial)}</td><td>${esc(item.name)}</td><td>${esc(item.quantityPerBox)}</td><td>${esc(item.unit)}</td><td>${esc(item.classification)}</td><td>${status(item.status)}</td><td class="muted">${esc(item.audit).replace("|", "<br>")}</td>
-        <td><div class="row-actions">${detailButton("material", item.id)}${iconButton("Editar configuración", "edit", "data-edit-inline")}${stateButton(item.status === "INACTIVO" ? "Activar configuración" : "Inactivar configuración")}</div></td>
+      <tr ${rowDataset(item, item.unit, item.status)}>
+        <td><div class="materials-record-main"><strong>${esc(item.sapMaterial)}</strong><span>Material SAP</span></div></td>
+        <td>${esc(item.name)}</td><td>${esc(item.unit)}</td><td>${status(item.status)}</td><td class="muted">${esc(item.audit).replace("|", "<br>")}</td>
+        <td><div class="row-actions">${detailButton("material", item.id)}${iconButton("Editar material", "edit", "data-edit-inline")}${stateButton(item.status === "INACTIVO" ? "Activar material" : "Inactivar material")}</div></td>
+      </tr>
+    `).join("");
+  }
+
+  function recipeRows() {
+    return recipes.map((item) => `
+      <tr ${rowDataset(item, item.reference, item.status)}>
+        <td><div class="materials-record-main"><strong>${esc(item.reference)}</strong><span>Referencia</span></div></td>
+        <td>${esc(item.version)}</td>
+        <td><strong>${item.materials.length}</strong><br><span class="muted">materiales requeridos</span></td>
+        <td>${item.materials.slice(0, 2).map((line) => `${esc(line.sapMaterial)} · ${esc(line.quantityPerBox)} ${esc(line.unit)}`).join("<br>")} ${item.materials.length > 2 ? `<br><span class="muted">+ ${item.materials.length - 2} material(es)</span>` : ""}</td>
+        <td>${status(item.status)}</td><td class="muted">${esc(item.audit).replace("|", "<br>")}</td>
+        <td><div class="row-actions">${detailButton("recipe", item.id)}${iconButton("Editar receta", "edit", "data-edit-inline")}${stateButton(item.status === "INACTIVO" ? "Activar receta" : "Inactivar receta")}</div></td>
+      </tr>
+    `).join("");
+  }
+
+  function movementRows() {
+    return movements.map((item) => `
+      <tr ${rowDataset(item, item.type.toLowerCase(), item.status)} data-movement-date="${esc(item.date)}">
+        <td><div class="materials-record-main"><strong>${esc(item.id)}</strong><span>${esc(item.sapMaterial)}</span></div></td>
+        <td>${esc(item.material)}</td><td>${documentTag(item.type)}</td>
+        <td><strong>${esc(item.quantity)} ${esc(item.unit)}</strong></td>
+        <td>${esc(item.dateLabel)}</td><td>${esc(item.reason)}</td><td>${esc(item.user)}</td>
+        <td><div class="row-actions">${detailButton("movement", item.id)}</div></td>
       </tr>
     `).join("");
   }
@@ -352,7 +395,8 @@ const SIALMaterials = (() => {
         </article>
         <aside class="materials-action-panel">
           <span class="materials-mini-label">Accesos clave</span>
-          <a class="btn btn-secondary" href="gestion-materiales.html">Configurar materiales (HU826)</a>
+          <a class="btn btn-secondary" href="gestion-materiales.html">Catálogo de materiales</a>
+          <a class="btn btn-secondary" href="recetas-materiales.html">Configurar recetas (HU826)</a>
           <a class="btn btn-primary" href="gestion-pedidos-materiales.html">Revisar pedidos</a>
           <a class="btn btn-secondary" href="ordenes-transporte-insumos.html">Ordenes de transporte</a>
           <a class="btn btn-secondary" href="resumen-proveedores.html">Resumen proveedores</a>
@@ -363,7 +407,81 @@ const SIALMaterials = (() => {
     `;
   }
 
+  function searchSelectData(source) {
+    if (source === "reference") {
+      return recipes.map((item) => ({
+        value: `${item.reference} · ${item.version}`,
+        detail: `${item.materials.length} materiales configurados`,
+        chip: statusMap[item.status]?.[1] || "Revisión",
+        chipClass: `status ${statusMap[item.status]?.[0] || "status-warning"}`,
+        search: `${item.reference} ${item.version} ${item.id}`
+      }));
+    }
+    if (source === "unit") {
+      return [
+        { value: "UN", detail: "Unidad", chip: "Unidad", chipClass: "tag", search: "un unidad" },
+        { value: "M", detail: "Metro", chip: "Unidad", chipClass: "tag", search: "m metro unidad" }
+      ];
+    }
+    const selectByName = source === "materialName";
+    return materials.map((item) => ({
+      value: selectByName ? item.name : item.sapMaterial,
+      detail: selectByName ? `Código SAP: ${item.sapMaterial} · ${item.unit}` : `${item.name} · ${item.unit}`,
+      chip: item.unit,
+      chipClass: "tag",
+      materialId: item.id,
+      search: `${item.sapMaterial} ${item.name} ${item.unit}`
+    }));
+  }
+
+  function searchableSelect({ id, source, placeholder }) {
+    return `<div class="search-select" data-material-search-select="${esc(source)}"><input class="input" id="${esc(id)}" type="search" autocomplete="off" required aria-haspopup="listbox" aria-expanded="false" aria-controls="${esc(id)}Panel" data-search-select-input placeholder="${esc(placeholder)}"><div class="search-select-panel is-hidden" id="${esc(id)}Panel" data-search-select-panel><div class="search-select-list" role="listbox" data-search-select-list></div></div></div>`;
+  }
+
+  function recipeMaterialLine() {
+    const selectorId = `recipeMaterialSelect${recipeLineSequence++}`;
+    return `<div class="grid recipe-material-line"><div class="field span-8"><label class="label" for="${esc(selectorId)}">Código SAP <span class="required">*</span></label>${searchableSelect({ id: selectorId, source: "material", placeholder: "Buscar por código SAP o material" })}<div class="field-note">Seleccione el material por código SAP.</div></div><div class="field span-4"><label class="label">Cantidad/caja <span class="required">*</span></label><input class="input" required inputmode="decimal" placeholder="1 UN"><div class="field-note">Cantidad sugerida por caja.</div></div></div>`;
+  }
+
   function inlineForm(kind) {
+    if (kind === "receta") {
+      return `
+        <div class="inline-form-panel materials-inline-form is-hidden" id="materialInlineForm" data-inline-form-panel>
+          <div class="form-heading"><h2 data-inline-form-title>Nueva receta</h2><p>Asocie la receta a una combinación única de Referencia + Versión y defina los materiales requeridos por caja.</p></div>
+          <div class="form-body">
+            <form data-material-form novalidate>
+              <section class="section"><div class="grid">
+                <div class="field span-12"><label class="label" for="recipeReferenceSelect">Referencia + Versión <span class="required">*</span></label>${searchableSelect({ id: "recipeReferenceSelect", source: "reference", placeholder: "Buscar referencia y versión" })}<div class="field-note">Seleccione la combinación que identifica la receta.</div></div>
+              </div></section>
+              <section class="section"><div class="section-heading"><div><p class="section-kicker">Materiales requeridos</p><h3>Cantidad sugerida por caja</h3></div><button class="btn btn-secondary" type="button" data-material-action="add-recipe-line">Agregar material</button></div>
+                <div data-recipe-lines>
+                  ${recipeMaterialLine()}
+                </div>
+              </section>
+              <div class="form-actions"><button class="btn btn-secondary" type="button" data-cancel-inline-form>Cancelar</button><button class="btn btn-primary" type="submit">Guardar receta</button></div>
+            </form>
+          </div>
+        </div>
+      `;
+    }
+    if (kind === "catalogo") {
+      return `
+        <div class="inline-form-panel materials-inline-form is-hidden" id="materialInlineForm" data-inline-form-panel>
+          <div class="form-heading"><h2 data-inline-form-title>Nuevo material</h2><p>Formulario corto dentro de la gestión. El código SAP identifica el material en el catálogo.</p></div>
+          <div class="form-body">
+            <div class="notice notice-success is-hidden" id="formOk">Material listo para guardar.</div>
+            <form data-material-form novalidate>
+              <section class="section"><div class="grid">
+                <div class="field span-4"><label class="label" for="catalogMaterialCodeSelect">Código SAP <span class="required">*</span></label>${searchableSelect({ id: "catalogMaterialCodeSelect", source: "materialCode", placeholder: "Buscar por código SAP" })}<div class="field-note">Seleccione el código SAP del material.</div></div>
+                <div class="field span-5"><label class="label" for="catalogMaterialNameSelect">Nombre <span class="required">*</span></label>${searchableSelect({ id: "catalogMaterialNameSelect", source: "materialName", placeholder: "Buscar por nombre de material" })}<div class="field-note">Seleccione el nombre asociado al código SAP.</div></div>
+                <div class="field span-3"><label class="label" for="catalogMaterialUnitSelect">Unidad de medida <span class="required">*</span></label>${searchableSelect({ id: "catalogMaterialUnitSelect", source: "unit", placeholder: "Buscar unidad de medida" })}<div class="field-note">Seleccione una unidad disponible.</div></div>
+              </div></section>
+              <div class="form-actions"><button class="btn btn-secondary" type="button" data-cancel-inline-form>Cancelar</button><button class="btn btn-primary" type="submit">Guardar material</button></div>
+            </form>
+          </div>
+        </div>
+      `;
+    }
     if (kind === "material") {
       return `
         <div class="inline-form-panel materials-inline-form is-hidden" id="materialInlineForm" data-inline-form-panel>
@@ -437,7 +555,9 @@ const SIALMaterials = (() => {
     ordenes: [{ value: "rpt", label: "RPT" }, { value: "remision", label: "Remision" }, { value: "reserva", label: "Reserva" }],
     proveedores: suppliers.map((item) => ({ value: item.name, label: item.name })),
     entregas: [{ value: "Finca Santa Isabel", label: "Finca Santa Isabel" }, { value: "Finca El Retiro", label: "Finca El Retiro" }, { value: "Finca Las Palmas", label: "Finca Las Palmas" }],
-    materiales: [{ value: "CONVENCIONAL FAIRTRADE", label: "Convencional Fairtrade" }],
+    materiales: [{ value: "UN", label: "UN" }, { value: "M", label: "M" }],
+    movimientos: [{ value: "entrada", label: "Entradas" }, { value: "salida", label: "Salidas" }, { value: "ajuste", label: "Ajustes" }],
+    recetas: [{ value: "16FT7BD-8", label: "16FT7BD-8" }, { value: "20LD7RA-20", label: "20LD7RA-20" }, { value: "21X5BDOF", label: "21X5BDOF" }],
     proveedoresMaster: [{ value: "Cartonera", label: "Cartonera" }, { value: "Estibadero", label: "Estibadero" }, { value: "Proveedor material", label: "Proveedor material" }],
     reglas: [{ value: "rpt", label: "RPT" }, { value: "remision", label: "Remision" }, { value: "reserva", label: "Reserva" }]
   };
@@ -446,12 +566,14 @@ const SIALMaterials = (() => {
     if (view === "dashboard") return dashboard();
     const map = {
       pedidos: ["Pedidos de materiales", "Listado operativo con stock consultado, origen del pedido y documento logistico.", "pedidoCount", "pedidoSearch", "pedidoStatus", "pedidoContext", "Todos los tipos", contextByView.pedidos, ["Pedido", "Tipo", "Finca / semana", "Material / cantidad", "Stock consultado", "Documento", "Estado", "Auditoria"], orderRows(), "pedidos-materiales", '<button class="btn btn-primary" type="button" data-open-inline-form>Pedido adicional</button>', notice("Un pedido adicional debe asociarse a semana de corte, finca y motivo antes de entrar a validacion.", "warning") + inlineForm("pedido")],
-      inventario: ["Stock disponible en finca", "Inventario derivado por movimientos, reservas, daños y fecha de actualización.", "stockCount", "stockSearch", "stockStatus", "stockContext", "Todas las fincas", contextByView.inventario, ["Finca", "Material", "Saldo / reservas", "Cobertura", "Último movimiento / actualización", "Estado", "Auditoria"], stockRows(), "inventario-finca", "", notice("El saldo no se edita como un número libre: se consulta desde movimientos, reservas y novedades de inventario.", "info")],
+      inventario: ["Existencias de materiales", "Inventario por finca con saldo disponible, reservado y total informado.", "stockCount", "stockSearch", "stockStatus", "stockContext", "Todas las fincas", contextByView.inventario, ["Código SAP / finca", "Material", "Unidad", "Disponible", "Reservado", "Total", "Último movimiento / actualización"], stockRows(), "inventario-materiales", "", notice("El total es un saldo informado por el contrato de inventario; no se calcula en la interfaz. Use el detalle o el historial para revisar su origen.", "info")],
       pallets: ["Pallets completos e incompletos", "Inventario ZE para planificar cargue de contenedores y consolidacion posterior.", "palletCount", "palletSearch", "palletStatus", "palletContext", "Todos los tipos", contextByView.pallets, ["Referencia", "Tipo", "Finca origen", "Pallets", "Cajas restantes", "Destino", "Estado", "Auditoria"], palletRows(), "inventario-pallets", '<a class="btn btn-secondary" href="../pallets/armar-pallet.html">Ver flujo movil</a>', ""],
       ordenes: ["Ordenes de transporte", "Ordenes de insumos con documento, vehiculo, finca destino y notificacion.", "transportCount", "transportSearch", "transportStatus", "transportContext", "Todos los documentos", contextByView.ordenes, ["Orden", "Documento", "Finca destino", "Vehiculo / conductor", "Materiales", "Estado", "Auditoria"], transportRows(), "ordenes-transporte-insumos", '<button class="btn btn-primary" type="button" data-material-action="notify-all">Notificar pendientes</button>', notice("La notificacion reemplaza archivos manuales y correos sueltos como mecanismo principal de coordinacion.", "info")],
       proveedores: ["Resumenes digitales", "Consolidacion por proveedor externo, periodo, materiales, destino y envio.", "summaryCount", "summarySearch", "summaryStatus", "summaryContext", "Todos los proveedores", contextByView.proveedores, ["Proveedor", "Periodo", "Ordenes", "Materiales / cantidades", "Destino", "Estado", "Generacion / envio"], summaryRows(), "resumen-proveedores", '<button class="btn btn-primary" type="button" data-material-action="generate-summary">Generar resumen</button>', ""],
       entregas: ["Entregas y evidencias POD", "Seguimiento read-only de entrega efectiva, responsable, foto/firma y auditoria.", "deliveryCount", "deliverySearch", "deliveryStatus", "deliveryContext", "Todas las fincas", contextByView.entregas, ["Orden", "Documento", "Finca", "Transportista", "Recepcion", "Evidencia", "Estado", "Auditoria"], deliveryRows(), "seguimiento-entregas", '<a class="btn btn-secondary" href="../Trazabilidad/auditoria-operativa.html">Ver auditoria</a>', notice("El historial completo de inspecciones del contenedor se consulta en Seguridad / Auditoria operativa.", "info")],
-      materiales: ["Configuración de materiales por referencia", "Fuente PARAMETROS: referencia, material SAP, unidad, cantidad/caja, clasificación y listado de referencias.", "materialCount", "materialSearch", "materialStatus", "materialContext", "Todas las clasificaciones", contextByView.materiales, ["Referencia", "Material SAP", "Nombre del material", "Cantidad/Caja", "Unidad SAP", "Clasificación", "Estado", "Auditoria"], materialRows(), "parametros-materiales", '<button class="btn btn-primary" type="button" data-open-inline-form>Configurar referencia</button>', notice("HU826 no se activa con datos incompletos. La configuración debe tener versión de receta, vigencia, desperdicio, sustitutos y redondeo; los datos faltantes quedan en revisión.", "warning") + inlineForm("material")],
+      materiales: ["Catálogo de materiales", "Maestra de materiales para consulta, creación, edición y cambio de estado.", "materialCount", "materialSearch", "materialStatus", "materialContext", "Todas las unidades", contextByView.materiales, ["Código SAP", "Nombre", "Unidad de medida", "Estado", "Auditoría"], materialRows(), "catalogo-materiales", '<button class="btn btn-primary" type="button" data-open-inline-form>Nuevo material</button>', notice("El catálogo identifica cada material. La cantidad sugerida por caja pertenece a la receta, no a esta maestra.", "info"), "", inlineForm("catalogo")],
+      movimientos: ["Historial de movimientos", "Entradas, salidas y ajustes; filtre por material, tipo de movimiento y rango de fechas.", "movementCount", "movementSearch", "movementStatus", "movementContext", "Todos los tipos", contextByView.movimientos, ["Movimiento / SAP", "Material", "Tipo", "Cantidad", "Fecha", "Motivo", "Usuario"], movementRows(), "movimientos-inventario", "", notice("Los movimientos son el historial operativo de las existencias; la propuesta no permite editar saldos directamente.", "info"), '<input class="input" id="movementDateFrom" type="date" aria-label="Fecha inicial"><input class="input" id="movementDateTo" type="date" aria-label="Fecha final">'],
+      recetas: ["Recetas por Referencia + Versión", "Cada receta define los materiales requeridos y la cantidad sugerida por caja.", "recipeCount", "recipeSearch", "recipeStatus", "recipeContext", "Todas las referencias", contextByView.recetas, ["Referencia", "Versión", "Materiales", "Cantidad sugerida por caja", "Estado", "Auditoría"], recipeRows(), "recetas-materiales", '<button class="btn btn-primary" type="button" data-open-inline-form>Nueva receta</button>', notice("La combinación Referencia + Versión identifica la receta. Puede agregar múltiples materiales sin asociar cantidades por pallet.", "info"), "", inlineForm("receta")],
       proveedoresMaster: ["Proveedores registrados", "Maestra minima de proveedores externos para resumen digital.", "supplierCount", "supplierSearch", "supplierStatus", "supplierContext", "Todos los tipos", contextByView.proveedoresMaster, ["Codigo", "Proveedor", "Tipo", "Contacto", "Estado", "Auditoria"], supplierRows(), "proveedores", '<button class="btn btn-primary" type="button" data-open-inline-form>Nuevo proveedor</button>', inlineForm("supplier")],
       reglas: ["Reglas documentales", "Clasificacion automatica para RPT, remision y reserva.", "ruleCount", "ruleSearch", "ruleStatus", "ruleContext", "Todos los resultados", contextByView.reglas, ["Codigo", "Regla", "Resultado", "Condicion", "Estado", "Auditoria"], ruleRows(), "reglas-documentales", '<button class="btn btn-primary" type="button" data-open-inline-form>Nueva regla</button>', inlineForm("rule")]
     };
@@ -470,18 +592,20 @@ const SIALMaterials = (() => {
       filename: cfg[10],
       rows: cfg[10],
       primary: cfg[11],
-      notice: cfg[12]
+      notice: cfg[12],
+      extraFilters: cfg[13] || "",
+      embeddedForm: cfg[14] || ""
     });
   }
 
   function findRecord(type, id) {
-    const maps = { order: orders, stock, pallet: pallets, transport: transportOrders, summary: supplierSummaries, delivery: deliveries, material: materials, supplier: suppliers, rule: rules };
+    const maps = { order: orders, stock, pallet: pallets, transport: transportOrders, summary: supplierSummaries, delivery: deliveries, material: materials, movement: movements, recipe: recipes, supplier: suppliers, rule: rules };
     return (maps[type] || []).find((item) => item.id === id);
   }
 
   function detailRows(record) {
     return Object.entries(record || {}).filter(([key]) => !["audit"].includes(key)).map(([key, value]) => `
-      <div class="detail-group"><span class="detail-label">${esc(key.replace(/([A-Z])/g, " $1"))}</span><div class="detail-value">${value === "" || value == null ? status("REVISION") : esc(value)}</div></div>
+      <div class="detail-group"><span class="detail-label">${esc(key.replace(/([A-Z])/g, " $1"))}</span><div class="detail-value">${Array.isArray(value) ? value.map((line) => `<div class="audit-item"><strong>${esc(line.sapMaterial)} · ${esc(line.name)}</strong><div class="muted">Cantidad sugerida/caja: ${esc(line.quantityPerBox)} ${esc(line.unit)}</div></div>`).join("") : value === "" || value == null ? status("REVISION") : esc(value)}</div></div>
     `).join("");
   }
 
@@ -514,6 +638,79 @@ const SIALMaterials = (() => {
       drawer.hidden = true;
     }
     if (backdrop) backdrop.hidden = true;
+  }
+
+  function initSearchSelects(root = document) {
+    qsa("[data-material-search-select]", root).forEach((selectRoot) => {
+      if (selectRoot.dataset.searchSelectReady === "true") return;
+      selectRoot.dataset.searchSelectReady = "true";
+      const input = qs("[data-search-select-input]", selectRoot);
+      const panel = qs("[data-search-select-panel]", selectRoot);
+      const list = qs("[data-search-select-list]", selectRoot);
+      const source = selectRoot.dataset.materialSearchSelect;
+      if (!input || !panel || !list) return;
+
+      const close = () => {
+        panel.classList.add("is-hidden");
+        input.setAttribute("aria-expanded", "false");
+      };
+      const render = () => {
+        const query = input.value.trim().toLocaleLowerCase("es-CO");
+        const options = searchSelectData(source).filter((item) => `${item.value} ${item.detail} ${item.search}`.toLocaleLowerCase("es-CO").includes(query));
+        if (!options.length) {
+          list.innerHTML = '<div class="search-select-empty">No hay resultados para esta búsqueda.</div>';
+          return;
+        }
+        list.innerHTML = options.map((item, index) => `<button class="search-select-option" type="button" role="option" aria-selected="${input.dataset.selectedValue === item.value}" data-search-select-option="${index}"><span><strong>${esc(item.value)}</strong><small>${esc(item.detail)}</small></span><span class="${esc(item.chipClass)}">${esc(item.chip)}</span></button>`).join("");
+        qsa("[data-search-select-option]", list).forEach((button) => {
+          button.addEventListener("click", () => {
+            const item = options[Number(button.dataset.searchSelectOption)];
+            if (!item) return;
+            input.value = item.value;
+            input.dataset.selectedValue = item.value;
+            if (["materialCode", "materialName"].includes(source)) {
+              const selectedMaterial = materials.find((material) => material.id === item.materialId);
+              const form = input.closest("[data-material-form]");
+              if (selectedMaterial && form) {
+                qsa("[data-material-search-select]", form).forEach((linkedSelect) => {
+                  const linkedInput = qs("[data-search-select-input]", linkedSelect);
+                  if (!linkedInput) return;
+                  if (linkedSelect.dataset.materialSearchSelect === "materialCode") linkedInput.value = selectedMaterial.sapMaterial;
+                  if (linkedSelect.dataset.materialSearchSelect === "materialName") linkedInput.value = selectedMaterial.name;
+                  linkedInput.dataset.selectedValue = linkedInput.value;
+                });
+              }
+            }
+            close();
+          });
+        });
+      };
+      const open = () => {
+        render();
+        panel.classList.remove("is-hidden");
+        input.setAttribute("aria-expanded", "true");
+      };
+
+      input.addEventListener("focus", open);
+      input.addEventListener("input", () => {
+        input.dataset.selectedValue = "";
+        open();
+      });
+      input.addEventListener("keydown", (event) => {
+        if (event.key === "Escape") {
+          close();
+          input.blur();
+        }
+      });
+      selectRoot.closeSearchSelect = close;
+    });
+    if (document.documentElement.dataset.materialSearchSelectCloseBound !== "true") {
+      document.documentElement.dataset.materialSearchSelectCloseBound = "true";
+      document.addEventListener("click", (event) => {
+        if (event.target.closest("[data-material-search-select]")) return;
+        qsa("[data-material-search-select]").forEach((selectRoot) => selectRoot.closeSearchSelect?.());
+      });
+    }
   }
 
   function initActions() {
@@ -554,6 +751,15 @@ const SIALMaterials = (() => {
           });
           showMaterialFeedback(`${eligible} ordenes notificadas a transporte y finca. ${pending ? `${pending} queda pendiente por asignación de conductor/vehículo.` : "Todos los conductores elegibles fueron notificados."}`);
           window.setTimeout(() => window.location.reload(), 700);
+          return;
+        }
+        if (action === "add-recipe-line") {
+          const lines = qs("[data-recipe-lines]");
+          if (!lines) return;
+          lines.insertAdjacentHTML("beforeend", recipeMaterialLine());
+          const addedLine = lines.lastElementChild;
+          initSearchSelects(addedLine);
+          addedLine?.querySelector("input")?.focus();
           return;
         }
         const table = button.closest(".card") || qs(".page");
@@ -672,11 +878,33 @@ const SIALMaterials = (() => {
       proveedores: ["#summarySearch", "#summaryStatus", "#summaryContext", "#resumen-proveedoresEmpty", "#summaryCount"],
       entregas: ["#deliverySearch", "#deliveryStatus", "#deliveryContext", "#seguimiento-entregasEmpty", "#deliveryCount"],
       materiales: ["#materialSearch", "#materialStatus", "#materialContext", "#materialesEmpty", "#materialCount"],
+      movimientos: ["#movementSearch", "#movementStatus", "#movementContext", "#movimientos-inventarioEmpty", "#movementCount"],
+      recetas: ["#recipeSearch", "#recipeStatus", "#recipeContext", "#recetas-materialesEmpty", "#recipeCount"],
       proveedoresMaster: ["#supplierSearch", "#supplierStatus", "#supplierContext", "#proveedoresEmpty", "#supplierCount"],
       reglas: ["#ruleSearch", "#ruleStatus", "#ruleContext", "#reglas-documentalesEmpty", "#ruleCount"]
     }[view];
     if (!cfg) return;
     SIALCore.initTableFilters({ rowSelector: "tbody tr", search: cfg[0], status: cfg[1], context: cfg[2], empty: cfg[3], count: cfg[4] });
+
+    if (view === "movimientos") {
+      const from = qs("#movementDateFrom");
+      const to = qs("#movementDateTo");
+      const applyDateRange = () => {
+        qsa("[data-movement-date]").forEach((row) => {
+          const date = row.dataset.movementDate;
+          const matchesDate = (!from?.value || date >= from.value) && (!to?.value || date <= to.value);
+          row.dataset.dateMatch = String(matchesDate);
+          row.classList.toggle("is-hidden", !matchesDate || row.dataset.filterMatch === "false");
+        });
+      };
+      [from, to].filter(Boolean).forEach((control) => control.addEventListener("change", applyDateRange));
+      const material = new URLSearchParams(window.location.search).get("material");
+      if (material) {
+        const search = qs("#movementSearch");
+        if (search) { search.value = material; search.dispatchEvent(new Event("input", { bubbles: true })); }
+      }
+      applyDateRange();
+    }
   }
 
   function detailShell() {
@@ -700,10 +928,11 @@ const SIALMaterials = (() => {
     initFilters(view);
     SIALCore.initTableExport();
     SIALCore.initStateActionConfirm();
-    if (["materiales", "proveedoresMaster", "reglas", "pedidos"].includes(view)) {
+    if (["materiales", "recetas", "proveedoresMaster", "reglas", "pedidos"].includes(view)) {
       SIALCore.initEmbeddedForm({ panel: "#materialInlineForm", openButton: "[data-open-inline-form]", cancelButton: "[data-cancel-inline-form]", title: "[data-inline-form-title]" });
     }
     initActions();
+    initSearchSelects();
     initHu826Form();
   }
 

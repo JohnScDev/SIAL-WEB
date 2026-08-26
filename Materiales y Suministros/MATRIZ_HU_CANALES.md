@@ -12,9 +12,9 @@ Fuente: Azure DevOps `Proyecto SIAL`, contexto operativo documentado en Drive y 
 | --- | --- | --- | --- | --- | --- |
 | HU659 | Generar pedido sugerido por finca y consultar fórmula/trazabilidad | Consulta opcional según rol | `gestion-pedidos-materiales.html` | `pedido-sugerido.html` | Móvil no genera ni ajusta el pedido |
 | HU660 | Ajustar y validar cantidades | Consulta opcional | `ajustar-pedido-sugerido.html` | No requerida | No aplicar tolerancias hasta que exista matriz oficial |
-| HU662 | Consultar stock por finca/material | Consulta opcional | `inventario-materiales-finca.html` | `inventario-finca.html` | Mostrar saldo derivado, reservas, daños y origen |
+| HU662 | Consultar stock por finca/material y su historial | Consulta opcional | `inventario-materiales-finca.html`, `movimientos-inventario.html` | `inventario-finca.html` | Mostrar disponible, reservado, total informado y origen; no editar saldos libres |
 | HU666 | Registrar y procesar múltiples pedidos adicionales | Solo si el evento ocurre en campo | `pedidos-adicionales.html` | Complementaria condicionada al evento | Mantener pedido base, aviso, finca, semana, motivo, actor, fecha e idempotencia |
-| HU826 | Gestionar material y configuración por referencia | Consulta opcional | `gestion-materiales.html` | No requerida | Incluir receta/versionado, vigencia, desperdicio, sustitutos y redondeo |
+| HU826 | Gestionar catálogo y receta por referencia | Consulta opcional | `gestion-materiales.html`, `recetas-materiales.html` | No requerida | Separar catálogo de la receta; identificar receta por Referencia + Versión y cantidad sugerida por caja |
 | HU546 | Registrar orden de transporte de insumos | Consulta/hitos de campo | `ordenes-transporte-insumos.html` | `ordenes-asignadas.html` | Web crea y coordina; móvil ejecuta hitos |
 | HU669 | Notificar despacho a transporte | No requerida para emitir notificación | `ordenes-transporte-insumos.html` | Complementaria | Acción separada y auditable para transporte |
 | HU670 | Notificar al conductor asignado | Consulta del despacho | `ordenes-transporte-insumos.html` | `detalle-orden.html` | Bloquear notificación si no hay conductor/vehículo asignado |
