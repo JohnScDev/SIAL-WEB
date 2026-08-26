@@ -603,9 +603,28 @@ const SIALMaterials = (() => {
     return (maps[type] || []).find((item) => item.id === id);
   }
 
+  const detailLabels = {
+    id: "Identificador", reference: "Referencia", version: "Versión", materials: "Materiales requeridos", status: "Estado", source: "Fuente funcional", audit: "Auditoría",
+    sapMaterial: "Código SAP", name: "Nombre", quantityPerBox: "Cantidad sugerida por caja", unit: "Unidad de medida", classification: "Clasificación", referenceList: "Listado de referencias",
+    validityStart: "Vigencia desde", validityEnd: "Vigencia hasta", waste: "Desperdicio (%)", substitutes: "Sustitutos", rounding: "Regla de redondeo",
+    finca: "Finca", material: "Material", available: "Disponible", reserved: "Reservado", total: "Total", damaged: "Dañado", updated: "Fecha de actualización", lastMovement: "Último movimiento", coverage: "Cobertura",
+    type: "Tipo", quantity: "Cantidad", date: "Fecha", dateLabel: "Fecha y hora", reason: "Motivo", user: "Usuario", code: "Código", provider: "Proveedor", contact: "Contacto",
+    document: "Documento", docType: "Tipo de documento", documentState: "Estado del documento", vehicle: "Vehículo", driver: "Conductor", notified: "Notificaciones", destination: "Destino", week: "Semana",
+    order: "Orden", receiver: "Recibido por", deliveredAt: "Fecha de entrega", evidence: "Evidencia", pod: "Comprobante de entrega", pallets: "Pallets", boxesLeft: "Cajas restantes", result: "Resultado", condition: "Condición"
+  };
+
+  function detailLabel(key) {
+    return detailLabels[key] || key.replace(/([A-Z])/g, " $1").replace(/^./, (value) => value.toUpperCase());
+  }
+
+  function detailTitle(type, record) {
+    const titles = { material: "Detalle de material", recipe: "Detalle de receta", stock: "Detalle de inventario", movement: "Detalle de movimiento", order: "Detalle de pedido", transport: "Detalle de orden de transporte", supplier: "Detalle de proveedor", rule: "Detalle de regla" };
+    return titles[type] || "Detalle del registro";
+  }
+
   function detailRows(record) {
     return Object.entries(record || {}).filter(([key]) => !["audit"].includes(key)).map(([key, value]) => `
-      <div class="detail-group"><span class="detail-label">${esc(key.replace(/([A-Z])/g, " $1"))}</span><div class="detail-value">${Array.isArray(value) ? value.map((line) => `<div class="audit-item"><strong>${esc(line.sapMaterial)} · ${esc(line.name)}</strong><div class="muted">Cantidad sugerida/caja: ${esc(line.quantityPerBox)} ${esc(line.unit)}</div></div>`).join("") : value === "" || value == null ? status("REVISION") : esc(value)}</div></div>
+      <div class="detail-group"><span class="detail-label">${esc(detailLabel(key))}</span><div class="detail-value">${Array.isArray(value) ? value.map((line) => `<div class="audit-item"><strong>${esc(line.sapMaterial)} · ${esc(line.name)}</strong><div class="muted">Cantidad sugerida por caja: ${esc(line.quantityPerBox)} ${esc(line.unit)}</div></div>`).join("") : key === "status" ? status(value) : value === "" || value == null ? status("REVISION") : esc(value)}</div></div>
     `).join("");
   }
 
@@ -617,11 +636,11 @@ const SIALMaterials = (() => {
     drawer.hidden = false;
     drawer.setAttribute("aria-hidden", "false");
     if (backdrop) backdrop.hidden = false;
-    qs("[data-material-detail-title]", drawer).textContent = record.id || record.code || "Detalle";
+    qs("[data-material-detail-title]", drawer).textContent = detailTitle(type, record);
     qs("[data-material-detail-subtitle]", drawer).textContent = `Fuente funcional: ${record.source || "Propuesta Materiales y Suministros"}`;
     qs("[data-material-detail-body]", drawer).innerHTML = `
       ${detailRows(record)}
-      <div class="detail-group"><span class="detail-label">Auditoria</span><div class="stack">${String(record.audit || "Sin auditoria registrada").split(";").map((item) => `<div class="audit-item"><strong>${esc(item.split("|")[0] || item)}</strong><div class="muted">${esc(item.split("|")[1] || "")}</div></div>`).join("")}</div></div>
+      <div class="detail-group"><span class="detail-label">Auditoría</span><div class="stack">${String(record.audit || "Sin auditoría registrada").split(";").map((item) => `<div class="audit-item"><strong>${esc(item.split("|")[0] || item)}</strong><div class="muted">${esc(item.split("|")[1] || "")}</div></div>`).join("")}</div></div>
     `;
     drawer.classList.add("show");
     backdrop?.classList.add("show");
