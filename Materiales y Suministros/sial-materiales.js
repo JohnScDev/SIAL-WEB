@@ -153,7 +153,7 @@ const SIALMaterials = (() => {
     return iconButton(label, icon);
   }
 
-  function tableShell({ title, subtitle, countId, searchId, statusId, contextId, contextLabel, contextOptions, rows, headers, body, filename, primary = "", notice = "", extraFilters = "", embeddedForm = "" }) {
+  function tableShell({ title, subtitle, countId, searchId, searchPlaceholder = "Buscar orden, finca, material o documento", statusId, contextId, contextLabel, contextOptions, rows, headers, body, filename, primary = "", notice = "", extraFilters = "", embeddedForm = "" }) {
     return `
       ${notice}
       <article class="card mt-24">
@@ -167,7 +167,7 @@ const SIALMaterials = (() => {
         </div>
         <div class="card-body">
           <div class="toolbar materials-toolbar">
-            <input class="input" id="${esc(searchId)}" type="search" aria-label="Buscar" placeholder="Buscar orden, finca, material o documento" />
+            <input class="input" id="${esc(searchId)}" type="search" aria-label="Buscar" placeholder="${esc(searchPlaceholder)}" />
             <select class="select" id="${esc(statusId)}" aria-label="Filtrar por estado">
               <option value="all">Todos los estados</option>
               <option value="active">Activos / cerrados</option>
@@ -367,43 +367,29 @@ const SIALMaterials = (() => {
 
   function header(view) {
     const cfg = viewConfig[view] || viewConfig.dashboard;
+    const legacyCatalogMeta = view === "materiales"
+      ? `${notice(`Historias cubiertas: ${cfg.hu}. Esta propuesta es estatica y deja contratos listos para backend futuro.`)}${cfg.channel ? notice(`Canal y responsabilidad: ${cfg.channel}`, "info") : ""}`
+      : "";
     return `
       <p class="page-eyebrow">${esc(cfg.eyebrow)}</p>
       <div class="page-header">
         <div><h1 class="page-title">${esc(cfg.title)}</h1><p class="page-subtitle">${esc(cfg.subtitle)}</p></div>
       </div>
-      ${notice(`Historias cubiertas: ${cfg.hu}. Esta propuesta es estatica y deja contratos listos para backend futuro.`)}
-      ${cfg.channel ? notice(`Canal y responsabilidad: ${cfg.channel}`, "info") : ""}
+      ${legacyCatalogMeta}
     `;
   }
 
   function dashboard() {
     return `
       ${header("dashboard")}
-      <section class="materials-kpi-grid" aria-label="Resumen operativo de materiales">
-        <article class="materials-kpi"><label>Pedidos activos</label><strong>${orders.length}</strong><span>Sugeridos, adicionales y validados.</span></article>
-        <article class="materials-kpi"><label>Stock en revision</label><strong>${stock.filter((item) => item.status === "REVISION").length}</strong><span>Fincas con cobertura baja o pendiente.</span></article>
-        <article class="materials-kpi"><label>Ordenes notificadas</label><strong>${transportOrders.filter((item) => item.status === "NOTIFICADO").length}</strong><span>Transporte, conductor, seguridad o finca.</span></article>
-        <article class="materials-kpi"><label>Entregas con POD</label><strong>${deliveries.filter((item) => item.status === "ENTREGADA").length}</strong><span>Foto/firma vinculada a documento logistico.</span></article>
-      </section>
-      <section class="materials-command-grid">
-        <article class="card">
-          <div class="card-header"><div><h2 class="card-title">Secuencia funcional</h2><p class="card-subtitle">La configuración de materiales habilita el pedido; no es una operación móvil.</p></div></div>
-          <div class="card-body materials-flow">
-            ${["Configurar materiales por referencia", "Consultar stock en finca", "Generar pedido sugerido", "Ajustar y validar cantidades", "Gestionar pedido adicional", "Clasificar documento y preparar transporte", "Ordenar transporte y notificar", "Registrar entrega y capturar POD", "Consultar auditoria y trazabilidad"].map((label, index) => `<div class="materials-flow-step"><span class="materials-flow-index">${index + 1}</span><div><strong>${esc(label)}</strong><small>${esc(["HU826", "HU662", "HU659", "HU660", "HU666", "HU667", "HU546/HU669/HU670", "HU547/HU681/HU682", "HU607"][index])}</small></div>${status(index === 0 ? "REVISION" : index < 3 ? "CONSULTADO" : index < 7 ? "VALIDADO" : "ENTREGADA")}</div>`).join("")}
-          </div>
-        </article>
-        <aside class="materials-action-panel">
-          <span class="materials-mini-label">Accesos clave</span>
-          <a class="btn btn-secondary" href="gestion-materiales.html">Catálogo de materiales</a>
-          <a class="btn btn-secondary" href="recetas-materiales.html">Configurar recetas (HU826)</a>
-          <a class="btn btn-primary" href="gestion-pedidos-materiales.html">Revisar pedidos</a>
-          <a class="btn btn-secondary" href="ordenes-transporte-insumos.html">Ordenes de transporte</a>
-          <a class="btn btn-secondary" href="resumen-proveedores.html">Resumen proveedores</a>
-          <a class="btn btn-secondary" href="seguimiento-entregas.html">Entregas y POD</a>
-          <div class="notice notice-info"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 19V5"></path><path d="M4 19h16"></path><path d="M8 15l3-4 3 2 5-7"></path></svg><span>El modulo opera como orquestador; Seguridad y Pallets conservan su responsabilidad funcional.</span></div>
-        </aside>
-      </section>
+      <article class="card materials-navigation-card">
+        <div class="card-header"><div><h2 class="card-title">Operación de materiales</h2><p class="card-subtitle">Selecciona la actividad que necesitas gestionar o consultar.</p></div></div>
+        <div class="card-body materials-navigation-grid">
+          <section class="materials-navigation-group" aria-labelledby="materialsSetupTitle"><h3 id="materialsSetupTitle">Configuración</h3><a class="btn btn-secondary" href="gestion-materiales.html">Catálogo de materiales</a><a class="btn btn-secondary" href="recetas-materiales.html">Recetas de materiales</a><a class="btn btn-secondary" href="gestion-proveedores.html">Proveedores</a><a class="btn btn-secondary" href="reglas-documentales.html">Reglas documentales</a></section>
+          <section class="materials-navigation-group" aria-labelledby="materialsOrderTitle"><h3 id="materialsOrderTitle">Pedidos e inventario</h3><a class="btn btn-primary" href="gestion-pedidos-materiales.html">Gestionar pedidos</a><a class="btn btn-secondary" href="inventario-materiales-finca.html">Inventario de materiales</a><a class="btn btn-secondary" href="movimientos-inventario.html">Movimientos de inventario</a><a class="btn btn-secondary" href="inventario-pallets.html">Inventario de pallets</a></section>
+          <section class="materials-navigation-group" aria-labelledby="materialsDeliveryTitle"><h3 id="materialsDeliveryTitle">Despacho y seguimiento</h3><a class="btn btn-secondary" href="ordenes-transporte-insumos.html">Órdenes de transporte</a><a class="btn btn-secondary" href="resumen-proveedores.html">Resumen para proveedores</a><a class="btn btn-secondary" href="seguimiento-entregas.html">Entregas y evidencias</a></section>
+        </div>
+      </article>
     `;
   }
 
@@ -528,18 +514,18 @@ const SIALMaterials = (() => {
       `;
     }
     const config = {
-      pedido: ["Nuevo pedido adicional", "Guardar pedido adicional", [["Semana de corte", "Semana 27 - 2026"], ["Finca", "Finca El Retiro"], ["Pedido base", "PED-071"], ["Motivo", "Necesidad extraordinaria de corte"]]],
-      supplier: ["Nuevo proveedor", "Guardar proveedor", [["Codigo", "PRV-NUE-01"], ["Nombre proveedor", "Proveedor externo"], ["Tipo", "Cartonera"], ["Contacto", "contacto@proveedor.example"]]],
-      rule: ["Nueva regla documental", "Guardar regla", [["Codigo", "DOC-NUE"], ["Nombre regla", "Regla de clasificacion"], ["Resultado", "RPT"], ["Condicion", "Pedido validado con stock disponible"]]]
+      pedido: ["Nuevo pedido adicional", "Guardar pedido adicional", "Relaciona la necesidad excepcional con el pedido base antes de enviarla a validación.", [["Semana de corte", "Semana 27 - 2026"], ["Finca", "Finca El Retiro"], ["Pedido base", "PED-071"], ["Motivo", "Necesidad extraordinaria de corte"]]],
+      supplier: ["Nuevo proveedor", "Guardar proveedor", "Registra los datos necesarios para coordinar resúmenes y entregas.", [["Codigo", "PRV-NUE-01"], ["Nombre proveedor", "Proveedor externo"], ["Tipo", "Cartonera"], ["Contacto", "contacto@proveedor.example"]]],
+      rule: ["Nueva regla documental", "Guardar regla", "Define la condición con la que se clasifica el documento logístico.", [["Codigo", "DOC-NUE"], ["Nombre regla", "Regla de clasificacion"], ["Resultado", "RPT"], ["Condicion", "Pedido validado con stock disponible"]]]
     }[kind];
     return `
       <div class="inline-form-panel materials-inline-form is-hidden" id="materialInlineForm" data-inline-form-panel>
-        <div class="form-heading"><h2 data-inline-form-title>${esc(config[0])}</h2><p>Formulario corto embebido para propuesta. No captura codigos autogenerados de sistema.</p></div>
+        <div class="form-heading"><h2 data-inline-form-title>${esc(config[0])}</h2><p>${esc(config[2])}</p></div>
         <div class="form-body">
           <div class="notice notice-success is-hidden" id="formOk">Registro listo para guardar.</div>
           <form data-material-form novalidate>
             <section class="section"><div class="grid">
-              ${config[2].map(([label, placeholder]) => `<div class="field span-3"><label class="label">${esc(label)} <span class="required">*</span></label><input class="input" required placeholder="${esc(placeholder)}"><div class="field-note">Dato obligatorio para la propuesta.</div></div>`).join("")}
+              ${config[3].map(([label, placeholder]) => `<div class="field span-3"><label class="label">${esc(label)} <span class="required">*</span></label><input class="input" required placeholder="${esc(placeholder)}"></div>`).join("")}
             </div></section>
             <div class="form-actions"><button class="btn btn-secondary" type="button" data-cancel-inline-form>Cancelar</button><button class="btn btn-primary" type="submit">${esc(config[1])}</button></div>
           </form>
@@ -565,24 +551,37 @@ const SIALMaterials = (() => {
   function renderView(view) {
     if (view === "dashboard") return dashboard();
     const map = {
-      pedidos: ["Pedidos de materiales", "Listado operativo con stock consultado, origen del pedido y documento logistico.", "pedidoCount", "pedidoSearch", "pedidoStatus", "pedidoContext", "Todos los tipos", contextByView.pedidos, ["Pedido", "Tipo", "Finca / semana", "Material / cantidad", "Stock consultado", "Documento", "Estado", "Auditoria"], orderRows(), "pedidos-materiales", '<button class="btn btn-primary" type="button" data-open-inline-form>Pedido adicional</button>', notice("Un pedido adicional debe asociarse a semana de corte, finca y motivo antes de entrar a validacion.", "warning") + inlineForm("pedido")],
-      inventario: ["Existencias de materiales", "Inventario por finca con saldo disponible, reservado y total informado.", "stockCount", "stockSearch", "stockStatus", "stockContext", "Todas las fincas", contextByView.inventario, ["Código SAP / finca", "Material", "Unidad", "Disponible", "Reservado", "Total", "Último movimiento / actualización"], stockRows(), "inventario-materiales", "", notice("El total es un saldo informado por el contrato de inventario; no se calcula en la interfaz. Use el detalle o el historial para revisar su origen.", "info")],
+      pedidos: ["Pedidos de materiales", "Listado operativo con stock consultado, origen del pedido y documento logistico.", "pedidoCount", "pedidoSearch", "pedidoStatus", "pedidoContext", "Todos los tipos", contextByView.pedidos, ["Pedido", "Tipo", "Finca / semana", "Material / cantidad", "Stock consultado", "Documento", "Estado", "Auditoria"], orderRows(), "pedidos-materiales", '<button class="btn btn-primary" type="button" data-open-inline-form>Pedido adicional</button>', "", "", inlineForm("pedido")],
+      inventario: ["Existencias de materiales", "Inventario por finca con saldo disponible, reservado y total informado.", "stockCount", "stockSearch", "stockStatus", "stockContext", "Todas las fincas", contextByView.inventario, ["Código SAP / finca", "Material", "Unidad", "Disponible", "Reservado", "Total", "Último movimiento / actualización"], stockRows(), "inventario-materiales", "", ""],
       pallets: ["Pallets completos e incompletos", "Inventario ZE para planificar cargue de contenedores y consolidacion posterior.", "palletCount", "palletSearch", "palletStatus", "palletContext", "Todos los tipos", contextByView.pallets, ["Referencia", "Tipo", "Finca origen", "Pallets", "Cajas restantes", "Destino", "Estado", "Auditoria"], palletRows(), "inventario-pallets", '<a class="btn btn-secondary" href="../pallets/armar-pallet.html">Ver flujo movil</a>', ""],
-      ordenes: ["Ordenes de transporte", "Ordenes de insumos con documento, vehiculo, finca destino y notificacion.", "transportCount", "transportSearch", "transportStatus", "transportContext", "Todos los documentos", contextByView.ordenes, ["Orden", "Documento", "Finca destino", "Vehiculo / conductor", "Materiales", "Estado", "Auditoria"], transportRows(), "ordenes-transporte-insumos", '<button class="btn btn-primary" type="button" data-material-action="notify-all">Notificar pendientes</button>', notice("La notificacion reemplaza archivos manuales y correos sueltos como mecanismo principal de coordinacion.", "info")],
+      ordenes: ["Ordenes de transporte", "Ordenes de insumos con documento, vehiculo, finca destino y notificacion.", "transportCount", "transportSearch", "transportStatus", "transportContext", "Todos los documentos", contextByView.ordenes, ["Orden", "Documento", "Finca destino", "Vehiculo / conductor", "Materiales", "Estado", "Auditoria"], transportRows(), "ordenes-transporte-insumos", '<button class="btn btn-primary" type="button" data-material-action="notify-all">Notificar pendientes</button>', ""],
       proveedores: ["Resumenes digitales", "Consolidacion por proveedor externo, periodo, materiales, destino y envio.", "summaryCount", "summarySearch", "summaryStatus", "summaryContext", "Todos los proveedores", contextByView.proveedores, ["Proveedor", "Periodo", "Ordenes", "Materiales / cantidades", "Destino", "Estado", "Generacion / envio"], summaryRows(), "resumen-proveedores", '<button class="btn btn-primary" type="button" data-material-action="generate-summary">Generar resumen</button>', ""],
-      entregas: ["Entregas y evidencias POD", "Seguimiento read-only de entrega efectiva, responsable, foto/firma y auditoria.", "deliveryCount", "deliverySearch", "deliveryStatus", "deliveryContext", "Todas las fincas", contextByView.entregas, ["Orden", "Documento", "Finca", "Transportista", "Recepcion", "Evidencia", "Estado", "Auditoria"], deliveryRows(), "seguimiento-entregas", '<a class="btn btn-secondary" href="../Trazabilidad/auditoria-operativa.html">Ver auditoria</a>', notice("El historial completo de inspecciones del contenedor se consulta en Seguridad / Auditoria operativa.", "info")],
+      entregas: ["Entregas y evidencias POD", "Seguimiento read-only de entrega efectiva, responsable, foto/firma y auditoria.", "deliveryCount", "deliverySearch", "deliveryStatus", "deliveryContext", "Todas las fincas", contextByView.entregas, ["Orden", "Documento", "Finca", "Transportista", "Recepcion", "Evidencia", "Estado", "Auditoria"], deliveryRows(), "seguimiento-entregas", '<a class="btn btn-secondary" href="../Trazabilidad/auditoria-operativa.html">Ver auditoria</a>', ""],
       materiales: ["Catálogo de materiales", "Maestra de materiales para consulta, creación, edición y cambio de estado.", "materialCount", "materialSearch", "materialStatus", "materialContext", "Todas las unidades", contextByView.materiales, ["Código SAP", "Nombre", "Unidad de medida", "Estado", "Auditoría"], materialRows(), "catalogo-materiales", '<button class="btn btn-primary" type="button" data-open-inline-form>Nuevo material</button>', notice("El catálogo identifica cada material. La cantidad sugerida por caja pertenece a la receta, no a esta maestra.", "info"), "", inlineForm("catalogo")],
-      movimientos: ["Historial de movimientos", "Entradas, salidas y ajustes; filtre por material, tipo de movimiento y rango de fechas.", "movementCount", "movementSearch", "movementStatus", "movementContext", "Todos los tipos", contextByView.movimientos, ["Movimiento / SAP", "Material", "Tipo", "Cantidad", "Fecha", "Motivo", "Usuario"], movementRows(), "movimientos-inventario", "", notice("Los movimientos son el historial operativo de las existencias; la propuesta no permite editar saldos directamente.", "info"), '<input class="input" id="movementDateFrom" type="date" aria-label="Fecha inicial"><input class="input" id="movementDateTo" type="date" aria-label="Fecha final">'],
-      recetas: ["Recetas por Referencia + Versión", "Cada receta define los materiales requeridos y la cantidad sugerida por caja.", "recipeCount", "recipeSearch", "recipeStatus", "recipeContext", "Todas las referencias", contextByView.recetas, ["Referencia", "Versión", "Materiales", "Cantidad sugerida por caja", "Estado", "Auditoría"], recipeRows(), "recetas-materiales", '<button class="btn btn-primary" type="button" data-open-inline-form>Nueva receta</button>', notice("La combinación Referencia + Versión identifica la receta. Puede agregar múltiples materiales sin asociar cantidades por pallet.", "info"), "", inlineForm("receta")],
-      proveedoresMaster: ["Proveedores registrados", "Maestra minima de proveedores externos para resumen digital.", "supplierCount", "supplierSearch", "supplierStatus", "supplierContext", "Todos los tipos", contextByView.proveedoresMaster, ["Codigo", "Proveedor", "Tipo", "Contacto", "Estado", "Auditoria"], supplierRows(), "proveedores", '<button class="btn btn-primary" type="button" data-open-inline-form>Nuevo proveedor</button>', inlineForm("supplier")],
-      reglas: ["Reglas documentales", "Clasificacion automatica para RPT, remision y reserva.", "ruleCount", "ruleSearch", "ruleStatus", "ruleContext", "Todos los resultados", contextByView.reglas, ["Codigo", "Regla", "Resultado", "Condicion", "Estado", "Auditoria"], ruleRows(), "reglas-documentales", '<button class="btn btn-primary" type="button" data-open-inline-form>Nueva regla</button>', inlineForm("rule")]
+      movimientos: ["Historial de movimientos", "Entradas, salidas y ajustes; filtre por material, tipo de movimiento y rango de fechas.", "movementCount", "movementSearch", "movementStatus", "movementContext", "Todos los tipos", contextByView.movimientos, ["Movimiento / SAP", "Material", "Tipo", "Cantidad", "Fecha", "Motivo", "Usuario"], movementRows(), "movimientos-inventario", "", "", '<input class="input" id="movementDateFrom" type="date" aria-label="Fecha inicial"><input class="input" id="movementDateTo" type="date" aria-label="Fecha final">'],
+      recetas: ["Recetas por Referencia + Versión", "Cada receta define los materiales requeridos y la cantidad sugerida por caja.", "recipeCount", "recipeSearch", "recipeStatus", "recipeContext", "Todas las referencias", contextByView.recetas, ["Referencia", "Versión", "Materiales", "Cantidad sugerida por caja", "Estado", "Auditoría"], recipeRows(), "recetas-materiales", '<button class="btn btn-primary" type="button" data-open-inline-form>Nueva receta</button>', "", "", inlineForm("receta")],
+      proveedoresMaster: ["Proveedores registrados", "Maestra minima de proveedores externos para resumen digital.", "supplierCount", "supplierSearch", "supplierStatus", "supplierContext", "Todos los tipos", contextByView.proveedoresMaster, ["Codigo", "Proveedor", "Tipo", "Contacto", "Estado", "Auditoria"], supplierRows(), "proveedores", '<button class="btn btn-primary" type="button" data-open-inline-form>Nuevo proveedor</button>', "", "", inlineForm("supplier")],
+      reglas: ["Reglas documentales", "Clasificacion automatica para RPT, remision y reserva.", "ruleCount", "ruleSearch", "ruleStatus", "ruleContext", "Todos los resultados", contextByView.reglas, ["Codigo", "Regla", "Resultado", "Condicion", "Estado", "Auditoria"], ruleRows(), "reglas-documentales", '<button class="btn btn-primary" type="button" data-open-inline-form>Nueva regla</button>', "", "", inlineForm("rule")]
     };
     const cfg = map[view];
+    const searchPlaceholder = {
+      pedidos: "Buscar pedido, finca, material o documento",
+      inventario: "Buscar material, código SAP o finca",
+      pallets: "Buscar referencia, finca o destino",
+      ordenes: "Buscar orden, documento, finca o vehículo",
+      proveedores: "Buscar proveedor, periodo o material",
+      entregas: "Buscar orden, documento o finca",
+      movimientos: "Buscar movimiento, material o usuario",
+      recetas: "Buscar referencia, versión o material",
+      proveedoresMaster: "Buscar proveedor, código o contacto",
+      reglas: "Buscar regla, código o resultado"
+    }[view];
     return header(view) + tableShell({
       title: cfg[0],
       subtitle: cfg[1],
       countId: cfg[2],
       searchId: cfg[3],
+      searchPlaceholder,
       statusId: cfg[4],
       contextId: cfg[5],
       contextLabel: cfg[6],
@@ -948,7 +947,8 @@ const SIALMaterials = (() => {
     SIALCore.initTableExport();
     SIALCore.initStateActionConfirm();
     if (["materiales", "recetas", "proveedoresMaster", "reglas", "pedidos"].includes(view)) {
-      SIALCore.initEmbeddedForm({ panel: "#materialInlineForm", openButton: "[data-open-inline-form]", cancelButton: "[data-cancel-inline-form]", title: "[data-inline-form-title]" });
+      const newTitle = { pedidos: "Nuevo pedido adicional", recetas: "Nueva receta", proveedoresMaster: "Nuevo proveedor", reglas: "Nueva regla" }[view];
+      SIALCore.initEmbeddedForm({ panel: "#materialInlineForm", openButton: "[data-open-inline-form]", cancelButton: "[data-cancel-inline-form]", title: "[data-inline-form-title]", ...(newTitle ? { newTitle } : {}) });
     }
     initActions();
     initSearchSelects();

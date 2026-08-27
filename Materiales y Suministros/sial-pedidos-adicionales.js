@@ -32,6 +32,7 @@ const SIALAdditionalOrders = (() => {
   ];
 
   const model = { lines: [{ material: materials[0].code, quantity: 0 }], reason: "", observation: "" };
+  const listState = { page: 1, pageSize: 10 };
 
   function savedRequests() {
     try {
@@ -63,8 +64,12 @@ const SIALAdditionalOrders = (() => {
     return `<span class="status ${cls}">${esc(value)}</span>`;
   }
 
-  function header(title, subtitle, action = "") {
-    return `<p class="page-eyebrow">Materiales / Pedidos adicionales</p><div class="page-header additional-page-header"><div><h1 class="page-title">${esc(title)}</h1><p class="page-subtitle">${esc(subtitle)}</p></div>${action}</div>`;
+  function header(title, subtitle, action = "", eyebrow = "Materiales / Pedidos adicionales") {
+    return `<p class="page-eyebrow">${esc(eyebrow)}</p><div class="page-header additional-page-header"><div><h1 class="page-title">${esc(title)}</h1><p class="page-subtitle">${esc(subtitle)}</p></div>${action}</div>`;
+  }
+
+  function returnToAdditionalOrders() {
+    return `<a class="btn btn-secondary" href="pedidos-adicionales.html">Volver a pedidos adicionales</a>`;
   }
 
   function deniedView() {
@@ -77,16 +82,18 @@ const SIALAdditionalOrders = (() => {
       <article class="card additional-list-card">
         <div class="card-header">
           <div><h2 class="card-title">Gestión de solicitudes</h2><p class="card-subtitle">Cada adicional conserva el pedido base, su motivo y el estado del procesamiento.</p></div>
-          <a class="btn btn-primary" href="pedidos-adicionales.html?nuevo=1&base=${esc(baseOrder.id)}">${icon(icons.add)} Nuevo pedido adicional</a>
+          <div class="card-actions"><span class="chip" data-additional-count>0 registros</span><a class="btn btn-primary" href="pedidos-adicionales.html?nuevo=1&base=${esc(baseOrder.id)}">${icon(icons.add)} Nuevo pedido adicional</a></div>
         </div>
-        <div class="additional-filter-bar">
-          <label class="search additional-search">${icon('<circle cx="11" cy="11" r="7"></circle><path d="m20 20-3.5-3.5"></path>')}<input id="additionalSearch" aria-label="Buscar pedidos adicionales" placeholder="Buscar pedido, finca, aviso o motivo" /></label>
+        <div class="card-body">
+          <div class="toolbar additional-list-toolbar">
+          <input class="input additional-search" id="additionalSearch" type="search" aria-label="Buscar pedidos adicionales" placeholder="Buscar pedido, finca, aviso o motivo" />
           <select class="select" id="additionalStatus" aria-label="Filtrar por estado"><option value="">Todos los estados</option><option>Pendiente de validación</option><option>Aprobado</option><option>En preparación</option><option>Entregado</option></select>
+          </div>
         </div>
-        <div class="table-wrap"><table class="materials-table additional-list-table"><thead><tr><th>Pedido adicional</th><th>Origen</th><th>Solicitud</th><th>Motivo</th><th>Documento</th><th>Estado</th><th>Última actualización</th><th>Acciones</th></tr></thead><tbody data-additional-list></tbody></table></div>
-        <div class="empty-state" data-additional-empty hidden><h3>Sin resultados</h3><p>Ajusta la búsqueda o el estado para consultar otras solicitudes.</p></div>
+        <div class="table-wrap"><table class="materials-table additional-list-table"><thead><tr><th>Pedido adicional</th><th>Pedido base</th><th>Solicitud</th><th>Motivo</th><th>Estado</th><th>Última actualización</th><th>Acciones</th></tr></thead><tbody data-additional-list></tbody></table></div>
+        <div class="card-body" data-additional-empty-wrap hidden><div class="empty-state" data-additional-empty><h3>Sin resultados</h3><p>Ajusta la búsqueda o el estado para consultar otras solicitudes.</p></div></div>
+        <div class="table-pagination" data-additional-pagination aria-label="Paginación de pedidos adicionales"></div>
       </article>
-      <div class="notice notice-info additional-scope-note" role="note"><div><strong>Continuidad del flujo</strong><span>La clasificación en RPT, remisión o reserva ocurre después de validar el pedido y pertenece a la HU667.</span></div></div>
     `;
   }
 
@@ -99,18 +106,48 @@ const SIALAdditionalOrders = (() => {
       const haystack = [item.id, item.base, item.notice, item.farm, item.reason].join(" ").toLowerCase();
       return (!term || haystack.includes(term)) && (!selected || item.status === selected);
     });
-    body.innerHTML = visible.map((item) => `<tr>
+    const total = visible.length;
+    const totalPages = Math.max(1, Math.ceil(total / listState.pageSize));
+    listState.page = Math.min(Math.max(listState.page, 1), totalPages);
+    const startIndex = (listState.page - 1) * listState.pageSize;
+    const pageItems = visible.slice(startIndex, startIndex + listState.pageSize);
+    const start = total === 0 ? 0 : startIndex + 1;
+    const end = Math.min(startIndex + listState.pageSize, total);
+    const count = qs("[data-additional-count]");
+    const emptyWrap = qs("[data-additional-empty-wrap]");
+    if (count) count.textContent = `${start}-${end} de ${total} registros`;
+    body.innerHTML = pageItems.map((item) => `<tr>
       <td><div class="materials-record-main"><strong>${esc(item.id)}</strong><span>Adicional ${esc(item.sequence)} de ${esc(item.week)}</span></div></td>
       <td><div class="materials-record-main"><strong>${esc(item.base)}</strong><span>${esc(item.notice)} · ${esc(item.farm)}</span></div></td>
       <td><strong>${esc(item.lines)} ${item.lines === 1 ? "material" : "materiales"}</strong><br><span class="muted">${esc(item.quantity)}</span></td>
-      <td>${esc(item.reason)}</td><td>${esc(item.document)}</td><td>${statusChip(item.status)}</td><td>${esc(item.updated)}</td>
-      <td><a class="btn btn-secondary btn-small" href="pedidos-adicionales.html?pedido=${encodeURIComponent(item.id)}">${icon(icons.eye)} Consultar</a></td>
+      <td>${esc(item.reason)}</td><td>${statusChip(item.status)}</td><td class="muted">${esc(item.updated)}</td>
+      <td><div class="row-actions"><a class="icon-btn" href="pedidos-adicionales.html?pedido=${encodeURIComponent(item.id)}" aria-label="Consultar ${esc(item.id)}">${icon(icons.eye)}</a></div></td>
     </tr>`).join("");
-    qs("[data-additional-empty]").hidden = visible.length > 0;
+    const empty = qs("[data-additional-empty]");
+    if (empty) { empty.hidden = visible.length > 0; empty.classList.toggle("show", visible.length === 0); }
+    if (emptyWrap) emptyWrap.hidden = visible.length > 0;
+    const pagination = qs("[data-additional-pagination]");
+    if (pagination) {
+      const visiblePages = Array.from({ length: totalPages }, (_, index) => index + 1)
+        .filter((item) => totalPages <= 5 || Math.abs(item - listState.page) <= 2 || item === 1 || item === totalPages);
+      const pageButtons = visiblePages.reduce((markup, item, index, items) => {
+        const gap = index > 0 && item - items[index - 1] > 1 ? '<span class="pagination-gap" aria-hidden="true">…</span>' : "";
+        const active = item === listState.page;
+        return `${markup}${gap}<button class="pagination-btn${active ? " active" : ""}" type="button" data-additional-page="${item}"${active ? ' aria-current="page"' : ""}>${item}</button>`;
+      }, "");
+      pagination.innerHTML = `<div class="pagination-summary" aria-live="polite">Mostrando ${start}-${end} de ${total} registros</div><label class="pagination-size"><span>Registros por página</span><select class="select" data-additional-page-size aria-label="Registros por página"><option value="10" ${listState.pageSize === 10 ? "selected" : ""}>10</option><option value="30" ${listState.pageSize === 30 ? "selected" : ""}>30</option><option value="50" ${listState.pageSize === 50 ? "selected" : ""}>50</option></select></label><div class="pagination-pages" aria-label="Cambiar página"><button class="pagination-btn" type="button" data-additional-page="${listState.page - 1}" ${listState.page <= 1 ? "disabled" : ""}>Anterior</button>${pageButtons}<button class="pagination-btn" type="button" data-additional-page="${listState.page + 1}" ${listState.page >= totalPages ? "disabled" : ""}>Siguiente</button></div>`;
+    }
   }
 
   function sourceChain() {
     return `<div class="additional-chain" aria-label="Cadena de origen del pedido"><div><span>Aviso de corte</span><strong>${esc(baseOrder.notice)}</strong></div><i aria-hidden="true">→</i><div><span>Pedido base</span><strong>${esc(baseOrder.id)}</strong></div><i aria-hidden="true">→</i><div class="is-current"><span>Nueva solicitud</span><strong>Adicional ${nextSequence()} · ${esc(baseOrder.week)}</strong></div></div>`;
+  }
+
+  function sourceContext() {
+    return `<section class="additional-source-context" aria-labelledby="additional-source-title">
+      <header class="additional-source-header"><div><span class="additional-section-kicker">Pedido base</span><h2 id="additional-source-title" class="card-title">${esc(baseOrder.id)}</h2><p class="card-subtitle">Esta solicitud conserva el origen del pedido semanal para su validación.</p></div><span class="status status-active">${esc(baseOrder.status)}</span></header>
+      <dl class="additional-source-details"><div><dt>Aviso de corte</dt><dd>${esc(baseOrder.notice)}</dd></div><div><dt>Finca</dt><dd>${esc(baseOrder.farm)}</dd></div><div><dt>Referencia</dt><dd>${esc(baseOrder.reference)}</dd></div><div><dt>Semana</dt><dd>${esc(baseOrder.week)}</dd></div></dl>
+    </section>`;
   }
 
   function materialOptions(selected, index) {
@@ -131,23 +168,27 @@ const SIALAdditionalOrders = (() => {
   }
 
   function createView() {
-    if (params.get("base") && params.get("base") !== baseOrder.id) return `${header("Nuevo pedido adicional", "La solicitud debe partir de un pedido válido.")}<div class="notice notice-error" role="alert"><div><strong>Pedido base no disponible</strong><span>No existe información para mostrar dentro de tu alcance autorizado.</span></div></div><a class="btn btn-secondary mt-24" href="pedidos-adicionales.html">Volver a la bandeja</a>`;
+    if (params.get("base") && params.get("base") !== baseOrder.id) return `${header("Nuevo pedido adicional", "La solicitud debe partir de un pedido válido.", returnToAdditionalOrders(), "Materiales / Pedidos adicionales / Registro")}<div class="notice notice-error" role="alert"><div><strong>Pedido base no disponible</strong><span>No existe información para mostrar dentro de tu alcance autorizado.</span></div></div>`;
     loadDraft();
     return `
-      <a class="additional-back" href="pedidos-adicionales.html">${icon(icons.arrow)} Volver a pedidos adicionales</a>
-      ${header("Nuevo pedido adicional", "Registra solo la necesidad que no quedó cubierta por el pedido semanal.")}
-      <div class="notice notice-info additional-create-note" role="note"><div><strong>Solicitud vinculada al corte actual</strong><span>Ya existen ${requests().filter((item) => item.base === baseOrder.id && item.week === baseOrder.week).length} pedidos adicionales esta semana. La HU no define un máximo automático; cada solicitud conserva su propio motivo, actor y trazabilidad.</span></div></div>
-      <form class="card additional-create-card" data-additional-form novalidate>
-        ${sourceChain()}
-        <div class="additional-context"><div><span>Finca</span><strong>${esc(baseOrder.farm)}</strong></div><div><span>Referencia</span><strong>${esc(baseOrder.reference)}</strong></div><div><span>Pedido base</span><strong>${esc(baseOrder.status)}</strong></div><div><span>Responsable</span><strong>QA Materiales · Web</strong></div></div>
-        <div class="card-header additional-lines-head"><div><h2 class="card-title">Materiales adicionales</h2><p class="card-subtitle">La cantidad se contrasta con el stock visible; los faltantes no se aprueban automáticamente.</p></div><button class="btn btn-secondary" type="button" data-add-line ${model.lines.length >= materials.length ? "disabled" : ""}>${icon(icons.add)} Agregar material</button></div>
-        <div class="table-wrap"><table class="materials-table additional-lines-table"><thead><tr><th>Material</th><th>Pedido base</th><th>Stock visible</th><th>Cantidad adicional</th><th>Validación</th><th></th></tr></thead><tbody data-additional-lines></tbody></table></div>
-        <div class="additional-reason-grid">
-          <div><h2 class="card-title">Motivo de la solicitud</h2><p class="card-subtitle">Explica por qué la necesidad no quedó cubierta en el pedido base.</p></div>
-          <div class="field"><label class="label" for="additionalReason">Motivo</label><select class="select" id="additionalReason" required><option value="">Seleccionar motivo</option><option value="incremento-corte">Incremento extraordinario del corte</option><option value="inventario">Diferencia de inventario</option><option value="entrega-incompleta">Entrega incompleta del proveedor</option><option value="dano">Material dañado o no utilizable</option><option value="otro">Otra necesidad operativa</option></select><span class="field-error" data-reason-error hidden>Selecciona el motivo de la solicitud.</span></div>
-          <div class="field"><label class="label" for="additionalObservation">Detalle <span class="adjust-optional">(opcional)</span></label><textarea class="input additional-textarea" id="additionalObservation" rows="3" placeholder="Agrega información útil para la validación."></textarea></div>
-        </div>
-        <div class="additional-review"><div data-additional-summary aria-live="polite"></div><div class="card-actions"><button class="btn btn-secondary" type="button" data-save-draft>Guardar borrador</button><button class="btn btn-primary" type="submit" data-submit-additional>Enviar a validación</button></div></div>
+      ${header("Nuevo pedido adicional", "Registra solo la necesidad que no quedó cubierta por el pedido semanal.", returnToAdditionalOrders(), "Materiales / Pedidos adicionales / Registro")}
+      <form class="card additional-form" data-additional-form novalidate>
+        ${sourceContext()}
+        <section class="additional-form-section additional-materials-section" aria-labelledby="additional-materials-title">
+          <header class="additional-section-header"><div><h2 id="additional-materials-title" class="card-title">Materiales solicitados</h2><p class="card-subtitle">Indica únicamente los materiales y cantidades que no cubrió el pedido base.</p></div><button class="btn btn-secondary" type="button" data-add-line ${model.lines.length >= materials.length ? "disabled" : ""}>${icon(icons.add)} Agregar material</button></header>
+          <div class="additional-material-lines" data-additional-lines></div>
+        </section>
+        <section class="additional-form-section additional-reason-section" aria-labelledby="additional-reason-title">
+          <header class="additional-section-header"><div><h2 id="additional-reason-title" class="card-title">Motivo y detalle</h2><p class="card-subtitle">Explica por qué esta necesidad no quedó cubierta por el pedido base.</p></div></header>
+          <div class="additional-reason-fields">
+            <div class="field"><label class="label" for="additionalReason">Motivo de la solicitud</label><select class="select" id="additionalReason" required><option value="">Seleccionar motivo</option><option value="incremento-corte">Incremento extraordinario del corte</option><option value="inventario">Diferencia de inventario</option><option value="entrega-incompleta">Entrega incompleta del proveedor</option><option value="dano">Material dañado o no utilizable</option><option value="otro">Otra necesidad operativa</option></select><span class="field-error" data-reason-error hidden>Selecciona el motivo de la solicitud.</span></div>
+            <div class="field"><label class="label" for="additionalObservation">Detalle <span class="additional-optional">Opcional</span></label><textarea class="input additional-textarea" id="additionalObservation" rows="3" placeholder="Agrega información útil para la validación."></textarea></div>
+          </div>
+        </section>
+        <footer class="form-actions additional-submit-bar" aria-label="Acciones del pedido adicional">
+          <div class="additional-submit-status" data-additional-summary aria-live="polite"></div>
+          <div class="additional-submit-actions"><button class="btn btn-secondary" type="button" data-save-draft>Guardar borrador</button><button class="btn btn-primary" type="submit" data-submit-additional>Enviar a validación</button></div>
+        </footer>
       </form>
       <div class="notice notice-success material-runtime-alert" data-additional-feedback hidden><span data-additional-feedback-message></span></div>
     `;
@@ -168,7 +209,7 @@ const SIALAdditionalOrders = (() => {
     if (!body) return;
     body.innerHTML = model.lines.map((line, index) => {
       const material = materials.find((item) => item.code === line.material) || materials[0];
-      return `<tr><td><label class="label additional-cell-label" for="lineMaterial${index}">Material</label><select class="select" id="lineMaterial${index}" data-line-material="${index}">${materialOptions(line.material, index)}</select><small>${esc(material.code)} · ${esc(material.unit)}</small></td><td class="additional-number"><strong>${format(material.base)}</strong><span>${esc(material.unit)}</span></td><td class="additional-number"><strong>${format(material.stock)}</strong><span>${esc(material.unit)}</span></td><td><input class="input additional-quantity" aria-label="Cantidad adicional de ${esc(material.name)}" type="number" min="1" step="1" inputmode="numeric" value="${line.quantity || ""}" data-line-quantity="${index}" /></td><td class="additional-line-result">${resultMarkup(lineResult(line))}</td><td><button class="icon-btn additional-remove" type="button" aria-label="Quitar ${esc(material.name)}" data-remove-line="${index}" ${model.lines.length === 1 ? "disabled" : ""}>${icon(icons.trash)}</button></td></tr>`;
+      return `<article class="additional-material-line"><div class="additional-material-line-main"><div class="field additional-material-field"><label class="label" for="lineMaterial${index}">Material</label><select class="select" id="lineMaterial${index}" data-line-material="${index}">${materialOptions(line.material, index)}</select><small>${esc(material.code)} · ${esc(material.unit)}</small><dl class="additional-material-facts"><div><dt>Pedido base</dt><dd>${format(material.base)} ${esc(material.unit)}</dd></div><div><dt>Stock visible</dt><dd>${format(material.stock)} ${esc(material.unit)}</dd></div></dl></div><div class="field additional-quantity-field"><label class="label" for="lineQuantity${index}">Cantidad adicional</label><input class="input additional-quantity" id="lineQuantity${index}" aria-label="Cantidad adicional de ${esc(material.name)}" type="number" min="1" step="1" inputmode="numeric" value="${line.quantity || ""}" data-line-quantity="${index}" /><div class="additional-line-result">${resultMarkup(lineResult(line))}</div></div><button class="icon-btn additional-remove" type="button" aria-label="Quitar ${esc(material.name)}" data-remove-line="${index}" ${model.lines.length === 1 ? "disabled" : ""}>${icon(icons.trash)}</button></div></article>`;
     }).join("");
   }
 
@@ -217,13 +258,12 @@ const SIALAdditionalOrders = (() => {
 
   function detailView(id) {
     const item = requests().find((request) => request.id === id);
-    if (!item) return `${header("Consultar pedido adicional", "La solicitud debe estar dentro de tu alcance.")}<div class="notice notice-error" role="alert"><div><strong>Pedido no disponible</strong><span>No existe información para mostrar dentro de tu compañía y fincas autorizadas.</span></div></div><a class="btn btn-secondary mt-24" href="pedidos-adicionales.html">Volver a la bandeja</a>`;
+    if (!item) return `${header("Consultar pedido adicional", "La solicitud debe estar dentro de tu alcance.", returnToAdditionalOrders(), "Materiales / Pedidos adicionales / Detalle")}<div class="notice notice-error" role="alert"><div><strong>Pedido no disponible</strong><span>No existe información para mostrar dentro de tu compañía y fincas autorizadas.</span></div></div>`;
     const created = params.get("creado") === "1";
     const steps = timeline(item.status);
     const lines = item.detailLines || [{ name: item.quantity, code: "Detalle consolidado", unit: "", quantity: "—", stock: "—" }];
     return `
-      <a class="additional-back" href="pedidos-adicionales.html">${icon(icons.arrow)} Volver a pedidos adicionales</a>
-      ${header(item.id, "Consulta el origen, la validación y los hitos posteriores de la solicitud.", statusChip(item.status))}
+      ${header(item.id, "Consulta el origen, la validación y los hitos posteriores de la solicitud.", `<div class="card-actions">${statusChip(item.status)}${returnToAdditionalOrders()}</div>`, "Materiales / Pedidos adicionales / Detalle")}
       ${created ? `<div class="notice notice-success additional-created" role="status">${icon(icons.check)}<div><strong>Pedido adicional registrado</strong><span>La solicitud se creó una sola vez y quedó pendiente de validación.</span></div></div>` : ""}
       <article class="card additional-detail-card">
         <div class="additional-chain" aria-label="Cadena de origen del pedido"><div><span>Aviso de corte</span><strong>${esc(item.notice)}</strong></div><i aria-hidden="true">→</i><div><span>Pedido base</span><strong>${esc(item.base)}</strong></div><i aria-hidden="true">→</i><div class="is-current"><span>Pedido adicional</span><strong>${esc(item.id)}</strong></div></div>
@@ -250,8 +290,21 @@ const SIALAdditionalOrders = (() => {
   }
 
   function bindList() {
-    qs("#additionalSearch")?.addEventListener("input", renderList);
-    qs("#additionalStatus")?.addEventListener("change", renderList);
+    qs("#additionalSearch")?.addEventListener("input", () => { listState.page = 1; renderList(); });
+    qs("#additionalStatus")?.addEventListener("change", () => { listState.page = 1; renderList(); });
+    qs("[data-additional-pagination]")?.addEventListener("click", (event) => {
+      const page = event.target.closest("[data-additional-page]");
+      if (!page || page.disabled) return;
+      listState.page = Number(page.dataset.additionalPage) || 1;
+      renderList();
+    });
+    qs("[data-additional-pagination]")?.addEventListener("change", (event) => {
+      const size = event.target.closest("[data-additional-page-size]");
+      if (!size) return;
+      listState.pageSize = Number(size.value) || 10;
+      listState.page = 1;
+      renderList();
+    });
     renderList();
   }
 

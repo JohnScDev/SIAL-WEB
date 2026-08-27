@@ -56,9 +56,7 @@ const SIALSuggestedOrder = (() => {
       <p class="page-eyebrow">Materiales / Pedidos</p>
       <div class="page-header suggest-page-header">
         <div><h1 class="page-title">Pedido sugerido por finca</h1><p class="page-subtitle">Calcula la necesidad de materiales desde el aviso de corte, la receta vigente y el inventario disponible.</p></div>
-        <a class="btn btn-secondary" href="pedidos-adicionales.html">Pedidos adicionales</a>
       </div>
-      <div class="notice notice-info" role="note">Web: genera y consulta el pedido sugerido. Móvil solo consulta el resultado cuando el rol de campo lo necesita; no duplica este cálculo.</div>
 
       <article class="card suggest-selector-card">
         <div class="card-header">
@@ -187,7 +185,7 @@ const SIALSuggestedOrder = (() => {
   }
 
   function deniedShell() {
-    return `<p class="page-eyebrow">Materiales / Pedidos</p><div class="page-header"><div><h1 class="page-title">Pedido sugerido por finca</h1><p class="page-subtitle">Consulta restringida al alcance de tu usuario.</p></div></div><div class="notice notice-error suggest-state" role="alert"><div><strong>Sin acceso</strong><span>No existe información disponible dentro de tu compañía y fincas autorizadas.</span></div></div><a class="btn btn-secondary mt-24" href="index.html">Volver a Materiales</a>`;
+    return `<p class="page-eyebrow">Materiales / Pedidos</p><div class="page-header"><div><h1 class="page-title">Pedido sugerido por finca</h1><p class="page-subtitle">Consulta restringida al alcance de tu usuario.</p></div><div class="card-actions"><a class="btn btn-secondary" href="index.html">Volver a materiales</a></div></div><div class="notice notice-error suggest-state" role="alert"><div><strong>Sin acceso</strong><span>No existe información disponible dentro de tu compañía y fincas autorizadas.</span></div></div>`;
   }
 
   function init() {

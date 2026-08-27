@@ -34,15 +34,15 @@ const SIALOrderAdjustment = (() => {
   };
 
   function deniedShell() {
-    return `<p class="page-eyebrow">Materiales / Pedidos</p><div class="page-header"><div><h1 class="page-title">Revisar cantidades del pedido</h1><p class="page-subtitle">Consulta restringida al alcance de tu usuario.</p></div></div><div class="notice notice-error adjust-denied" role="alert"><div><strong>Pedido no disponible</strong><span>No existe información para mostrar dentro de tu compañía y fincas autorizadas.</span></div></div><a class="btn btn-secondary mt-24" href="gestion-pedidos-materiales.html">Volver a Pedidos</a>`;
+    return `<p class="page-eyebrow">Materiales / Pedidos</p><div class="page-header"><div><h1 class="page-title">Revisar cantidades del pedido</h1><p class="page-subtitle">Consulta restringida al alcance de tu usuario.</p></div><div class="card-actions"><a class="btn btn-secondary" href="gestion-pedidos-materiales.html">Volver a pedidos</a></div></div><div class="notice notice-error adjust-denied" role="alert"><div><strong>Pedido no disponible</strong><span>No existe información para mostrar dentro de tu compañía y fincas autorizadas.</span></div></div>`;
   }
 
   function shell() {
     return `
-      <a class="adjust-back" href="gestion-pedidos-materiales.html">${icon(icons.arrow)} Volver a Pedidos</a>
+      <p class="page-eyebrow">Materiales / Pedidos</p>
       <div class="page-header adjust-page-header">
-        <div><p class="page-eyebrow">Materiales / Pedidos</p><h1 class="page-title">Revisar cantidades del pedido</h1><p class="page-subtitle">Compara el sugerido, ajusta lo necesario y deja el motivo antes de confirmar.</p></div>
-        <span class="status status-warning" data-adjust-order-status>Pendiente de revisión</span>
+        <div><h1 class="page-title">Revisar cantidades del pedido</h1><p class="page-subtitle">Compara el sugerido, ajusta lo necesario y deja el motivo antes de confirmar.</p></div>
+        <div class="card-actions"><span class="status status-warning" data-adjust-order-status>Pendiente de revisión</span><a class="btn btn-secondary" href="gestion-pedidos-materiales.html">Volver a pedidos</a></div>
       </div>
 
       <div class="notice notice-warning adjust-rule-notice" role="alert">${icon(icons.alert)}<div><strong>Regla de ajuste pendiente</strong><span>La matriz oficial de tolerancias, el tratamiento del sugerido cero y el aprobador aún no están publicados. Esta propuesta bloquea cualquier cambio de cantidad hasta que exista esa configuración.</span></div></div>
