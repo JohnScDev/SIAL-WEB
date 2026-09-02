@@ -1,0 +1,378 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>SIAL | Alertas de contactos</title>
+    <script>
+      (function () {
+        const t = localStorage.getItem("sial-theme"),
+          d = matchMedia("(prefers-color-scheme: dark)").matches;
+        document.documentElement.dataset.theme = t || (d ? "dark" : "light");
+      })();
+    </script>
+    <link rel="stylesheet" href="gestion-alertas-contactos.css" />
+  </head>
+  <body data-view-family="gestion">
+    <div class="app-shell">
+      <aside class="sidebar" aria-label="Navegación principal">
+        <div class="brand">
+          <span class="brand-badge">S</span><span>SIAL</span>
+        </div>
+        <p class="menu-caption">Empresa</p>
+        <nav data-nav></nav>
+      </aside>
+      <header class="header">
+        <div class="header-left">
+          <button class="icon-btn" type="button" aria-label="Abrir menú">
+            <svg class="icon" viewBox="0 0 24 24">
+              <path d="M4 7h16M4 12h16M4 17h16" />
+            </svg></button
+          ><label class="search"
+            ><svg class="icon" viewBox="0 0 24 24">
+              <circle cx="11" cy="11" r="7" />
+              <path d="m20 20-3.5-3.5" /></svg
+            ><input placeholder="Buscar..." aria-label="Búsqueda principal"
+          /></label>
+        </div>
+        <div class="header-right">
+          <button
+            class="icon-btn theme-toggle"
+            type="button"
+            data-theme-toggle
+            aria-label="Cambiar tema"
+          >
+            <svg class="icon" viewBox="0 0 24 24">
+              <circle cx="12" cy="12" r="4" />
+              <path d="M12 2v2M12 20v2M2 12h2M20 12h2" />
+            </svg></button
+          ><span class="avatar">QA</span>
+        </div>
+      </header>
+      <main class="main">
+        <section class="page">
+          <p class="page-eyebrow">Empresa / Contactos</p>
+          <div class="page-header">
+            <div>
+              <h1 class="page-title">Alertas por contacto</h1>
+              <p class="page-subtitle">
+                Consulta y administra las alertas que recibe cada contacto
+                activo por finca.
+              </p>
+            </div>
+          </div>
+          <article class="card">
+            <div class="card-header">
+              <div>
+                <h2 class="card-title">Contactos y alertas</h2>
+                <p class="card-subtitle">
+                  Gestiona las alertas de un contacto dentro de esta misma
+                  bandeja.
+                </p>
+              </div>
+              <div class="card-actions">
+                <span class="chip" id="count">1–3 de 3 registros</span>
+              </div>
+            </div>
+            <div class="card-body">
+              <div class="toolbar">
+                <input
+                  class="input"
+                  id="search"
+                  type="search"
+                  placeholder="Buscar contacto, correo o alerta"
+                  aria-label="Buscar contacto, correo o alerta"
+                /><select class="select" id="farm">
+                  <option value="all">Todas las fincas</option>
+                  <option value="rosario">Finca El Rosario</option>
+                  <option value="palma">Finca La Palma</option></select
+                ><select class="select" id="alert">
+                  <option value="all">Todas las alertas</option>
+                  <option value="corte">Aviso de corte nuevo</option>
+                  <option value="calidad">Resultado de calidad</option>
+                  <option value="despacho">Despacho programado</option></select
+                ><select class="select" id="state">
+                  <option value="all">Todos los estados</option>
+                  <option value="assigned">Con alertas</option>
+                  <option value="unassigned">Sin alertas</option>
+                </select>
+              </div>
+            </div>
+            <div class="inline-form-panel is-hidden" id="editor">
+              <div class="form-heading">
+                <div>
+                  <h3 class="card-title">Gestionar alertas</h3>
+                  <p id="context"></p>
+                </div>
+              </div>
+              <form class="form-body" id="form">
+                <fieldset class="alert-list">
+                  <legend>Alertas activas para este contacto</legend>
+                  <label class="alert-row"
+                    ><input type="checkbox" value="corte" /><span
+                      ><strong>Aviso de corte nuevo</strong
+                      ><small
+                        >Generación de un aviso para la finca.</small
+                      ></span
+                    ></label
+                  ><label class="alert-row"
+                    ><input type="checkbox" value="calidad" /><span
+                      ><strong>Resultado de calidad</strong
+                      ><small
+                        >Disponibilidad de resultados asociados a la
+                        finca.</small
+                      ></span
+                    ></label
+                  ><label class="alert-row"
+                    ><input type="checkbox" value="despacho" /><span
+                      ><strong>Despacho programado</strong
+                      ><small
+                        >Programación de despacho correspondiente.</small
+                      ></span
+                    ></label
+                  >
+                </fieldset>
+                <div class="form-actions">
+                  <button class="btn btn-ghost" id="cancel" type="button">
+                    Cancelar</button
+                  ><button class="btn btn-primary" type="submit">
+                    Guardar alertas
+                  </button>
+                </div>
+              </form>
+            </div>
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Contacto</th>
+                    <th>Empresa/Finca</th>
+                    <th>Correo</th>
+                    <th>Alertas activas</th>
+                    <th>Estado</th>
+                    <th>Acciones</th>
+                  </tr>
+                </thead>
+                <tbody id="rows">
+                  <tr
+                    data-id="maria"
+                    data-farm="rosario"
+                    data-alerts="corte calidad despacho"
+                  >
+                    <td>
+                      <strong>MARÍA FERNANDA LÓPEZ</strong>
+                      <div class="muted">ADMINISTRADORA FINCA</div>
+                    </td>
+                    <td>Finca El Rosario</td>
+                    <td>mlopez@fincaelrosario.com</td>
+                    <td data-summary>
+                      Aviso de corte nuevo, Resultado de calidad, Despacho
+                      programado
+                    </td>
+                    <td>
+                      <span class="status status-active">Con alertas</span>
+                    </td>
+                    <td>
+                      <div class="row-actions">
+                        <button
+                          class="icon-btn manage"
+                          type="button"
+                          aria-label="Gestionar alertas de María Fernanda López"
+                          title="Gestionar alertas"
+                        >
+                          <svg
+                            class="icon"
+                            viewBox="0 0 24 24"
+                            aria-hidden="true"
+                          >
+                            <path
+                              d="M15 17h5l-1.4-1.4A2 2 0 0 1 18 14.2V11a6 6 0 1 0-12 0v3.2a2 2 0 0 1-.6 1.4L4 17h5"
+                            ></path>
+                            <path d="M10 17a2 2 0 0 0 4 0"></path>
+                          </svg>
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr
+                    data-id="andres"
+                    data-farm="rosario"
+                    data-alerts="calidad"
+                  >
+                    <td>
+                      <strong>ANDRÉS MEJÍA</strong>
+                      <div class="muted">SUPERVISOR DE CAMPO</div>
+                    </td>
+                    <td>Finca El Rosario</td>
+                    <td>amejia@fincaelrosario.com</td>
+                    <td data-summary>Resultado de calidad</td>
+                    <td>
+                      <span class="status status-active">Con alertas</span>
+                    </td>
+                    <td>
+                      <div class="row-actions">
+                        <button
+                          class="icon-btn manage"
+                          type="button"
+                          aria-label="Gestionar alertas de Andrés Mejía"
+                          title="Gestionar alertas"
+                        >
+                          <svg
+                            class="icon"
+                            viewBox="0 0 24 24"
+                            aria-hidden="true"
+                          >
+                            <path
+                              d="M15 17h5l-1.4-1.4A2 2 0 0 1 18 14.2V11a6 6 0 1 0-12 0v3.2a2 2 0 0 1-.6 1.4L4 17h5"
+                            ></path>
+                            <path d="M10 17a2 2 0 0 0 4 0"></path>
+                          </svg>
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr
+                    data-id="diana"
+                    data-farm="palma"
+                    data-alerts="corte despacho"
+                  >
+                    <td>
+                      <strong>DIANA TORRES</strong>
+                      <div class="muted">COORDINADORA DE CALIDAD</div>
+                    </td>
+                    <td>Finca La Palma</td>
+                    <td>dtorres@lapalma.com</td>
+                    <td data-summary>
+                      Aviso de corte nuevo, Despacho programado
+                    </td>
+                    <td>
+                      <span class="status status-active">Con alertas</span>
+                    </td>
+                    <td>
+                      <div class="row-actions">
+                        <button
+                          class="icon-btn manage"
+                          type="button"
+                          aria-label="Gestionar alertas de Diana Torres"
+                          title="Gestionar alertas"
+                        >
+                          <svg
+                            class="icon"
+                            viewBox="0 0 24 24"
+                            aria-hidden="true"
+                          >
+                            <path
+                              d="M15 17h5l-1.4-1.4A2 2 0 0 1 18 14.2V11a6 6 0 1 0-12 0v3.2a2 2 0 0 1-.6 1.4L4 17h5"
+                            ></path>
+                            <path d="M10 17a2 2 0 0 0 4 0"></path>
+                          </svg>
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="table-pagination">
+              <div class="pagination-summary" id="summary">
+                Mostrando 1–3 de 3 registros
+              </div>
+              <div class="pagination-size">
+                <span>Registros por página</span
+                ><select class="select" aria-label="Registros por página">
+                  <option>10</option>
+                </select>
+              </div>
+              <div class="pagination-pages">
+                <button class="pagination-btn" disabled>Anterior</button
+                ><button class="pagination-btn active">1</button
+                ><button class="pagination-btn" disabled>Siguiente</button>
+              </div>
+            </div>
+            <div class="card-body">
+              <div class="empty-state" id="empty">
+                No hay contactos que coincidan con los filtros.
+              </div>
+            </div>
+          </article>
+        </section>
+      </main>
+    </div>
+    <script src="../shared/sial-core.js"></script>
+    <script src="sial-empresas.js"></script>
+    <script>
+      SIAL.applyShell("contactos");
+      const q = (s) => document.querySelector(s),
+        rows = [...document.querySelectorAll("#rows tr")],
+        labels = {
+          corte: "Aviso de corte nuevo",
+          calidad: "Resultado de calidad",
+          despacho: "Despacho programado",
+        };
+      let row;
+      function filter() {
+        const s = q("#search").value.toLowerCase(),
+          f = q("#farm").value,
+          a = q("#alert").value,
+          st = q("#state").value;
+        let n = 0;
+        rows.forEach((r) => {
+          const has = !!r.dataset.alerts.trim(),
+            ok =
+              (!s || r.textContent.toLowerCase().includes(s)) &&
+              (f === "all" || r.dataset.farm === f) &&
+              (a === "all" || r.dataset.alerts.includes(a)) &&
+              (st === "all" || (st === "assigned") === has);
+          r.classList.toggle("is-hidden", !ok);
+          if (ok) n++;
+        });
+        q("#count").textContent = n
+          ? "1–" + n + " de " + n + " registros"
+          : "0 registros";
+        q("#summary").textContent = n
+          ? "Mostrando 1–" + n + " de " + n + " registros"
+          : "Sin registros";
+        q("#empty").classList.toggle("show", !n);
+      }
+      ["#search", "#farm", "#alert", "#state"].forEach((x) =>
+        q(x).addEventListener(x === "#search" ? "input" : "change", filter),
+      );
+      document.querySelectorAll(".manage").forEach(
+        (b) =>
+          (b.onclick = () => {
+            row = b.closest("tr");
+            q("#context").textContent =
+              row.cells[0].innerText.replace("\n", " · ") +
+              " · " +
+              row.cells[1].innerText;
+            const set = row.dataset.alerts.split(" ");
+            document
+              .querySelectorAll("#editor input")
+              .forEach((x) => (x.checked = set.includes(x.value)));
+            q("#editor").classList.remove("is-hidden");
+            q("#editor").scrollIntoView({
+              behavior: "smooth",
+              block: "nearest",
+            });
+          }),
+      );
+      q("#cancel").onclick = () => q("#editor").classList.add("is-hidden");
+      q("#form").onsubmit = (e) => {
+        e.preventDefault();
+        const a = [...document.querySelectorAll("#editor input:checked")].map(
+          (x) => x.value,
+        );
+        row.dataset.alerts = a.join(" ");
+        row.querySelector("[data-summary]").textContent =
+          a.map((x) => labels[x]).join(", ") || "Sin alertas";
+        const badge = row.querySelector(".status");
+        badge.textContent = a.length ? "Con alertas" : "Sin alertas";
+        badge.className =
+          "status " + (a.length ? "status-active" : "status-inactive");
+        q("#editor").classList.add("is-hidden");
+        filter();
+      };
+      filter();
+    </script>
+  </body>
+</html>

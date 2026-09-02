@@ -1,0 +1,73 @@
+@import url("../shared/sial-core.css");
+
+/* Card, toolbar, tabla y paginación: contrato compartido de Gestión. */
+.alert-list {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.alert-list legend {
+  grid-column: 1 / -1;
+  margin-bottom: 4px;
+  font-weight: 600;
+}
+
+.alert-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  min-height: 96px;
+  padding: 14px;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  cursor: pointer;
+  transition:
+    border-color var(--motion-duration-fast) ease,
+    background-color var(--motion-duration-fast) ease;
+}
+
+.alert-row:hover {
+  border-color: var(--color-primary-500);
+}
+.alert-row:focus-within {
+  outline: 2px solid var(--color-focus-ring);
+  outline-offset: 2px;
+}
+.alert-row:has(input:checked) {
+  border-color: var(--color-primary-500);
+  background: var(--color-primary-50);
+}
+
+.alert-row input {
+  flex: 0 0 auto;
+  margin-top: 3px;
+  accent-color: var(--color-primary-500);
+}
+.alert-row strong,
+.alert-row small {
+  display: block;
+}
+
+@media (max-width: 900px) {
+  .alert-list {
+    grid-template-columns: 1fr;
+  }
+}
+
+.alert-row small {
+  margin-top: 3px;
+  color: var(--color-text-2);
+  font-size: 12px;
+  line-height: 1.35;
+}
+
+/* La confirmación es un bloque separado, como en los formularios administrativos. */
+.inline-form-panel .form-actions {
+  margin-top: 20px;
+  padding-top: 16px;
+  border-top: 1px solid var(--color-border-subtle);
+}
