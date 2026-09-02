@@ -25,6 +25,7 @@ const SIAL = (() => {
       ["empresaTipo", "../Gestion%20de%20Transporte/relacion-empresa-tipo.html", "Empresa + tipo"],
       ["clientes", "gestion-clientes.html", "Clientes"],
       ["contactos", "gestion-contactos.html", "Contactos"],
+      ["alertasContactos", "gestion-notificaciones-contactos.html", "Alertas por contacto"],
       ["dependencias", "gestion-dependencias.html", "Dependencias"]
     ];
     nav.innerHTML = items.map(([key, href, label]) =>

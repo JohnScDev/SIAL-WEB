@@ -95,6 +95,7 @@ const SIALCore = (() => {
             { id: "empresaTipo", label: "Empresa + tipo", href: "relacion-empresa-tipo.html", folder: "Gestion de Transporte", localFolder: "Gestion de Transporte" },
             { id: "clientes", label: "Clientes", href: "gestion-clientes.html" },
             { id: "contactos", label: "Contactos", href: "gestion-contactos.html" },
+            { id: "alertasContactos", label: "Alertas por contacto", href: "gestion-notificaciones-contactos.html" },
             { id: "dependencias", label: "Dependencias", href: "gestion-dependencias.html" }
           ]
         },
