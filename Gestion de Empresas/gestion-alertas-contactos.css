@@ -33,12 +33,7 @@
 .alert-row:hover {
   border-color: var(--color-primary-500);
 }
-.alert-row:focus-within {
-  outline: 2px solid var(--color-focus-ring);
-  outline-offset: 2px;
-}
 .alert-row:has(input:checked) {
-  border-color: var(--color-primary-500);
   background: var(--color-primary-50);
 }
 
